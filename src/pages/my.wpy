@@ -7,7 +7,7 @@
   <van-cell-group title=" ">
     <van-cell
       title="全部订单"
-      icon="location-o"
+      icon="orders-o"
       is-link
     /></van-cell>
     <van-cell
@@ -20,12 +20,12 @@
   <van-cell-group title=" ">
     <van-cell
       title="我的收藏"
-      icon="location-o"
+      icon="star-o"
       is-link
     /></van-cell>
     <van-cell
       title="购物车"
-      icon="location-o"
+      icon="cart-o"
       is-link
     /></van-cell>
   </van-cell-group>
@@ -33,7 +33,7 @@
   <van-cell-group title=" ">
     <van-cell
       title="联系我们"
-      icon="location-o"
+      icon="phone-o"
       is-link
     /></van-cell>
   </van-cell-group>
