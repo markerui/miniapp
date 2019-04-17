@@ -54,7 +54,6 @@ page {
 // mk-swiper-container end
 
 .mk-card_item {
-  padding: 10px 0;
   .mk-card_img {
     border-radius: 10px;
   }

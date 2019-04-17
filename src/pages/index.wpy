@@ -3,18 +3,16 @@
   position: relative;
   background-color: #fff;
   height: 120px;
+  display: flex;
   .mk-tab_nav_scroll_wapper{
-    padding-right: 30px;
-    height: 100%;
+    overflow: hidden;
+    flex: 1;
     .mk-tab_nav_scroll{
       height: 100%;
     }
   }
   .mk-tab_nav_arrw{
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
+    flex: none;
     background-color: #fff;
     color: #b4b4b4;
     display: flex;
@@ -94,30 +92,12 @@
       <view class="mk-tab_nav_scroll_wapper">
         <scroll-view scroll-x  class="mk-tab_nav_scroll">
           <view class="mk-tab_nav_wapper" >
-            <view class="mk-tab_nav_item">
-              <image src="{{imageURL}}" class="mk-tab_nav_image"></image>
-              <text class="mk-tab_nav_text">红葡萄酒</text>
-            </view>
-            <view class="mk-tab_nav_item">
-              <image src="{{imageURL}}" class="mk-tab_nav_image"></image>
-              <text class="mk-tab_nav_text">白干</text>
-            </view>
-            <view class="mk-tab_nav_item">
-              <image src="{{imageURL}}" class="mk-tab_nav_image"></image>
-              <text class="mk-tab_nav_text">礼品盒</text>
-            </view>
-            <view class="mk-tab_nav_item">
-              <image src="{{imageURL}}" class="mk-tab_nav_image"></image>
-              <text class="mk-tab_nav_text">香槟气泡</text>
-            </view>
-            <view class="mk-tab_nav_item">
-              <image src="{{imageURL}}" class="mk-tab_nav_image"></image>
-              <text class="mk-tab_nav_text">香槟气泡</text>
-            </view>
-            <view class="mk-tab_nav_item">
-              <image src="{{imageURL}}" class="mk-tab_nav_image"></image>
-              <text class="mk-tab_nav_text">香槟气泡</text>
-            </view>
+            <repeat for="{{tabNav}}" key="index" index="index" item="tabNavItem">
+              <view class="mk-tab_nav_item">
+                <image src="{{tabNavItem.thumb}}" class="mk-tab_nav_image"></image>
+                <text class="mk-tab_nav_text">{{tabNavItem.title}}</text>
+              </view>
+            </repeat>
           </view>
         </scroll-view>
       </view>
@@ -133,25 +113,27 @@
           <van-icon name="arrow"/>
         </view>
         <van-tab title="4月上新">
-          <van-card
-            centered
-            custom-class="mk-card_item"
-            thumb-class="mk-card_img"
-            title-class="mk-card_title"
-            price="299"
-            origin-price="690"
-            title="格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒..."
-            thumb="{{ imageURL }}"
-            thumb-mode="aspectFill"
-          >
-            <view slot="desc" class="mk-card_desc">
-              <text>单位:{{ml}}ml</text>
-              <text>规格:750ml*6</text>
-            </view>
-            <view slot="footer" class="mk-card_item_tocar">
-                <van-icon name="shopping-cart-o" custom-style="margin-top:3px;" size="20px" color="#fff"/>
-            </view>
-          </van-card>
+          <repeat for="{{cardProList}}" key="index" index="index" item="cardProItem">
+            <van-card
+              centered
+              custom-class="mk-card_item"
+              thumb-class="mk-card_img"
+              title-class="mk-card_title"
+              price="{{cardProItem.price}}"
+              origin-price="{{cardProItem.originPrice}}"
+              title="{{cardProItem.title}}"
+              thumb="{{cardProItem.thumb}}"
+              thumb-mode="aspectFill"
+            >
+              <view slot="desc" class="mk-card_desc">
+                <text>单位:{{cardProItem.unit}}</text>
+                <text>规格:{{cardProItem.specs}}</text>
+              </view>
+              <view slot="footer" class="mk-card_item_tocar">
+                  <van-icon name="shopping-cart-o" custom-style="margin-top:3px;" size="20px" color="#fff"/>
+              </view>
+            </van-card>
+          </repeat>
         </van-tab>
         <van-tab title="掌柜推荐">内容 2</van-tab>
         <van-tab title="特价促销">内容 3</van-tab>
@@ -197,8 +179,41 @@ export default class Index extends wepy.page {
       swiperCurrent: 0,
       autoplay: true
     },
-    imageURL: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640',
-    ml: 750
+    tabNav:[
+      {
+        id: 1,
+        title:"葡萄酒1",
+        thumb:'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640',
+      },{
+        id: 2,
+        title:"葡萄酒2",
+        thumb:'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640',
+      },{
+        id: 3,
+        title:"葡萄酒3",
+        thumb:'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640',
+      },{
+        id: 4,
+        title:"葡萄酒4",
+        thumb:'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640',
+      },{
+        id: 5,
+        title:"葡萄酒5",
+        thumb:'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640',
+      },
+    ],
+    cardProList:[
+      {
+        id: 1,
+        title:"格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...",
+        unit: '750ml',
+        specs: '750ml*6',
+        price:"299",
+        originPrice:"690",
+        thumb:'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640',
+      }
+    ],
+    
   };
 
   computed = {};
