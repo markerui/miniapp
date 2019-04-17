@@ -4,7 +4,7 @@
   .class-scroll_left {
     width: 85px;
     flex: none;
-    background-color: #979797;
+    background-color: #f2f2f2;
   }
   .class-scroll_right {
     flex: 1;
