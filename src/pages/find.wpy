@@ -1,8 +1,19 @@
 <style lang="less">
-
 </style>
 <template>
-  <van-search value="" placeholder="请输入搜索关键词" />
+  <view class="mk-search-box">
+    <view class="mk-search">
+      <van-search placeholder="请输入搜索关键词" background="transparent" shape="round"/>
+    </view>
+    <view class="mk-view">
+      <van-icon name="location-o" size="26px" color="#fff"/>
+    </view>
+    <view class="mk-view">
+      <van-icon name="user-circle-o" size="26px" color="#fff"/>
+    </view>
+  </view>
+  <!-- mk-search-box end -->
+
   <view class="container-block">
     <van-button type="default">默认按钮</van-button>
   </view>
@@ -16,7 +27,8 @@ export default class Find extends wepy.page {
     navigationBarTitleText: '发现',
     usingComponents: {
       'van-button': '../components/vant/button/index',
-      "van-search": "../components/vant/search/index"
+      'van-search': '../components/vant/search/index',
+      'van-icon': '../components/vant/icon/index'
     }
   };
 

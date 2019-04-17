@@ -4,7 +4,7 @@
 
 <template>
 
-  <van-cell-group>
+  <van-cell-group title=" ">
     <van-cell
       title="全部订单"
       icon="location-o"
@@ -17,7 +17,7 @@
     /></van-cell>
   </van-cell-group>
 
-  <van-cell-group>
+  <van-cell-group title=" ">
     <van-cell
       title="我的收藏"
       icon="location-o"
@@ -30,7 +30,7 @@
     /></van-cell>
   </van-cell-group>
 
-  <van-cell-group>
+  <van-cell-group title=" ">
     <van-cell
       title="联系我们"
       icon="location-o"

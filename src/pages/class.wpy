@@ -1,17 +1,28 @@
 <style lang="less">
-
 </style>
 <template>
-  <van-search value="" placeholder="请输入搜索关键词" />
-    <van-badge-group active="{{ active }}" bind:change="onChange">
-        <van-badge title="热卖产品" />
-        <van-badge title="品牌" />
-        <van-badge title="产地" />
-        <van-badge title="类型" />
-        <van-badge title="用途" />
-        <van-badge title="价格区间" />
-        <van-badge title="其他分类" />
-    </van-badge-group>
+  <view class="mk-search-box">
+    <view class="mk-search">
+      <van-search placeholder="请输入搜索关键词" background="transparent" shape="round"/>
+    </view>
+    <view class="mk-view">
+      <van-icon name="location-o" size="26px" color="#fff"/>
+    </view>
+    <view class="mk-view">
+      <van-icon name="user-circle-o" size="26px" color="#fff"/>
+    </view>
+  </view>
+  <!-- mk-search-box end -->
+
+  <van-badge-group active="{{ active }}" bind:change="onChange">
+    <van-badge title="热卖产品"/>
+    <van-badge title="品牌"/>
+    <van-badge title="产地"/>
+    <van-badge title="类型"/>
+    <van-badge title="用途"/>
+    <van-badge title="价格区间"/>
+    <van-badge title="其他分类"/>
+  </van-badge-group>
 </template>
 
 <script>
@@ -21,9 +32,10 @@ export default class Class extends wepy.page {
   config = {
     navigationBarTitleText: '分类',
     usingComponents: {
-      "van-badge": "../components/vant/badge/index",
-      "van-badge-group": "../components/vant/badge-group/index",
-      "van-search": "../components/vant/search/index"
+      'van-badge': '../components/vant/badge/index',
+      'van-badge-group': '../components/vant/badge-group/index',
+      'van-search': '../components/vant/search/index',
+      'van-icon': '../components/vant/icon/index'
     }
   };
 
@@ -32,7 +44,7 @@ export default class Class extends wepy.page {
   mixins = [];
 
   data = {
-      active: 0
+    active: 0
   };
 
   computed = {};
