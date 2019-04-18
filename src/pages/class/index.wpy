@@ -1,0 +1,165 @@
+<style lang="less">
+.class-scroll_box {
+  display: flex;
+  .class-scroll_left {
+    width: 85px;
+    flex: none;
+    background-color: #f2f2f2;
+  }
+  .class-scroll_right {
+    flex: 1;
+    background-color: #fff;
+  }
+}
+
+.class-item {
+  .class-item_header {
+    text-align: center;
+    position: relative;
+    padding: 15px 0;
+    &:after {
+      content: '';
+      height: 1px;
+      background-color: #000;
+      transform: scaleY(0.5);
+      position: absolute;
+      left: 20%;
+      right: 20%;
+      top: 50%;
+      z-index: 1;
+    }
+    text {
+      background-color: #fff;
+      padding: 0 15px;
+      font-size: 16px;
+      position: relative;
+      z-index: 2;
+    }
+  }
+  .class-item_content {
+    padding: 15px;
+    text-align: center;
+    .class-item_content_item{
+      margin-bottom: 15px;
+    }
+    .class-item_content_img {
+      width: 100%;
+      height: 80px;
+      border-radius: 10px;
+    }
+    .class-item_content_text {
+      font-size: 14px;
+    }
+  }
+}
+</style>
+<template>
+  <view class="mk-search-box">
+    <view class="mk-search">
+      <van-search placeholder="请输入搜索关键词" background="transparent" shape="round"/>
+    </view>
+    <view class="mk-view">
+      <text>全部</text>
+    </view>
+  </view>
+  <!-- mk-search-box end -->
+  <view class="class-scroll_box">
+    <view class="class-scroll_left">
+      <scroll-view scroll-y style="height: {{windowHeight}}px;">
+        <van-badge-group active="{{ active }}" bind:change="onChange">
+          <van-badge title="热卖产品"/>
+          <van-badge title="品牌"/>
+          <van-badge title="产地"/>
+          <van-badge title="类型"/>
+          <van-badge title="用途"/>
+        </van-badge-group>
+      </scroll-view>
+    </view>
+    <view class="class-scroll_right">
+      <scroll-view scroll-y style="height: {{windowHeight}}px; ">
+
+        <van-panel custom-class="class-item">
+          <view slot="header" class="class-item_header">
+            <text>热卖产品</text>
+          </view>
+          <view class="class-item_content">
+            <van-row gutter="10" >
+              <van-col span="8">
+                <view class="class-item_content_item">
+                <image src="https://images.unsplash.com/photo-1551446591-142875a901a1?w=640" class="class-item_content_img"></image>
+                <text class="class-item_content_text">葡萄酒</text>
+                </view>
+              </van-col>
+              <van-col span="8">
+                <view class="class-item_content_item">
+                <image src="https://images.unsplash.com/photo-1551446591-142875a901a1?w=640" class="class-item_content_img"></image>
+                <text class="class-item_content_text">葡萄酒</text>
+                </view>
+              </van-col>
+              <van-col span="8">
+                <view class="class-item_content_item">
+                <image src="https://images.unsplash.com/photo-1551446591-142875a901a1?w=640" class="class-item_content_img"></image>
+                <text class="class-item_content_text">葡萄酒</text>
+                </view>
+              </van-col>
+              <van-col span="8">
+                <view class="class-item_content_item">
+                <image src="https://images.unsplash.com/photo-1551446591-142875a901a1?w=640" class="class-item_content_img"></image>
+                <text class="class-item_content_text">葡萄酒</text>
+                </view>
+              </van-col>
+            </van-row>
+          </view>
+        </van-panel>
+
+    
+      </scroll-view>
+    </view>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+
+export default class Class extends wepy.page {
+  config = {
+    navigationBarTitleText: '分类',
+    usingComponents: {
+      'van-badge': '../../components/vant/badge/index',
+      'van-badge-group': '../../components/vant/badge-group/index',
+      'van-search': '../../components/vant/search/index',
+      'van-icon': '../../components/vant/icon/index',
+      'van-panel': '../../components/vant/panel/index',
+      'van-row': '../../components/vant/row/index',
+      'van-col': '../../components/vant/col/index'
+    }
+  };
+
+  components = {};
+
+  mixins = [];
+
+  data = {
+    windowHeight: 0,
+    active: 0
+  };
+
+  computed = {};
+
+  methods = {};
+
+  events = {};
+
+  onLoad() {
+    let that = this;
+    let windowHeight = wx.getSystemInfoSync().windowHeight;
+    let query = wx.createSelectorQuery();
+    query
+      .select('.mk-search')
+      .boundingClientRect()
+      .exec(function(res) {
+        that.windowHeight = windowHeight - res[0].height;
+      });
+  }
+}
+</script>

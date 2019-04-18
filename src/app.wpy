@@ -90,7 +90,15 @@ import 'wepy-async-function';
 
 export default class extends wepy.app {
   config = {
-    pages: ['pages/index', 'pages/class', 'pages/find', 'pages/my'],
+    pages: [
+      'pages/index/shoplist',
+      'pages/index/index',
+      'pages/index/search',
+
+      'pages/class/index',
+      'pages/find/index',
+      'pages/my/index'
+    ],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#e26431',
@@ -101,19 +109,19 @@ export default class extends wepy.app {
     tabBar: {
       list: [
         {
-          pagePath: 'pages/index',
+          pagePath: 'pages/index/index',
           text: '首页'
         },
         {
-          pagePath: 'pages/class',
+          pagePath: 'pages/class/index',
           text: '分类'
         },
         {
-          pagePath: 'pages/find',
+          pagePath: 'pages/find/index',
           text: '发现'
         },
         {
-          pagePath: 'pages/my',
+          pagePath: 'pages/my/index',
           text: '我的'
         }
       ]

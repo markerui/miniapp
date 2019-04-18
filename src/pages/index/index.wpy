@@ -55,14 +55,14 @@
 <template>
 
   <view class="mk-search-box">
-    <view class="mk-search">
-      <van-search placeholder="请输入搜索关键词" background="transparent" shape="round"/>
+    <view class="mk-search" bind:tap="searchFocus">
+      <van-search disabled placeholder="输入产品/品牌关键词搜索" background="transparent" shape="round"/>
     </view>
     <view class="mk-view">
-      <van-icon name="location-o" size="26px" color="#fff"/>
+      <van-icon name="shop-o" size="26px" color="#fff"/>
     </view>
     <view class="mk-view">
-      <van-icon name="user-circle-o" size="26px" color="#fff"/>
+      <van-icon name="info-o" size="26px" color="#fff"/>
     </view>
   </view>
   <!-- mk-search-box end -->
@@ -108,7 +108,7 @@
     <!-- mk-tab_nav end -->
     
     <view class="mk-tab_list">
-      <van-tabs>
+      <van-tabs >
         <view slot="nav-right" class="mk_tab_list_arrw">
           <van-icon name="arrow"/>
         </view>
@@ -138,6 +138,7 @@
         <van-tab title="掌柜推荐">内容 2</van-tab>
         <van-tab title="特价促销">内容 3</van-tab>
         <van-tab title="暂未上线">内容 4</van-tab>
+        <van-tab title="更多推荐">内容 5</van-tab>
       </van-tabs>
     </view>
     <!-- mk-tab_list end -->
@@ -153,14 +154,12 @@ export default class Index extends wepy.page {
   config = {
     navigationBarTitleText: '阅香格雷曼酒庄',
     usingComponents: {
-      'van-row': '../components/vant/row/index',
-      'van-col': '../components/vant/col/index',
-      'van-card': '../components/vant/card/index',
-      'van-icon': '../components/vant/icon/index',
-      'van-button': '../components/vant/button/index',
-      'van-search': '../components/vant/search/index',
-      'van-tab': '../components/vant/tab/index',
-      'van-tabs': '../components/vant/tabs/index'
+      'van-card': '../../components/vant/card/index',
+      'van-icon': '../../components/vant/icon/index',
+      'van-button': '../../components/vant/button/index',
+      'van-search': '../../components/vant/search/index',
+      'van-tab': '../../components/vant/tab/index',
+      'van-tabs': '../../components/vant/tabs/index'
     }
   };
 
@@ -211,46 +210,6 @@ export default class Index extends wepy.page {
         price:"299",
         originPrice:"690",
         thumb:'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640',
-      },{
-        id: 1,
-        title:"格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...",
-        unit: '750ml',
-        specs: '750ml*6',
-        price:"299",
-        originPrice:"690",
-        thumb:'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640',
-      },{
-        id: 1,
-        title:"格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...",
-        unit: '750ml',
-        specs: '750ml*6',
-        price:"299",
-        originPrice:"690",
-        thumb:'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640',
-      },{
-        id: 1,
-        title:"格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...",
-        unit: '750ml',
-        specs: '750ml*6',
-        price:"299",
-        originPrice:"690",
-        thumb:'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640',
-      },{
-        id: 1,
-        title:"格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...",
-        unit: '750ml',
-        specs: '750ml*6',
-        price:"299",
-        originPrice:"690",
-        thumb:'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640',
-      },{
-        id: 1,
-        title:"格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...",
-        unit: '750ml',
-        specs: '750ml*6',
-        price:"299",
-        originPrice:"690",
-        thumb:'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640',
       }
     ],
     
@@ -261,10 +220,17 @@ export default class Index extends wepy.page {
   methods = {
     swiperChange(e) {
       this.swiper.swiperCurrent = e.detail.current;
+    },
+    searchFocus(){
+      wx.navigateTo({
+        url: 'search'
+      })
     }
   };
 
-  events = {};
+  events = {
+    
+  };
   
   onLoad() {
     let that = this;

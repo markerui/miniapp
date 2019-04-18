@@ -1,0 +1,99 @@
+<style lang="less">
+page {
+  background-color: #fff;
+}
+.mk-search-box {
+  background-color: #fff;
+}
+.search-hot {
+  padding: 30px 15px;
+  .search-hot_title {
+    font-size: 16px;
+    display: block;
+  }
+  .search-hot_tag {
+    padding: 15px 0;
+    van-tag {
+      margin-right: 10px;
+    }
+  }
+}
+</style>
+
+<template>
+  <view class="mk-search-box">
+    <view class="mk-search">
+      <van-search
+        focus
+        placeholder="输入产品/品牌关键词搜索"
+        background="transparent"
+        shape="round"
+        show-action
+        bind:search="onSearch"
+        bind:cancel="closeSearch"
+      ></van-search>
+    </view>
+  </view>
+  <!-- mk-search-box end -->
+
+  <scroll-view scroll-y style="height: {{windowHeight}}px;">
+    <view class="search-hot">
+      <text class="search-hot_title">热门搜索</text>
+      <view class="search-hot_tag">
+        <van-tag plain round size="large">标签</van-tag>
+        <van-tag plain round size="large">标签</van-tag>
+        <van-tag plain round size="large">标签</van-tag>
+        <van-tag plain round size="large">标签</van-tag>
+      </view>
+    </view>
+  </scroll-view>
+</template>
+
+<script>
+import wepy from 'wepy';
+
+export default class search extends wepy.page {
+  config = {
+    navigationBarTitleText: '搜索',
+    navigationBarBackgroundColor: '#fff',
+    navigationBarTextStyle: 'black',
+    backgroundColor: '#fff',
+    usingComponents: {
+      'van-search': '../../components/vant/search/index',
+      'van-tag': '../../components/vant/tag/index'
+    }
+  };
+
+  components = {};
+
+  mixins = [];
+
+  data = {
+    windowHeight: 0
+  };
+
+  computed = {};
+
+  methods = {
+    closeSearch() {
+      wx.navigateBack({
+        delta: 1
+      });
+    }
+  };
+
+  events = {};
+
+  onLoad() {
+    let that = this;
+    let windowHeight = wx.getSystemInfoSync().windowHeight;
+    let query = wx.createSelectorQuery();
+    query
+      .select('.mk-search')
+      .boundingClientRect()
+      .exec(function(res) {
+        that.windowHeight = windowHeight - res[0].height;
+      });
+  }
+}
+</script>

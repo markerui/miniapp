@@ -4,10 +4,29 @@
 
 <template>
 
+  <view>
+    <view>
+        <image
+          style="width:50px; height: 50px; display:block"
+          src="https://images.unsplash.com/photo-1551446591-142875a901a1?w=640"></image>
+          <text>刘云行|智力名酒格雷曼</text>
+    </view>
+    <van-row>
+      <van-col span="12">
+        <text>优惠券</text>
+        <text>12</text>
+      </van-col>
+      <van-col span="12">
+        <text>礼品卡</text>
+        <text>2</text>
+      </van-col>
+    </van-row>
+  </view>
+
   <van-cell-group title=" ">
     <van-cell
       title="全部订单"
-      icon="orders-o"
+      icon="balance-list-o"
       is-link
     /></van-cell>
     <van-cell
@@ -47,8 +66,10 @@ export default class My extends wepy.page {
   config = {
     navigationBarTitleText: '个人中心',
     usingComponents: {
-      "van-cell": "../components/vant/cell/index",
-      "van-cell-group": "../components/vant/cell-group/index"
+      "van-row": "../../components/vant/row/index",
+      "van-col": "../../components/vant/col/index",
+      "van-cell": "../../components/vant/cell/index",
+      "van-cell-group": "../../components/vant/cell-group/index"
     }
   };
 

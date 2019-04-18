@@ -26,9 +26,9 @@ export default class Find extends wepy.page {
   config = {
     navigationBarTitleText: '发现',
     usingComponents: {
-      'van-button': '../components/vant/button/index',
-      'van-search': '../components/vant/search/index',
-      'van-icon': '../components/vant/icon/index'
+      'van-button': '../../components/vant/button/index',
+      'van-search': '../../components/vant/search/index',
+      'van-icon': '../../components/vant/icon/index'
     }
   };
 
