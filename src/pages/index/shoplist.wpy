@@ -60,7 +60,6 @@ export default class search extends wepy.page {
         120105: '河北区',
         
     }
-
   };
 
   computed = {};
