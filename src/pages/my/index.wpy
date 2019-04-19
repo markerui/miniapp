@@ -1,61 +1,131 @@
 <style lang="less">
+@import '../../less/color.less';
+.user-head{
+  background-color: @rootColor;
+  color: #fff;
+  text-align: center;
+  padding-bottom: 30px;
+  text{
+    font-size: 14px;
+  }
+  .user-head_title{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px 0 20px;
+    image{
+      height: 60px;
+      width: 60px;
+      border-radius: 100%;
+    }
+    .user-head_name{
+      padding-top: 10px;
+      font-size: 12px;
+      text{
+        padding: 0 5px;
+      }
+    } 
+  }
+  .user-head_info{
+    .user-head_info_item{
+      border-right: 1px solid #f47a4a;
+    }
+    .user-head_info_text{
+      display: block;
+    }
+  }
+}
 
+.my-cell_list{
+  .van-cell-group{
+    margin-top: 10px;
+  }
+}
+
+.my-shop_entry{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  padding: 20px 0;
+  image{
+    height: 60px;
+    width: 60px;
+    border-radius: 100%;
+  }
+  text{
+    font-size: 12px;
+  }
+}
 </style>
 
 <template>
 
-  <view>
-    <view>
-        <image
-          style="width:50px; height: 50px; display:block"
-          src="https://images.unsplash.com/photo-1551446591-142875a901a1?w=640"></image>
-          <text>刘云行|智力名酒格雷曼</text>
+  <view class="user-head">
+    <view class="user-head_title">
+      <view>
+        <image src="https://images.unsplash.com/photo-1551446591-142875a901a1?w=640"></image>
+      </view>
+      <text class="user-head_name">刘云行 <text>|</text>智力名酒格雷曼</text>
     </view>
-    <van-row>
+    <van-row class="user-head_info">
       <van-col span="12">
-        <text>优惠券</text>
-        <text>12</text>
+        <view class="user-head_info_item">
+          <text class="user-head_info_text">优惠券</text>
+          <text class="user-head_info_num">12</text>
+        </view>
       </van-col>
       <van-col span="12">
-        <text>礼品卡</text>
-        <text>2</text>
+        <view class="user-head_info_item" style="border:none;">
+          <text class="user-head_info_text">礼品卡</text>
+          <text class="user-head_info_num">2</text>
+        </view>
       </van-col>
     </van-row>
   </view>
 
-  <van-cell-group title=" ">
-    <van-cell
-      title="全部订单"
-      icon="balance-list-o"
-      is-link
-    /></van-cell>
-    <van-cell
-      title="收货地址"
-      icon="location-o"
-      is-link
-    /></van-cell>
-  </van-cell-group>
+  <view class="my-cell_list">
+    <van-cell-group>
+      <van-cell
+        title="全部订单"
+        icon="balance-list-o"
+        is-link
+      /></van-cell>
+      <van-cell
+        title="收货地址"
+        icon="location-o"
+        is-link
+      /></van-cell>
+    </van-cell-group>
 
-  <van-cell-group title=" ">
-    <van-cell
-      title="我的收藏"
-      icon="star-o"
-      is-link
-    /></van-cell>
-    <van-cell
-      title="购物车"
-      icon="cart-o"
-      is-link
-    /></van-cell>
-  </van-cell-group>
+    <van-cell-group >
+      <van-cell
+        title="我的收藏"
+        icon="star-o"
+        is-link
+      /></van-cell>
+      <van-cell
+        title="购物车"
+        icon="cart-o"
+        is-link
+      /></van-cell>
+    </van-cell-group>
 
-  <van-cell-group title=" ">
-    <van-cell
-      title="联系我们"
-      icon="phone-o"
-      is-link
-    /></van-cell>
-  </van-cell-group>
+    <van-cell-group >
+      <van-cell
+        title="联系我们"
+        icon="phone-o"
+        is-link
+      /></van-cell>
+    </van-cell-group>
+  </view>
+
+  <view class="my-shop_entry">
+    <view>
+        <image src="https://images.unsplash.com/photo-1551446591-142875a901a1?w=640"></image>
+      </view>
+      <text>我的店铺</text>
+  </view>
 
 </template>
 

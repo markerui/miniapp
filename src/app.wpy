@@ -1,14 +1,12 @@
 <style lang="less">
-.container-block {
-  padding: 0 15px;
-}
+@import './less/color.less';
 
 page {
   background-color: #edebec;
 }
 
 .mk-search-box {
-  background-color: #e26431;
+  background-color: @rootColor;
   display: flex;
   align-items: center;
   padding-right: 5px;
@@ -42,7 +40,7 @@ page {
       margin: 0 8rpx;
       width: 14rpx;
       height: 14rpx;
-      background: #e26431;
+      background: @rootColor;
       border-radius: 8rpx;
       &.active {
         width: 24rpx;
@@ -75,7 +73,7 @@ page {
     width: 30px;
     height: 30px;
     border-radius: 100%;
-    background-color: #e26431;
+    background-color: @rootColor;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -91,13 +89,13 @@ import 'wepy-async-function';
 export default class extends wepy.app {
   config = {
     pages: [
-      'pages/index/shoplist',
+      'pages/my/info',
+      'pages/my/index',
       'pages/index/index',
       'pages/index/search',
-
+      'pages/index/shoplist',
       'pages/class/index',
-      'pages/find/index',
-      'pages/my/index'
+      'pages/find/index'
     ],
     window: {
       backgroundTextStyle: 'light',

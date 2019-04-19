@@ -1,0 +1,91 @@
+<style lang="less">
+@import '../../less/color.less';
+</style>
+
+<template>
+  <van-cell-group>
+    <van-field label="姓    名" placeholder="请输入您的真实姓名"/>
+    <van-field label="手机号码" placeholder="请输入您的常用手机号码"/>
+    <van-field label="联系电话" placeholder="请输入您的常用联系电话"/>
+    <van-field label="所在城市" bind:tap="selectCity" disabled placeholder="请输入您的常用联系地址"/>
+  </van-cell-group>
+
+  <van-popup show="{{ areaPopupShow }}" position="bottom" bind:close="areaPopupClose">
+    <van-area
+      area-list="{{ areaList }}"
+      bind:confirm="confirmAreaList"
+      bind:cancel="cancelAreaList"
+      bind:change="changeAreaList"
+    />
+  </van-popup>
+</template>
+
+<script>
+import wepy from 'wepy';
+
+export default class info extends wepy.page {
+  config = {
+    navigationBarTitleText: '我的信息',
+    usingComponents: {
+      'van-field': '../../components/vant/field/index',
+      'van-area': '../../components/vant/area/index',
+      'van-popup': '../../components/vant/popup/index'
+    }
+  };
+
+  components = {};
+
+  mixins = [];
+
+  data = {
+    areaPopupShow: false,
+    currentArea: '上海市普陀区',
+    areaList: {
+      province_list: {
+        110000: '北京市',
+        120000: '天津市'
+      },
+      city_list: {
+        110100: '北京市',
+        120100: '天津市'
+      },
+      county_list: {
+        110101: '东城区',
+        110102: '西城区',
+        110105: '朝阳区',
+        110106: '丰台区',
+        120101: '和平区',
+        120102: '河东区',
+        120103: '河西区',
+        120104: '南开区',
+        120105: '河北区'
+      }
+    }
+  };
+
+  computed = {};
+
+  methods = {
+    selectCity() {
+      this.areaPopupShow = true;
+    },
+    areaPopupClose() {
+      this.areaPopupShow = false;
+    },
+    cancelAreaList() {
+      this.areaPopupShow = false;
+    },
+    confirmAreaList(e) {
+      this.areaPopupShow = false;
+      console.log(e);
+    },
+    changeAreaList(e) {
+      console.log(e);
+    }
+  };
+
+  events = {};
+
+  onLoad() {}
+}
+</script>

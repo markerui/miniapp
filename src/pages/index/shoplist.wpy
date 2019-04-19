@@ -1,22 +1,56 @@
 <style lang="less">
-.shop-list_item{
-    margin-top: 10px;
-    .van-cell{
-        display: block;
-        .van-cell__value{
-            text-align: left;
-        }
-    }
+@import '../../less/color.less';
+.shop-list_box{
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	.shop-list{
+		flex: 1;
+	}
+	.shop-list_item{
+		margin-top: 10px;
+		.van-cell{
+			display: block;
+			.van-cell__value{
+				text-align: left;
+			}
+		}
+	}
+	.shop-tips{
+		flex: none;
+		padding: 15px;
+		color: @rootColor;
+		font-size: 14px;
+	}
 }
+
 </style>
 
 <template>
-  <van-cell title="上海市" is-link arrow-direction="down" border="false" bind:click="selectShop"/></van-cell>
-  <van-cell-group custom-class="shop-list_item">
-    <van-cell title="上海徐汇美罗城店" value="Hello旗舰店"  label="上海市徐汇区肇嘉浜路144号"/></van-cell>
-    <van-cell title="上海徐汇美罗城店" value="Hello旗舰店" label="上海市徐汇区肇嘉浜路144号"/></van-cell>
-  </van-cell-group>
-  <van-area area-list="{{ areaList }}" />
+	<van-cell-group class="shop-area_current">
+		<van-cell  title="{{currentArea}}" icon="location-o" is-link arrow-direction="down" border="false" bind:click="selectCity"/>
+		</van-cell>
+	</van-cell-group>
+
+	<scroll-view
+		scroll-y
+		style="height: {{windowHeight}}px;"
+	>
+		<view class="shop-list_box">
+			<view class="shop-list">
+				<van-cell-group custom-class="shop-list_item">
+					<van-cell title="上海徐汇美罗城店" value="Hello旗舰店"  label="上海市徐汇区肇嘉浜路144号"/></van-cell>
+					<van-cell title="上海徐汇美罗城店" value="Hello旗舰店" label="上海市徐汇区肇嘉浜路144号"/></van-cell>
+				</van-cell-group>
+			</view>
+
+			<view class="shop-tips">{{shopTips}}</view>
+		</view>
+	</scroll-view>
+
+	<van-popup show="{{ areaPopupShow }}" position="bottom" bind:close="areaPopupClose">
+		<van-area area-list="{{ areaList }}" bind:confirm="confirmAreaList" bind:cancel="cancelAreaList" bind:change="changeAreaList" />
+	</van-popup>
 </template>
 
 <script>
@@ -26,9 +60,11 @@ export default class search extends wepy.page {
   config = {
     navigationBarTitleText: '实体店',
     usingComponents: {
-      'van-cell': '../../components/vant/cell/index',
-      'van-cell-group': '../../components/vant/cell-group/index',
-      "van-area": "../../components/vant/area/index"
+		"van-icon": "../../components/vant/icon/index",
+		'van-cell': '../../components/vant/cell/index',
+		'van-cell-group': '../../components/vant/cell-group/index',
+		"van-area": "../../components/vant/area/index",
+		"van-popup": "../../components/vant/popup/index"
     }
   };
 
@@ -37,41 +73,65 @@ export default class search extends wepy.page {
   mixins = [];
 
   data = {
-    windowHeight: 0,
-    province_list: {
-        110000: '北京市',
-        120000: '天津市'
-    },
-    city_list: {
-        110100: '北京市',
-        110200: '县',
-        120100: '天津市',
-        120200: '县'
-    },
-    county_list: {
-        110101: '东城区',
-        110102: '西城区',
-        110105: '朝阳区',
-        110106: '丰台区'
-        120101: '和平区',
-        120102: '河东区',
-        120103: '河西区',
-        120104: '南开区',
-        120105: '河北区',
-        
+	windowHeight: 0,
+	shopTips: '提示文字哦提示文字哦提示文字哦提示文字哦提示文字哦提示文字哦提示文字哦',
+	areaPopupShow: false,
+	currentArea: '上海市普陀区',
+    areaList: {
+        province_list: {
+            110000: '北京市',
+            120000: '天津市'
+        },
+        city_list: {
+            110100: '北京市',
+            120100: '天津市',
+        },
+        county_list: {
+            110101: '东城区',
+            110102: '西城区',
+            110105: '朝阳区',
+            110106: '丰台区',
+            120101: '和平区',
+            120102: '河东区',
+            120103: '河西区',
+            120104: '南开区',
+            120105: '河北区'
+        }
     }
   };
 
   computed = {};
 
   methods = {
-    selectShop(){
-        console.log(2)
-    }
+    selectCity(){
+        this.areaPopupShow = true;
+	},
+	areaPopupClose(){
+		this.areaPopupShow = false;
+	},
+	cancelAreaList(){
+		this.areaPopupShow = false;
+	},
+	confirmAreaList(e){
+		this.areaPopupShow = false;
+		console.log(e)
+	},
+	changeAreaList(e){
+		console.log(e)
+	}
   };
 
   events = {};
 
-  onLoad() {}
+  onLoad() {
+	let that = this;
+	let windowHeight = wx.getSystemInfoSync().windowHeight;
+	let query = wx.createSelectorQuery();
+	query.select('.shop-area_current')
+		.boundingClientRect()
+		.exec(function(res) {
+			that.windowHeight = windowHeight - res[0].height ;
+		});
+  }
 }
 </script>
