@@ -1,5 +1,11 @@
 <style lang="less">
 @import '../../less/color.less';
+.save-info {
+  padding: 30px;
+  .save-info_btn {
+    background-color: @rootColor;
+  }
+}
 </style>
 
 <template>
@@ -8,8 +14,11 @@
     <van-field label="手机号码" placeholder="请输入您的常用手机号码"/>
     <van-field label="联系电话" placeholder="请输入您的常用联系电话"/>
     <van-field label="所在城市" bind:tap="selectCity" disabled placeholder="请输入您的常用联系地址"/>
+    <van-field type="textarea" placeholder="请输入您的详细地址" autosize/>
   </van-cell-group>
-
+  <view class="save-info">
+    <van-button type="warning" custom-class="save-info_btn" size="large" block round>保存</van-button>
+  </view>
   <van-popup show="{{ areaPopupShow }}" position="bottom" bind:close="areaPopupClose">
     <van-area
       area-list="{{ areaList }}"
@@ -29,7 +38,8 @@ export default class info extends wepy.page {
     usingComponents: {
       'van-field': '../../components/vant/field/index',
       'van-area': '../../components/vant/area/index',
-      'van-popup': '../../components/vant/popup/index'
+      'van-popup': '../../components/vant/popup/index',
+      'van-button': '../../components/vant/button/index'
     }
   };
 

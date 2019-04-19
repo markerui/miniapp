@@ -89,8 +89,9 @@ import 'wepy-async-function';
 export default class extends wepy.app {
   config = {
     pages: [
-      'pages/my/info',
+      'pages/address/index',
       'pages/my/index',
+      'pages/my/info',
       'pages/index/index',
       'pages/index/search',
       'pages/index/shoplist',

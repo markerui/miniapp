@@ -14,6 +14,11 @@
 			.van-cell__value{
 				text-align: left;
 			}
+			.van-cell__right-icon-wrap {
+				position: absolute;
+				right: 15px;
+				top: 50%;
+			}
 		}
 	}
 	.shop-tips{
@@ -39,8 +44,8 @@
 		<view class="shop-list_box">
 			<view class="shop-list">
 				<van-cell-group custom-class="shop-list_item">
-					<van-cell title="上海徐汇美罗城店" value="Hello旗舰店"  label="上海市徐汇区肇嘉浜路144号"/></van-cell>
-					<van-cell title="上海徐汇美罗城店" value="Hello旗舰店" label="上海市徐汇区肇嘉浜路144号"/></van-cell>
+					<van-cell title="上海徐汇美罗城店" value="Hello旗舰店"  label="上海市徐汇区肇嘉浜路144号" is-link/></van-cell>
+					<van-cell title="上海徐汇美罗城店" value="Hello旗舰店" label="上海市徐汇区肇嘉浜路144号" is-link/></van-cell>
 				</van-cell-group>
 			</view>
 

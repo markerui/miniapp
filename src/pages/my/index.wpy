@@ -62,7 +62,7 @@
 <template>
 
   <view class="user-head">
-    <view class="user-head_title">
+    <view class="user-head_title" bind:tap="goUserInfo">
       <view>
         <image src="https://images.unsplash.com/photo-1551446591-142875a901a1?w=640"></image>
       </view>
@@ -151,7 +151,18 @@ export default class My extends wepy.page {
 
   computed = {};
 
-  methods = {};
+  methods = {
+    goUserInfo(){
+      wx.navigateTo({
+        url: 'info'
+      })
+    },
+    goAddress(){
+      wx.navigateTo({
+        url: '../address/index'
+      })
+    }
+  };
 
   events = {};
 

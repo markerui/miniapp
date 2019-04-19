@@ -1,0 +1,107 @@
+<style lang="less">
+@import '../../less/color.less';
+.mk-search-box {
+  background-color: #fff;
+}
+.plus-address {
+  .van-cell {
+    color: @rootColor;
+    .van-cell__right-icon-wrap {
+      display: none;
+    }
+  }
+}
+.address-items {
+  .address-items_tag {
+    margin-right: 5px;
+  }
+  .address-items_label {
+    padding-top: 5px;
+    color: #999;
+    font-size: 12px;
+  }
+}
+</style>
+
+<template>
+    <view class="address-head">
+        <view class="mk-search-box">
+            <view class="mk-search">
+                <van-search
+                    placeholder="输入关键词搜索"
+                    background="transparent"
+                    shape="round"
+                    bind:search="onSearch"
+                    bind:cancel="closeSearch"
+                ></van-search>
+            </view>
+        </view>
+        <!-- mk-search-box end -->
+        <van-cell-group custom-class="plus-address">
+            <van-cell title="新增收货地址" border="false" is-link icon="plus"/>
+        </van-cell-group>
+    </view>
+    <scroll-view scroll-y style="height: {{windowHeight}}px; margin-top:10px;">
+        <van-cell-group custom-class="address-items">
+            <van-cell center is-link>
+                <view slot="title">
+                    <view class="van-cell-text">
+                        <van-tag type="danger" class="address-items_tag">默认</van-tag>收货人信息
+                    </view>
+                    <view class="address-items_label">描述信息描述信息描述信息描述信息描述信息描述信息22</view>
+                </view>
+            </van-cell>
+            <van-cell center is-link>
+                <view slot="title">
+                    <view class="van-cell-text">收货人信息</view>
+                    <view class="address-items_label">描述信息描述信息描述信息描述信息描述信息描述信息22</view>
+                </view>
+            </van-cell>
+        </van-cell-group>
+    </scroll-view>
+</template>
+
+<script>
+import wepy from 'wepy';
+
+export default class info extends wepy.page {
+  config = {
+    navigationBarTitleText: '收货地址',
+    navigationBarBackgroundColor: '#fff',
+    navigationBarTextStyle: 'black',
+    backgroundColor: '#fff',
+    usingComponents: {
+      'van-search': '../../components/vant/search/index',
+      'van-cell': '../../components/vant/cell/index',
+      'van-cell-group': '../../components/vant/cell-group/index',
+      'van-tag': '../../components/vant/tag/index'
+    }
+  };
+
+  components = {};
+
+  mixins = [];
+
+  data = {
+    windowHeight: 0
+  };
+
+  computed = {};
+
+  methods = {};
+
+  events = {};
+
+  onLoad() {
+    let that = this;
+    let windowHeight = wx.getSystemInfoSync().windowHeight;
+    let query = wx.createSelectorQuery();
+    query
+      .select('.address-head')
+      .boundingClientRect()
+      .exec(function(res) {
+        that.windowHeight = windowHeight - res[0].height;
+      });
+  }
+}
+</script>
