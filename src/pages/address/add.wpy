@@ -1,0 +1,128 @@
+<style lang="less">
+@import '../../less/color.less';
+.save-address {
+  padding: 30px;
+  .save-address_btn {
+    background-color: @rootColor;
+  }
+  .del-address_btn{
+    margin-top: 10px;
+    background-color: transparent !important;
+    color: @rootColor;
+  }
+}
+
+.address-site_default{
+  margin-top: 10px; 
+}
+</style>
+
+<template>
+  <van-cell-group>
+    <van-field label="收件人" placeholder="请输入您的真实姓名"/>
+    <van-field label="收货电话" placeholder="请输入您的常用手机号码"/>
+    <van-field label="所在地区" bind:tap="selectCity" disabled placeholder="请输入您的常用联系地址"/>
+    <van-field type="textarea" placeholder="请输入您的详细地址" autosize/>
+  </van-cell-group>
+
+  <van-cell-group custom-class="address-site_default">
+    <van-cell
+      title="设为默认"
+      size="large"
+    >
+      <van-switch size="20px" active-color="#e26431"  checked="{{ addressDefaultChecked }}" bind:change="onChangeAddressDefaultChecked" />
+    </van-cell>
+  </van-cell-group>
+
+  <view class="save-address">
+    <van-button type="warning" custom-class="save-address_btn" size="large" block round>保存</van-button>
+     <van-button type="default" custom-class="del-address_btn" size="large" block round>删除</van-button>
+  </view>
+
+  <van-popup show="{{ areaPopupShow }}" position="bottom" bind:close="areaPopupClose">
+    <van-area
+      area-list="{{ areaList }}"
+      bind:confirm="confirmAreaList"
+      bind:cancel="cancelAreaList"
+      bind:change="changeAreaList"
+    />
+  </van-popup>
+</template>
+
+<script>
+import wepy from 'wepy';
+
+export default class info extends wepy.page {
+  config = {
+    navigationBarTitleText: '添加地址',
+    usingComponents: {
+      'van-field': '../../components/vant/field/index',
+      'van-area': '../../components/vant/area/index',
+      'van-popup': '../../components/vant/popup/index',
+      'van-button': '../../components/vant/button/index',
+      "van-switch": "../../components/vant/switch/index",
+      "van-cell": "../../components/vant/cell/index",
+      "van-cell-group": "../../components/vant/cell-group/index"
+    }
+  };
+
+  components = {};
+
+  mixins = [];
+
+  data = {
+    areaPopupShow: false,
+    addressDefaultChecked: false,
+    currentArea: '上海市普陀区',
+    areaList: {
+      province_list: {
+        110000: '北京市',
+        120000: '天津市'
+      },
+      city_list: {
+        110100: '北京市',
+        120100: '天津市'
+      },
+      county_list: {
+        110101: '东城区',
+        110102: '西城区',
+        110105: '朝阳区',
+        110106: '丰台区',
+        120101: '和平区',
+        120102: '河东区',
+        120103: '河西区',
+        120104: '南开区',
+        120105: '河北区'
+      }
+    }
+  };
+
+  computed = {};
+
+  methods = {
+    onChangeAddressDefaultChecked({ detail }){
+      this.addressDefaultChecked=detail;
+    },
+    selectCity() {
+      this.areaPopupShow = true;
+    },
+    areaPopupClose() {
+      this.areaPopupShow = false;
+    },
+    cancelAreaList() {
+      this.areaPopupShow = false;
+    },
+    confirmAreaList(e) {
+      this.areaPopupShow = false;
+      console.log(e);
+    },
+    changeAreaList(e) {
+      console.log(e);
+    }
+  };
+
+  events = {};
+
+  onLoad() {}
+}
+</script>
