@@ -38,7 +38,7 @@
         </view>
         <!-- mk-search-box end -->
         <van-cell-group custom-class="plus-address">
-            <van-cell title="新增收货地址" border="false" is-link icon="plus"/>
+            <van-cell title="新增收货地址" border="false" url="add" is-link icon="plus"/>
         </van-cell-group>
     </view>
     <scroll-view scroll-y style="height: {{windowHeight}}px; margin-top:10px;">
