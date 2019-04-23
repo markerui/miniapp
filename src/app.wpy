@@ -1,9 +1,9 @@
 <style lang="less">
-@import './less/color.less';
-@import './less/search.less';
 page {
   background-color: #edebec;
 }
+@import './less/color.less';
+@import './less/search.less';
 </style>
 
 <script>
@@ -13,14 +13,16 @@ import 'wepy-async-function';
 export default class extends wepy.app {
   config = {
     pages: [
+      'pages/product/index',
+      'pages/cart/index',
+      'pages/my/collect',
+      'pages/my/index',
+      'pages/my/info',
       'pages/address/add',
       'pages/address/index',
       'pages/index/index',
       'pages/index/search',
       'pages/index/shoplist',
-      'pages/my/index',
-      'pages/my/info',
-      'pages/my/collect',
       'pages/class/index',
       'pages/find/index'
     ],

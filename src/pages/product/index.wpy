@@ -1,0 +1,86 @@
+<style lang="less">
+@import '../../less/color.less';
+@import '../../less/swiper.less';
+</style>
+
+<template>
+   
+
+    <view class="mk-swiper-container">
+      <swiper circular autoplay="{{autoplay}}" bindchange="swiperChange" class="mk-swiper">
+        <repeat for="{{swiper.imgUrls}}" key="index">
+          <swiper-item>
+            <image src="{{swiper.imgUrls}}" class="mk-slide-image">
+          </swiper-item>
+        </repeat>
+      </swiper>
+      <view class="mk-dots">
+        <repeat for="{{swiper.imgUrls}}" key="index" index="index">
+          <view class="mk-dot{{index == swiper.swiperCurrent ? ' active' : ''}}"></view>
+        </repeat>
+      </view>
+    </view>
+    <!-- mk-swiper-container end -->
+
+    <van-goods-action>
+        <van-goods-action-icon
+            icon="chat-o"
+            text="客服"
+            bind:click="onClickIcon"
+        />
+        <van-goods-action-icon
+            icon="cart-o"
+            text="购物车"
+            bind:click="onClickIcon"
+        />
+        <van-goods-action-button
+            text="加入购物车"
+            type="warning"
+            bind:click="onClickButton"
+        />
+        <van-goods-action-button
+            text="立即购买"
+            bind:click="onClickButton"
+        />
+    </van-goods-action>
+</template>
+
+<script>
+import wepy from 'wepy';
+
+export default class info extends wepy.page {
+  config = {
+    navigationBarTitleText: '产品详情',
+    usingComponents: {
+       "van-stepper": "../../components/vant/stepper/index",
+       "van-goods-action": "../../components/vant/goods-action/index",
+       "van-goods-action-icon": "../../components/vant/goods-action-icon/index",
+       "van-goods-action-button": "../../components/vant/goods-action-button/index"
+    }
+  };
+
+  components = {};
+
+  mixins = [];
+
+  data = {
+     swiper: {
+      imgUrls: [
+        'https://images.unsplash.com/photo-1551334787-21e6bd3ab135?w=640',
+        'https://images.unsplash.com/photo-1551214012-84f95e060dee?w=640',
+        'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
+      ],
+      swiperCurrent: 0,
+      autoplay: true
+    },
+  };
+
+  computed = {};
+
+  methods = {};
+
+  events = {};
+
+  onLoad() {}
+}
+</script>

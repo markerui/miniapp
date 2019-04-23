@@ -1,0 +1,122 @@
+<style lang="less">
+@import '../../less/color.less';
+@import '../../less/cardlist.less';
+.van-swipe-cell__left,
+.van-swipe-cell__right {
+  width: 65px;
+  font-size: 16px;
+  color: #fff;
+  text-align: center;
+  background-color: #db3124;
+}
+.collect-right_btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+</style>
+
+<template>
+    <repeat for="{{cardProList}}" key="index" index="index" item="cardProItem">
+        <van-swipe-cell right-width="{{ 65 }}">
+            <van-cell-group>
+                <van-cell>
+                    <view slot="title">
+                        <van-card
+                            centered
+                            custom-class="mk-card_item"
+                            thumb-class="mk-card_img"
+                            title-class="mk-card_title"
+                            price="{{cardProItem.price}}"
+                            origin-price="{{cardProItem.originPrice}}"
+                            title="{{cardProItem.title}}"
+                            thumb="{{cardProItem.thumb}}"
+                            thumb-mode="aspectFill"
+                        >
+                            <view slot="desc" class="mk-card_desc">
+                                <text>单位:{{cardProItem.unit}}</text>
+                                <text>规格:{{cardProItem.specs}}</text>
+                            </view>
+                            <view slot="footer" class="mk-card_item_stepper">
+                                <van-stepper
+                                    integer
+                                    min="1"
+                                    max="40"
+                                    step="1"
+                                    bind:change="onChange"
+                                    />
+                            </view>
+                        </van-card>
+                    </view>
+                </van-cell>
+            </van-cell-group>
+            <view slot="right" class="collect-right_btn">
+                <text>删除</text>
+            </view>
+        </van-swipe-cell>
+    </repeat>
+
+    <van-submit-bar
+        disabled
+        price="{{ 3050 }}"
+        button-text="提交订单"
+        tip="您的收货地址不支持同城送, 我们已为您推荐快递"
+        bind:submit="onSubmit"
+        />
+</template>
+
+<script>
+import wepy from 'wepy';
+
+export default class info extends wepy.page {
+  config = {
+    navigationBarTitleText: '购物车',
+    usingComponents: {
+      'van-swipe-cell': '../../components/vant/swipe-cell/index',
+      'van-icon': '../../components/vant/icon/index',
+      'van-button': '../../components/vant/button/index',
+      'van-cell': '../../components/vant/cell/index',
+      'van-cell-group': '../../components/vant/cell-group/index',
+      'van-card': '../../components/vant/card/index',
+       "van-stepper": "../../components/vant/stepper/index",
+       "van-submit-bar": "../../components/vant/submit-bar/index"
+    }
+  };
+
+  components = {};
+
+  mixins = [];
+
+  data = {
+    cardProList: [
+      {
+        id: 1,
+        title: '格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...',
+        unit: '750ml',
+        specs: '750ml*6',
+        price: '299',
+        originPrice: '690',
+        thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
+      },
+      {
+        id: 2,
+        title: '格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...',
+        unit: '750ml',
+        specs: '750ml*6',
+        price: '299',
+        originPrice: '690',
+        thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
+      }
+    ]
+  };
+
+  computed = {};
+
+  methods = {};
+
+  events = {};
+
+  onLoad() {}
+}
+</script>
