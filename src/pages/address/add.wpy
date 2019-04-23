@@ -5,15 +5,15 @@
   .save-address_btn {
     background-color: @rootColor;
   }
-  .del-address_btn{
+  .del-address_btn {
     margin-top: 10px;
     background-color: transparent !important;
     color: @rootColor;
   }
 }
 
-.address-site_default{
-  margin-top: 10px; 
+.address-site_default {
+  margin-top: 10px;
 }
 </style>
 
@@ -24,21 +24,18 @@
     <van-field label="所在地区" bind:tap="selectCity" disabled placeholder="请输入您的常用联系地址"/>
     <van-field type="textarea" placeholder="请输入您的详细地址" autosize/>
   </van-cell-group>
-
-  <van-cell-group custom-class="address-site_default">
-    <van-cell
+  <view class="address-site_default">
+    <van-switch-cell
+      active-color="#e26431"
       title="设为默认"
-      size="large"
-    >
-      <van-switch size="20px" active-color="#e26431"  checked="{{ addressDefaultChecked }}" bind:change="onChangeAddressDefaultChecked" />
-    </van-cell>
-  </van-cell-group>
-
+      checked="{{ addressDefaultChecked }}"
+      bind:change="addressDefaultChecked"
+    />
+  </view>
   <view class="save-address">
     <van-button type="warning" custom-class="save-address_btn" size="large" block round>保存</van-button>
-     <van-button type="default" custom-class="del-address_btn" size="large" block round>删除</van-button>
+    <van-button type="default" custom-class="del-address_btn" size="large" block round>删除</van-button>
   </view>
-
   <van-popup show="{{ areaPopupShow }}" position="bottom" bind:close="areaPopupClose">
     <van-area
       area-list="{{ areaList }}"
@@ -60,9 +57,9 @@ export default class info extends wepy.page {
       'van-area': '../../components/vant/area/index',
       'van-popup': '../../components/vant/popup/index',
       'van-button': '../../components/vant/button/index',
-      "van-switch": "../../components/vant/switch/index",
-      "van-cell": "../../components/vant/cell/index",
-      "van-cell-group": "../../components/vant/cell-group/index"
+      'van-cell': '../../components/vant/cell/index',
+      'van-cell-group': '../../components/vant/cell-group/index',
+      'van-switch-cell': '../../components/vant/switch-cell/index'
     }
   };
 
@@ -100,8 +97,8 @@ export default class info extends wepy.page {
   computed = {};
 
   methods = {
-    onChangeAddressDefaultChecked({ detail }){
-      this.addressDefaultChecked=detail;
+    addressDefaultChecked({ detail }) {
+      this.addressDefaultChecked = detail;
     },
     selectCity() {
       this.areaPopupShow = true;

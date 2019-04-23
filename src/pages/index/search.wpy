@@ -35,7 +35,6 @@ page {
     </view>
   </view>
   <!-- mk-search-box end -->
-
   <scroll-view scroll-y style="height: {{windowHeight}}px;">
     <view class="search-hot">
       <text class="search-hot_title">热门搜索</text>

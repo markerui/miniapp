@@ -1,0 +1,37 @@
+@import 'color.less';
+
+.mk-swiper-container {
+  position: relative;
+
+  .mk-swiper {
+    height: 200px;
+
+    .mk-slide-image {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .mk-dots {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 20rpx;
+    display: flex;
+    justify-content: center;
+    z-index: 9;
+
+    .mk-dot {
+      margin: 0 8rpx;
+      width: 14rpx;
+      height: 14rpx;
+      background: @rootColor;
+      border-radius: 8rpx;
+
+      &.active {
+        width: 24rpx;
+        background: #fff;
+      }
+    }
+  }
+}
