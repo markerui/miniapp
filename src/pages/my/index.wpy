@@ -93,9 +93,9 @@
           is-link
         /></van-cell>
         <van-cell
-          url="../address/index"
           title="收货地址"
           icon="location-o"
+          url="../address/index"
           is-link
         /></van-cell>
       </van-cell-group>
@@ -112,6 +112,7 @@
         <van-cell
           title="购物车"
           icon="cart-o"
+          url="../cart/index"
           is-link
         /></van-cell>
       </van-cell-group>

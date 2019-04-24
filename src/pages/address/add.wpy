@@ -52,6 +52,9 @@ import wepy from 'wepy';
 export default class info extends wepy.page {
   config = {
     navigationBarTitleText: '添加地址',
+    navigationBarBackgroundColor: '#fff',
+    navigationBarTextStyle: 'black',
+    backgroundColor: '#fff',
     usingComponents: {
       'van-field': '../../components/vant/field/index',
       'van-area': '../../components/vant/area/index',

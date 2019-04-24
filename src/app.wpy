@@ -2,6 +2,10 @@
 page {
   background-color: #edebec;
 }
+.van-toast--icon {
+  width: auto !important;
+  min-width: 90px;
+}
 @import './less/color.less';
 @import './less/search.less';
 </style>
@@ -13,10 +17,11 @@ import 'wepy-async-function';
 export default class extends wepy.app {
   config = {
     pages: [
-      'pages/product/index',
+      'pages/cart/confirm',
       'pages/cart/index',
-      'pages/my/collect',
+      'pages/product/index',
       'pages/my/index',
+      'pages/my/collect',
       'pages/my/info',
       'pages/address/add',
       'pages/address/index',

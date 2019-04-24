@@ -1,73 +1,77 @@
 <style lang="less">
 @import '../../less/color.less';
 @import '../../less/cardlist.less';
-.van-swipe-cell__left,
-.van-swipe-cell__right {
-  width: 65px;
-  font-size: 16px;
-  color: #fff;
-  text-align: center;
-  background-color: #db3124;
-}
-.collect-right_btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
+@import '../../less/cart.less';
+.fiex-bottom .van-goods-action {
+  position: relative;
 }
 </style>
 
 <template>
+  <scroll-view scroll-y style="height: {{windowHeight}}px;">
     <repeat for="{{cardProList}}" key="index" index="index" item="cardProItem">
-        <van-swipe-cell right-width="{{ 65 }}">
-            <van-cell-group>
-                <van-cell>
-                    <view slot="title">
-                        <van-card
-                            centered
-                            custom-class="mk-card_item"
-                            thumb-class="mk-card_img"
-                            title-class="mk-card_title"
-                            price="{{cardProItem.price}}"
-                            origin-price="{{cardProItem.originPrice}}"
-                            title="{{cardProItem.title}}"
-                            thumb="{{cardProItem.thumb}}"
-                            thumb-mode="aspectFill"
-                        >
-                            <view slot="desc" class="mk-card_desc">
-                                <text>单位:{{cardProItem.unit}}</text>
-                                <text>规格:{{cardProItem.specs}}</text>
-                            </view>
-                            <view slot="footer" class="mk-card_item_stepper">
-                                <van-stepper
-                                    integer
-                                    min="1"
-                                    max="40"
-                                    step="1"
-                                    bind:change="onChange"
-                                    />
-                            </view>
-                        </van-card>
-                    </view>
-                </van-cell>
-            </van-cell-group>
-            <view slot="right" class="collect-right_btn">
-                <text>删除</text>
+      <van-swipe-cell right-width="{{ 65 }}">
+        <van-cell>
+          <view slot="title">
+            <view class="mk-cart-card_list">
+              <view class="mk-cart-card_check">
+                <van-checkbox
+                  checked-color="#e26431"
+                  value="{{ cardProItem.checked }}"
+                  bind:change="onChangeCartChecke(event,{{index}})"
+                ></van-checkbox>
+              </view>
+              <van-card
+                centered
+                custom-class="mk-card_item"
+                thumb-class="mk-card_img"
+                title-class="mk-card_title"
+                price="{{cardProItem.price}}"
+                title="{{cardProItem.title}}"
+                thumb="{{cardProItem.thumb}}"
+                thumb-mode="aspectFill"
+              >
+                <view slot="desc" class="mk-card_desc">
+                  <text>单位:{{cardProItem.unit}}</text>
+                  <text>规格:{{cardProItem.specs}}</text>
+                </view>
+                <view slot="footer" class="mk-card_item_stepper">
+                  <text>剩余2330份</text>
+                  <van-stepper integer min="1" max="40" step="1" bind:change="onChange"/>
+                </view>
+              </van-card>
             </view>
-        </van-swipe-cell>
+          </view>
+        </van-cell>
+        <view slot="right" class="collect-right_btn">
+          <text>删除</text>
+        </view>
+      </van-swipe-cell>
     </repeat>
-
-    <van-submit-bar
-        disabled
-        price="{{ 3050 }}"
-        button-text="提交订单"
-        tip="您的收货地址不支持同城送, 我们已为您推荐快递"
-        bind:submit="onSubmit"
-        />
+  </scroll-view>
+  <van-submit-bar
+    class="fiex-bottom"
+    custom-class="cart-submit-bar"
+    button-text="确认订单"
+    tip="您的收货地址不支持同城送, 我们已为您推荐快递"
+    bind:submit="onSubmitOrder"
+  >
+    <view class="cart-submit-bar_right">
+      <van-checkbox checked-color="#e26431">全选</van-checkbox>
+      <view>
+        <view class="text">商品金额:
+          <text class="van-submit-bar__price">¥1920.20</text>
+        </view>
+        <view class="text text2">2种商品,共计1000件</view>
+      </view>
+    </view>
+  </van-submit-bar>
+  <van-dialog id="van-dialog"/>
 </template>
 
 <script>
 import wepy from 'wepy';
+import Dialog from '../../components/vant/dialog/dialog';
 
 export default class info extends wepy.page {
   config = {
@@ -79,8 +83,11 @@ export default class info extends wepy.page {
       'van-cell': '../../components/vant/cell/index',
       'van-cell-group': '../../components/vant/cell-group/index',
       'van-card': '../../components/vant/card/index',
-       "van-stepper": "../../components/vant/stepper/index",
-       "van-submit-bar": "../../components/vant/submit-bar/index"
+      'van-stepper': '../../components/vant/stepper/index',
+      'van-checkbox': '../../components/vant/checkbox/index',
+      'van-checkbox-group': '../../components/vant/checkbox-group/index',
+      'van-submit-bar': '../../components/vant/submit-bar/index',
+      'van-dialog': '../../components/vant/dialog/index'
     }
   };
 
@@ -89,9 +96,11 @@ export default class info extends wepy.page {
   mixins = [];
 
   data = {
+    windowHeight: 0,
     cardProList: [
       {
         id: 1,
+        checked: true,
         title: '格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...',
         unit: '750ml',
         specs: '750ml*6',
@@ -101,6 +110,7 @@ export default class info extends wepy.page {
       },
       {
         id: 2,
+        checked: false,
         title: '格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...',
         unit: '750ml',
         specs: '750ml*6',
@@ -113,10 +123,31 @@ export default class info extends wepy.page {
 
   computed = {};
 
-  methods = {};
+  methods = {
+    onChangeCartChecke(e, index) {
+      this.cardProList[index].checked = e.detail;
+    },
+    onSubmitOrder() {
+      Dialog.alert({
+        title: '订单确认失败',
+        message: '库存不足',
+        messageAlign: 'left'
+      }).then(() => {});
+    }
+  };
 
   events = {};
 
-  onLoad() {}
+  onLoad() {
+    let that = this;
+    let windowHeight = wx.getSystemInfoSync().windowHeight;
+    let query = wx.createSelectorQuery();
+    query
+      .select('.fiex-bottom')
+      .boundingClientRect()
+      .exec(function(res) {
+        that.windowHeight = windowHeight - res[0].height;
+      });
+  }
 }
 </script>
