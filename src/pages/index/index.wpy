@@ -109,7 +109,7 @@
         <van-tab title="4月上新">
             <van-cell-group>
               <repeat for="{{cardProList}}" key="index" index="index" item="cardProItem">
-                <van-cell>
+                <van-cell url="../product/index">
                     <view slot="title">
                       <van-card
                         centered

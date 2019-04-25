@@ -1,0 +1,327 @@
+<style lang="less">
+@import '../../less/color.less';
+@import '../../less/cardlist.less';
+@import '../../less/cart.less';
+.order-confirm-margin_bottom10 {
+  margin-bottom: 10px;
+}
+
+.order-confirm-cll_title {
+  .van-cell__value {
+    color: #f44;
+    font-weight: bold;
+  }
+}
+
+.order-confirm-list {
+  .order-confirm-list_head {
+    .van-cell__title {
+      font-weight: bold;
+    }
+  }
+}
+
+.order-info {
+  background-color: @rootColor;
+  padding: 15px 15px 10px 15px;
+  font-size: 12px;
+  position: relative;
+  &.order-end {
+    background-color: #c9c9c9;
+  }
+  .order-info_foot {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    text {
+      color: #fff;
+    }
+    van-button {
+      margin-left: 10px;
+    }
+    .order-info_flex {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-end;
+    }
+  }
+  .order-info_text {
+    color: #fff;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    text {
+      flex: 1;
+      padding-bottom: 5px;
+    }
+    .text {
+      flex: none;
+      width: 70px;
+    }
+  }
+}
+
+.order-delivery-info {
+  font-size: 12px;
+  .order-delivery-info_text {
+    color: #333;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    text {
+      flex: 1;
+    }
+    .text {
+      color: #999;
+      flex: none;
+      width: 70px;
+    }
+  }
+}
+
+.order-confirm-address {
+  background-color: #fff;
+  padding: 15px;
+  text {
+    display: block;
+    font-size: 12px;
+  }
+  .order-confirm-address_name {
+    font-size: 14px;
+    padding-bottom: 5px;
+  }
+}
+
+.order-confirm-order {
+  background-color: #fff;
+  padding: 10px 0;
+  .van-cell {
+    color: #999;
+    font-size: 12px;
+    padding: 0 15px;
+  }
+}
+
+.order-confirm-remarks {
+  padding: 15px;
+  background-color: #fff;
+  font-size: 12px;
+  color: #999;
+}
+
+.order-dialog {
+  padding: 10px;
+  .van-radio {
+    margin-bottom: 10px;
+  }
+}
+</style>
+
+<template>
+  <view class="order-confirm-margin_bottom10 order-info order-end">
+    <view class="order-info_text">
+      <text class="text">订货人</text>
+      <text>订货人订货人订货人</text>
+    </view>
+    <view class="order-info_text">
+      <text class="text">订货人</text>
+      <text>订货人订货人</text>
+    </view>
+    <view class="order-info_text">
+      <text class="text">订单金额</text>
+      <text>2666</text>
+    </view>
+    <view class="order-info_foot order-info_foot_flex">
+      <text>已取消</text>
+      <!-- <van-button plain hairline type="default" size="small">取消</van-button>
+      <van-button plain hairline type="danger" size="small" bind:click="onShowDialog">发货</van-button>-->
+    </view>
+  </view>
+  <view class="order-confirm-margin_bottom10">
+    <view class="order-confirm-list_head">
+      <van-cell title="配送信息"/>
+    </view>
+    <van-cell is-link center>
+      <view slot="title">
+        <view class="order-delivery-info">
+          <view class="order-delivery-info_text">
+            <text class="text">订货人</text>
+            <text>订货人订货人订货人</text>
+          </view>
+          <view class="order-delivery-info_text">
+            <text class="text">订货人</text>
+            <text>订货人订货人</text>
+          </view>
+          <view class="order-delivery-info_text">
+            <text class="text">订单金额</text>
+            <text>2666</text>
+          </view>
+        </view>
+      </view>
+    </van-cell>
+  </view>
+  <view class="order-confirm-margin_bottom10 order-confirm-address">
+    <text class="order-confirm-address_name">刘航海 131231244</text>
+    <text>刘航海刘航海刘航海</text>
+    <text>刘航海刘航海刘航海刘航海</text>
+  </view>
+  <view class="order-confirm-margin_bottom10 order-confirm-cll_title order-confirm-list">
+    <view class="order-confirm-list_head">
+      <van-cell title="商品"/>
+    </view>
+    <van-cell-group>
+      <repeat for="{{cardProList}}" key="index" index="index" item="cardProItem">
+        <van-cell>
+          <view slot="title">
+            <view class="mk-cart-card_list">
+              <van-card
+                centered
+                custom-class="mk-card_item"
+                thumb-class="mk-card_img"
+                title-class="mk-card_title"
+                price="{{cardProItem.price}} X 222"
+                title="{{cardProItem.title}}"
+                thumb="{{cardProItem.thumb}}"
+                thumb-mode="aspectFill"
+              >
+                <view slot="desc" class="mk-card_desc">
+                  <text>单位:{{cardProItem.unit}}</text>
+                  <text>规格:{{cardProItem.specs}}</text>
+                </view>
+              </van-card>
+            </view>
+          </view>
+        </van-cell>
+      </repeat>
+    </van-cell-group>
+  </view>
+  <view class="order-confirm-margin_bottom10 order-confirm-cll_title order-confirm-list">
+    <view class="order-confirm-list_head">
+      <van-cell title="赠品"/>
+    </view>
+    <van-cell-group>
+      <repeat for="{{cardProList}}" key="index" index="index" item="cardProItem">
+        <van-cell>
+          <view slot="title">
+            <view class="mk-cart-card_list">
+              <van-card
+                centered
+                custom-class="mk-card_item"
+                thumb-class="mk-card_img"
+                title-class="mk-card_title"
+                price="{{cardProItem.price}} X 222"
+                title="{{cardProItem.title}}"
+                thumb="{{cardProItem.thumb}}"
+                thumb-mode="aspectFill"
+              >
+                <view slot="desc" class="mk-card_desc">
+                  <text>单位:{{cardProItem.unit}}</text>
+                  <text>规格:{{cardProItem.specs}}</text>
+                </view>
+              </van-card>
+            </view>
+          </view>
+        </van-cell>
+      </repeat>
+    </van-cell-group>
+  </view>
+  <view class="order-confirm-margin_bottom10">
+    <view class="order-confirm-cll_title">
+      <van-cell title="订单金额" value="¥20"/>
+    </view>
+    <view class="order-confirm-order">
+      <van-cell-group border="{{ false }}">
+        <van-cell title="商品金额" value="¥200" border="{{ false }}"/>
+        <van-cell title="配送费" value="+¥20" border="{{ false }}"/>
+        <van-cell title="礼品卡" value="-¥20" border="{{ false }}"/>
+      </van-cell-group>
+    </view>
+  </view>
+  <view class="order-confirm-margin_bottom10">
+    <view class="order-confirm-cll_title">
+      <van-cell title="备注留言"/>
+    </view>
+    <view class="order-confirm-remarks">
+      <text>备注留言备注留言备注留言备注留言备注留言</text>
+    </view>
+  </view>
+  <van-dialog use-slot show="{{ showDialog }}" title="发货" messageAlign="left" show-cancel-button>
+    <view class="order-dialog">
+      <van-radio-group value="1">
+        <van-radio name="1" checked-color="#e26431">店面发货</van-radio>
+        <van-radio name="2" checked-color="#e26431">委托发货</van-radio>
+      </van-radio-group>
+      <van-field type="textarea" autosize border="{{ false }}" placeholder="添加备注"/>
+    </view>
+  </van-dialog>
+</template>
+
+<script>
+import wepy from 'wepy';
+import Dialog from '../../components/vant/dialog/dialog';
+
+export default class info extends wepy.page {
+  config = {
+    navigationBarTitleText: '订单详情',
+    navigationBarBackgroundColor: '#fff',
+    navigationBarTextStyle: 'black',
+    backgroundColor: '#fff',
+    usingComponents: {
+      'van-icon': '../../components/vant/icon/index',
+      'van-button': '../../components/vant/button/index',
+      'van-cell': '../../components/vant/cell/index',
+      'van-cell-group': '../../components/vant/cell-group/index',
+      'van-card': '../../components/vant/card/index',
+      'van-dialog': '../../components/vant/dialog/index',
+      'van-field': '../../components/vant/field/index',
+      'van-radio': '../../components/vant/radio/index',
+      'van-radio-group': '../../components/vant/radio-group/index'
+    }
+  };
+
+  components = {};
+
+  mixins = [];
+
+  data = {
+    showDialog: false,
+    cardProList: [
+      {
+        id: 1,
+        checked: true,
+        title: '格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...',
+        unit: '750ml',
+        specs: '750ml*6',
+        price: '299',
+        originPrice: '690',
+        thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
+      },
+      {
+        id: 2,
+        checked: false,
+        title: '格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...',
+        unit: '750ml',
+        specs: '750ml*6',
+        price: '299',
+        originPrice: '690',
+        thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
+      }
+    ]
+  };
+
+  computed = {};
+
+  watch = {};
+
+  methods = {
+    onShowDialog() {
+      this.showDialog = true;
+    }
+  };
+
+  events = {};
+
+  onLoad() {}
+}
+</script>

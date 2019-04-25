@@ -5,6 +5,43 @@
 .cart-confirm-margin_bottom10 {
   margin-bottom: 10px;
 }
+
+.cart-confirm-cll_title {
+  .van-cell__value {
+    color: #f44;
+    font-weight: bold;
+  }
+}
+
+.cart-confirm-address {
+  .van-cell {
+    background-color: @rootColor;
+    color: #fff;
+    .van-cell-info {
+      line-height: 1.6;
+      text {
+        display: block;
+        font-size: 12px;
+      }
+    }
+  }
+  .van-cell__right-icon-wrap {
+    color: #fff;
+  }
+  .van-cell--clickable.van-cell--hover {
+    background-color: rgba(@rootColor, 0.8);
+  }
+  &.cart-confirm-address_no {
+    background-color: @rootColor;
+    .van-cell {
+      padding: 15px;
+    }
+    .van-cell__title {
+      text-align: center;
+    }
+  }
+}
+
 .cart-confirm-list {
   .cart-confirm-list_head {
     .van-cell__title {
@@ -13,24 +50,58 @@
   }
 }
 
-.cart-confirm-coupon,
-.cart-confirm-card,
-.cart-confirm-list_head {
-  .van-cell__value {
-    color: #f44;
-    font-weight: bold;
+.cart-confirm-delivery {
+  background-color: #fff;
+  .cart-confirm-delivery_radio {
+    padding: 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .cart-confirm-delivery_checkbox {
+    padding: 0 15px 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+  }
+}
+
+.cart-confirm-order {
+  background-color: #fff;
+  padding: 10px 0;
+  .van-cell {
+    color: #999;
+    font-size: 12px;
+    padding: 0 15px;
+  }
+}
+
+.save-confirm {
+  padding: 30px;
+  .save-confirm_btn {
+    background-color: @rootColor;
   }
 }
 </style>
 
 <template>
-    <view
-        class="cart-confirm-margin_bottom10 cart-confirm-address"
-        custom-class="cart-confirm-address_cell"
-    >
-        <van-cell title="新增收货地址" is-link url="../address/index"/>
+    <!-- <view class="cart-confirm-margin_bottom10 cart-confirm-address cart-confirm-address_no">
+        <van-cell title="新增收货地址" border="{{ false }}" is-link center url="../address/index"/>
+    </view>-->
+    <view class="cart-confirm-margin_bottom10 cart-confirm-address">
+        <van-cell is-link border="{{ false }}" center url="../address/index">
+            <view slot="title">
+                <view class="van-cell-info">
+                    <view class="van-cell-name">收货人 13651828033</view>
+                    <text>上海市普陀区</text>
+                    <text>真北路999弄</text>
+                </view>
+            </view>
+        </van-cell>
     </view>
-    <view class="cart-confirm-margin_bottom10 cart-confirm-list">
+    <view class="cart-confirm-margin_bottom10 cart-confirm-cll_title cart-confirm-list">
         <view class="cart-confirm-list_head">
             <van-cell title="商品" value="¥299"/>
         </view>
@@ -60,29 +131,88 @@
             </repeat>
         </van-cell-group>
     </view>
+    <view class="cart-confirm-margin_bottom10 cart-confirm-cll_title cart-confirm-delivery">
+        <van-cell value="¥20">
+            <view slot="title">配送方式
+                <van-icon name="info-o" color="#999"/>
+            </view>
+        </van-cell>
+        <van-radio-group class="cart-confirm-delivery_radio" value="3">
+            <van-radio name="1" checked-color="#e26431">自提</van-radio>
+            <van-radio name="2" checked-color="#e26431">快递</van-radio>
+            <van-radio name="3" checked-color="#e26431">物流</van-radio>
+            <van-radio name="3" checked-color="#e26431">到付</van-radio>
+        </van-radio-group>
+        <van-checkbox-group class="cart-confirm-delivery_checkbox">
+            <van-checkbox name="1" use-icon-slot>
+                <van-button type="default" size="small">货栈自提</van-button>
+            </van-checkbox>
+            <van-checkbox name="2" use-icon-slot>
+                <van-button type="warning" plain size="small">送货上门</van-button>
+            </van-checkbox>
+        </van-checkbox-group>
+    </view>
     <view class="cart-confirm-margin_bottom10 cart-confirm-pay">
         <van-cell title="支付方式" value="{{checkPay}}" bind:click="onCheckPay" is-link/>
     </view>
-    <view class="cart-confirm-coupon">
+    <view class="cart-confirm-cll_title cart-confirm-coupon">
         <van-cell title="优惠券" value="¥20" is-link url="../coupon/index"/>
     </view>
-    <view class="cart-confirm-margin_bottom10 cart-confirm-card">
+    <view class="cart-confirm-margin_bottom10 cart-confirm-cll_title cart-confirm-card">
         <van-cell title="礼品卡" is-link url="../card/index"/>
     </view>
+    <view class="cart-confirm-margin_bottom10">
+        <van-field type="textarea" placeholder="添加留言或备注信息" autosize border="{{ false }}"/>
+    </view>
+    <view class="cart-confirm-margin_bottom10">
+        <view class="cart-confirm-order">
+            <van-cell-group border="{{ false }}">
+                <van-cell title="商品金额" value="¥200" border="{{ false }}"/>
+                <van-cell title="配送费" value="+¥20" border="{{ false }}"/>
+                <van-cell title="礼品卡" value="-¥20" border="{{ false }}"/>
+            </van-cell-group>
+        </view>
+        <view class="cart-confirm-cll_title">
+            <van-cell-group>
+                <van-cell title="订单金额" value="¥20" border="{{ false }}"/>
+            </van-cell-group>
+        </view>
+    </view>
+    <view class="save-confirm">
+        <van-button
+            type="warning"
+            custom-class="save-confirm_btn"
+            size="large"
+            block
+            round
+            bind:tap="confirmOrder"
+        >确认订单</van-button>
+    </view>
+    <van-dialog id="van-dialog"/>
 </template>
 
 <script>
 import wepy from 'wepy';
+import Dialog from '../../components/vant/dialog/dialog';
 
 export default class info extends wepy.page {
   config = {
     navigationBarTitleText: '确认订单',
+    navigationBarBackgroundColor: '#fff',
+    navigationBarTextStyle: 'black',
+    backgroundColor: '#fff',
     usingComponents: {
       'van-icon': '../../components/vant/icon/index',
       'van-button': '../../components/vant/button/index',
       'van-cell': '../../components/vant/cell/index',
       'van-cell-group': '../../components/vant/cell-group/index',
-      'van-card': '../../components/vant/card/index'
+      'van-card': '../../components/vant/card/index',
+      'van-field': '../../components/vant/field/index',
+      'van-radio': '../../components/vant/radio/index',
+      'van-radio-group': '../../components/vant/radio-group/index',
+      'van-checkbox': '../../components/vant/checkbox/index',
+      'van-checkbox-group': '../../components/vant/checkbox-group/index',
+      'van-dialog': '../../components/vant/dialog/index'
     }
   };
 
@@ -123,11 +253,7 @@ export default class info extends wepy.page {
     }
   };
 
-  watch = {
-    checkPayIndex(newValue, oldValue) {
-      this.checkPay = this.payList[newValue];
-    }
-  };
+  watch = {};
 
   methods = {
     onCheckPay() {
@@ -136,11 +262,27 @@ export default class info extends wepy.page {
         itemList: this.payList,
         success(res) {
           that.checkPayIndex = res.tapIndex;
+          that.$apply();
         },
         fail(res) {
           console.log(res.errMsg);
         }
       });
+    },
+    confirmOrder() {
+      Dialog.confirm({
+        title: '订单已生成',
+        message: '订单已经生成了，但是没有支付哦，可以这样也可以这样哦',
+        showCancelButton: true,
+        confirmButtonText: '继续微信支付',
+        cancelButtonText: '订单中心'
+      })
+        .then(() => {
+          // on confirm
+        })
+        .catch(() => {
+          // on cancel
+        });
     }
   };
 

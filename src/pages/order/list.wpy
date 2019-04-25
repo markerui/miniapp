@@ -1,0 +1,207 @@
+<style lang="less">
+@import '../../less/color.less';
+.order-list-items {
+  margin: 15px;
+  font-size: 14px;
+  position: relative;
+  &.order-list-items_end {
+    .order-list-items_card {
+      .order-list-items_card_head {
+        background-color: #c9c9c9;
+      }
+    }
+  }
+  .order-list-items_time {
+    text-align: center;
+    padding: 10px;
+    text {
+      background-color: #999;
+      color: #fff;
+      border-radius: 5px;
+      padding: 5px 10px;
+      font-size: 10px;
+    }
+  }
+
+  .order-list-items_card {
+    background-color: #fff;
+    border-radius: 5px;
+
+    .order-list-items_card_head {
+      background-color: @rootColor;
+      color: #fff;
+      padding: 10px;
+      border-radius: 5px 5px 0 0;
+      &.order-list-items_head_flex {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+    .order-list-items_card_info {
+      padding: 10px 10px 0 10px;
+      font-size: 12px;
+      .order-list-items_card_info_text {
+        color: #333;
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        text {
+          flex: 1;
+          padding-bottom: 10px;
+        }
+        .text {
+          color: #999;
+          flex: none;
+          width: 70px;
+        }
+      }
+    }
+  }
+  .order-list-items_foot {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    van-button {
+      margin-left: 10px;
+    }
+    .order-list-items_foot_flex {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-end;
+    }
+  }
+}
+
+.order-dialog {
+  padding: 10px;
+  .van-radio {
+    margin-bottom: 10px;
+  }
+}
+</style>
+
+<template>
+  <van-tabs active="0" color="#e26431">
+    <van-tab title="全部订单">
+      <view class="order-list">
+        <view class="order-list-items">
+          <view class="order-list-items_time">
+            <text>2018-02-22 19:00</text>
+          </view>
+          <view class="order-list-items_card">
+            <view class="order-list-items_card_head order-list-items_head_flex">
+              <text>订单号 1293198391830918</text>
+              <text>待收货</text>
+            </view>
+            <view class="order-list-items_card_info">
+              <view class="order-list-items_card_info_text">
+                <text class="text">订货人</text>
+                <text>订货人订货人订货人</text>
+              </view>
+              <view class="order-list-items_card_info_text">
+                <text class="text">订货人</text>
+                <text>订货人订货人订货人订货人订货人订货人订货人订货人订货人</text>
+              </view>
+              <view class="order-list-items_card_info_text">
+                <text class="text">订单金额</text>
+                <text>2666</text>
+              </view>
+            </view>
+          </view>
+          <view class="order-list-items_foot order-list-items_foot_flex">
+            <van-button plain hairline type="default" size="small">取消</van-button>
+            <van-button plain hairline type="danger" size="small" bind:click="onShowDialog">发货</van-button>
+          </view>
+        </view>
+        <!-- order-list-items end -->
+        <view class="order-list-items order-list-items_end">
+          <view class="order-list-items_time">
+            <text>2018-02-22 19:00</text>
+          </view>
+          <view class="order-list-items_card">
+            <view class="order-list-items_card_head order-list-items_head_flex">
+              <text>订单号 1293198391830918</text>
+              <text>已取消</text>
+            </view>
+            <view class="order-list-items_card_info">
+              <view class="order-list-items_card_info_text">
+                <text class="text">订货人</text>
+                <text>订货人订货人订货人</text>
+              </view>
+              <view class="order-list-items_card_info_text">
+                <text class="text">订货人</text>
+                <text>订货人订货人订货人订货人订货人订货人订货人订货人订货人</text>
+              </view>
+              <view class="order-list-items_card_info_text">
+                <text class="text">订单金额</text>
+                <text>2666</text>
+              </view>
+            </view>
+          </view>
+          <view class="order-list-items_foot order-list-items_foot_flex"></view>
+        </view>
+        <!-- order-list-items end -->
+      </view>
+    </van-tab>
+    <van-tab title="待付款">待付款</van-tab>
+    <van-tab title="待发货">待发货</van-tab>
+    <van-tab title="待收货">待收货</van-tab>
+    <van-tab title="已完成">已完成</van-tab>
+  </van-tabs>
+  <van-dialog use-slot show="{{ showDialog }}" title="发货" messageAlign="left" show-cancel-button>
+    <view class="order-dialog">
+      <van-radio-group value="1">
+        <van-radio name="1" checked-color="#e26431">店面发货</van-radio>
+        <van-radio name="2" checked-color="#e26431">委托发货</van-radio>
+      </van-radio-group>
+      <van-field type="textarea" autosize border="{{ false }}" placeholder="添加备注"/>
+    </view>
+  </van-dialog>
+</template>
+
+<script>
+import wepy from 'wepy';
+import Dialog from '../../components/vant/dialog/dialog';
+
+export default class info extends wepy.page {
+  config = {
+    navigationBarTitleText: '订单中心',
+    navigationBarBackgroundColor: '#fff',
+    navigationBarTextStyle: 'black',
+    backgroundColor: '#fff',
+    usingComponents: {
+      'van-tab': '../../components/vant/tab/index',
+      'van-tabs': '../../components/vant/tabs/index',
+      'van-button': '../../components/vant/button/index',
+      'van-dialog': '../../components/vant/dialog/index',
+      'van-field': '../../components/vant/field/index',
+      'van-radio': '../../components/vant/radio/index',
+      'van-radio-group': '../../components/vant/radio-group/index'
+    }
+  };
+
+  components = {};
+
+  mixins = [];
+
+  data = {
+    windowHeight: 0,
+    showDialog: false
+  };
+
+  computed = {};
+
+  methods = {
+    onShowDialog() {
+      this.showDialog = true;
+    }
+  };
+
+  events = {};
+
+  onLoad() {}
+}
+</script>

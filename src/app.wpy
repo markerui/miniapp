@@ -6,6 +6,9 @@ page {
   width: auto !important;
   min-width: 90px;
 }
+.van-dialog__header {
+  padding-top: 20px !important;
+}
 @import './less/color.less';
 @import './less/search.less';
 </style>
@@ -17,17 +20,20 @@ import 'wepy-async-function';
 export default class extends wepy.app {
   config = {
     pages: [
+      'pages/product/list',
+      'pages/product/index',
+      'pages/index/index',
+      'pages/index/search',
+      'pages/index/shoplist',
+      'pages/order/index',
+      'pages/order/list',
       'pages/cart/confirm',
       'pages/cart/index',
-      'pages/product/index',
       'pages/my/index',
       'pages/my/collect',
       'pages/my/info',
       'pages/address/add',
       'pages/address/index',
-      'pages/index/index',
-      'pages/index/search',
-      'pages/index/shoplist',
       'pages/class/index',
       'pages/find/index'
     ],
