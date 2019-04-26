@@ -20,6 +20,13 @@ import 'wepy-async-function';
 export default class extends wepy.app {
   config = {
     pages: [
+      'pages/find/cart',
+      'pages/find/login',
+      'pages/find/index',
+      'pages/cart/index',
+      'pages/cart/confirm',
+      'pages/class/index',
+      'pages/myshop/index',
       'pages/product/list',
       'pages/product/index',
       'pages/index/index',
@@ -27,15 +34,11 @@ export default class extends wepy.app {
       'pages/index/shoplist',
       'pages/order/index',
       'pages/order/list',
-      'pages/cart/confirm',
-      'pages/cart/index',
       'pages/my/index',
       'pages/my/collect',
       'pages/my/info',
       'pages/address/add',
-      'pages/address/index',
-      'pages/class/index',
-      'pages/find/index'
+      'pages/address/index'
     ],
     window: {
       backgroundTextStyle: 'light',

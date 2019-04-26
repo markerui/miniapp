@@ -87,108 +87,112 @@
 </style>
 
 <template>
-    <!-- <view class="cart-confirm-margin_bottom10 cart-confirm-address cart-confirm-address_no">
+  <!-- <view class="cart-confirm-margin_bottom10 cart-confirm-address cart-confirm-address_no">
         <van-cell title="新增收货地址" border="{{ false }}" is-link center url="../address/index"/>
-    </view>-->
-    <view class="cart-confirm-margin_bottom10 cart-confirm-address">
-        <van-cell is-link border="{{ false }}" center url="../address/index">
-            <view slot="title">
-                <view class="van-cell-info">
-                    <view class="van-cell-name">收货人 13651828033</view>
-                    <text>上海市普陀区</text>
-                    <text>真北路999弄</text>
+  </view>-->
+  <view class="cart-confirm-margin_bottom10 cart-confirm-address">
+    <van-cell is-link border="{{ false }}" center url="../address/index">
+      <view slot="title">
+        <view class="van-cell-info">
+          <view class="van-cell-name">收货人 13651828033</view>
+          <text>上海市普陀区</text>
+          <text>真北路999弄</text>
+        </view>
+      </view>
+    </van-cell>
+  </view>
+  <view class="cart-confirm-margin_bottom10 cart-confirm-cll_title cart-confirm-list">
+    <view class="cart-confirm-list_head">
+      <van-cell title="商品" value="¥299"/>
+    </view>
+    <van-cell-group>
+      <repeat for="{{cardProList}}" key="index" index="index" item="cardProItem">
+        <van-cell>
+          <view slot="title">
+            <view class="mk-cart-card_list">
+              <van-card
+                centered
+                custom-class="mk-card_item"
+                thumb-class="mk-card_img"
+                title-class="mk-card_title"
+                price="{{cardProItem.price}}"
+                title="{{cardProItem.title}}"
+                thumb="{{cardProItem.thumb}}"
+                thumb-mode="aspectFill"
+              >
+                <view slot="desc" class="mk-card_desc">
+                  <text>单位:{{cardProItem.unit}}</text>
+                  <text>规格:{{cardProItem.specs}}</text>
                 </view>
+                <view slot="footer" class="mk-card_item_stepper">
+                  <text>剩余2330份</text>
+                  <van-stepper integer min="1" max="40" step="1" bind:change="onChange"/>
+                </view>
+              </van-card>
             </view>
+          </view>
         </van-cell>
+      </repeat>
+    </van-cell-group>
+  </view>
+  <view class="cart-confirm-margin_bottom10 cart-confirm-cll_title cart-confirm-delivery">
+    <van-cell value="¥20">
+      <view slot="title">配送方式
+        <van-icon name="info-o" color="#999"/>
+      </view>
+    </van-cell>
+    <van-radio-group class="cart-confirm-delivery_radio" value="3">
+      <van-radio name="1" checked-color="#e26431">自提</van-radio>
+      <van-radio name="2" checked-color="#e26431">快递</van-radio>
+      <van-radio name="3" checked-color="#e26431">物流</van-radio>
+      <van-radio name="3" checked-color="#e26431">到付</van-radio>
+    </van-radio-group>
+    <van-checkbox-group class="cart-confirm-delivery_checkbox">
+      <van-checkbox name="1" use-icon-slot>
+        <van-button type="default" size="small">货栈自提</van-button>
+      </van-checkbox>
+      <van-checkbox name="2" use-icon-slot>
+        <van-button type="warning" plain size="small">送货上门</van-button>
+      </van-checkbox>
+    </van-checkbox-group>
+  </view>
+  <view class="cart-confirm-margin_bottom10 cart-confirm-pay">
+    <van-cell title="支付方式" value="{{checkPay}}" bind:click="onCheckPay" is-link/>
+  </view>
+  <view class="cart-confirm-cll_title cart-confirm-coupon">
+    <van-cell title="优惠券" value="¥20" is-link url="../coupon/index"/>
+  </view>
+  <view class="cart-confirm-margin_bottom10 cart-confirm-cll_title cart-confirm-card">
+    <van-cell title="礼品卡" is-link url="../card/index"/>
+  </view>
+  <view class="cart-confirm-margin_bottom10">
+    <van-field type="textarea" placeholder="添加留言或备注信息" autosize border="{{ false }}"/>
+  </view>
+  <view class="cart-confirm-margin_bottom10">
+    <view class="cart-confirm-order">
+      <van-cell-group border="{{ false }}">
+        <van-cell title="商品金额" value="¥200" border="{{ false }}"/>
+        <van-cell title="配送费" value="+¥20" border="{{ false }}"/>
+        <van-cell title="礼品卡" value="-¥20" border="{{ false }}"/>
+      </van-cell-group>
     </view>
-    <view class="cart-confirm-margin_bottom10 cart-confirm-cll_title cart-confirm-list">
-        <view class="cart-confirm-list_head">
-            <van-cell title="商品" value="¥299"/>
-        </view>
-        <van-cell-group>
-            <repeat for="{{cardProList}}" key="index" index="index" item="cardProItem">
-                <van-cell>
-                    <view slot="title">
-                        <view class="mk-cart-card_list">
-                            <van-card
-                                centered
-                                custom-class="mk-card_item"
-                                thumb-class="mk-card_img"
-                                title-class="mk-card_title"
-                                price="{{cardProItem.price}} X 222"
-                                title="{{cardProItem.title}}"
-                                thumb="{{cardProItem.thumb}}"
-                                thumb-mode="aspectFill"
-                            >
-                                <view slot="desc" class="mk-card_desc">
-                                    <text>单位:{{cardProItem.unit}}</text>
-                                    <text>规格:{{cardProItem.specs}}</text>
-                                </view>
-                            </van-card>
-                        </view>
-                    </view>
-                </van-cell>
-            </repeat>
-        </van-cell-group>
+    <view class="cart-confirm-cll_title">
+      <van-cell-group>
+        <van-cell title="订单金额" value="¥20" border="{{ false }}"/>
+      </van-cell-group>
     </view>
-    <view class="cart-confirm-margin_bottom10 cart-confirm-cll_title cart-confirm-delivery">
-        <van-cell value="¥20">
-            <view slot="title">配送方式
-                <van-icon name="info-o" color="#999"/>
-            </view>
-        </van-cell>
-        <van-radio-group class="cart-confirm-delivery_radio" value="3">
-            <van-radio name="1" checked-color="#e26431">自提</van-radio>
-            <van-radio name="2" checked-color="#e26431">快递</van-radio>
-            <van-radio name="3" checked-color="#e26431">物流</van-radio>
-            <van-radio name="3" checked-color="#e26431">到付</van-radio>
-        </van-radio-group>
-        <van-checkbox-group class="cart-confirm-delivery_checkbox">
-            <van-checkbox name="1" use-icon-slot>
-                <van-button type="default" size="small">货栈自提</van-button>
-            </van-checkbox>
-            <van-checkbox name="2" use-icon-slot>
-                <van-button type="warning" plain size="small">送货上门</van-button>
-            </van-checkbox>
-        </van-checkbox-group>
-    </view>
-    <view class="cart-confirm-margin_bottom10 cart-confirm-pay">
-        <van-cell title="支付方式" value="{{checkPay}}" bind:click="onCheckPay" is-link/>
-    </view>
-    <view class="cart-confirm-cll_title cart-confirm-coupon">
-        <van-cell title="优惠券" value="¥20" is-link url="../coupon/index"/>
-    </view>
-    <view class="cart-confirm-margin_bottom10 cart-confirm-cll_title cart-confirm-card">
-        <van-cell title="礼品卡" is-link url="../card/index"/>
-    </view>
-    <view class="cart-confirm-margin_bottom10">
-        <van-field type="textarea" placeholder="添加留言或备注信息" autosize border="{{ false }}"/>
-    </view>
-    <view class="cart-confirm-margin_bottom10">
-        <view class="cart-confirm-order">
-            <van-cell-group border="{{ false }}">
-                <van-cell title="商品金额" value="¥200" border="{{ false }}"/>
-                <van-cell title="配送费" value="+¥20" border="{{ false }}"/>
-                <van-cell title="礼品卡" value="-¥20" border="{{ false }}"/>
-            </van-cell-group>
-        </view>
-        <view class="cart-confirm-cll_title">
-            <van-cell-group>
-                <van-cell title="订单金额" value="¥20" border="{{ false }}"/>
-            </van-cell-group>
-        </view>
-    </view>
-    <view class="save-confirm">
-        <van-button
-            type="warning"
-            custom-class="save-confirm_btn"
-            size="large"
-            block
-            round
-            bind:tap="confirmOrder"
-        >确认订单</van-button>
-    </view>
-    <van-dialog id="van-dialog"/>
+  </view>
+  <view class="save-confirm">
+    <van-button
+      type="warning"
+      custom-class="save-confirm_btn"
+      size="large"
+      block
+      round
+      bind:tap="confirmOrder"
+    >确认订单</van-button>
+  </view>
+  <van-dialog id="van-dialog"/>
 </template>
 
 <script>
@@ -207,6 +211,7 @@ export default class info extends wepy.page {
       'van-cell': '../../components/vant/cell/index',
       'van-cell-group': '../../components/vant/cell-group/index',
       'van-card': '../../components/vant/card/index',
+      'van-stepper': '../../components/vant/stepper/index',
       'van-field': '../../components/vant/field/index',
       'van-radio': '../../components/vant/radio/index',
       'van-radio-group': '../../components/vant/radio-group/index',

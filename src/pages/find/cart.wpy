@@ -1,0 +1,325 @@
+<style lang="less">
+@import '../../less/color.less';
+@import '../../less/cardlist.less';
+@import '../../less/cart.less';
+.cart-confirm-margin_bottom10 {
+  margin-bottom: 10px;
+}
+
+.cart-confirm-cll_title {
+  .van-cell__value {
+    color: #f44;
+    font-weight: bold;
+  }
+}
+
+.cart-confirm-address {
+  .van-cell {
+    background-color: @rootColor;
+    color: #fff;
+    .van-cell-info {
+      line-height: 1.6;
+      text {
+        display: block;
+        font-size: 12px;
+      }
+    }
+  }
+  .van-cell__right-icon-wrap {
+    color: #fff;
+  }
+  .van-cell--clickable.van-cell--hover {
+    background-color: rgba(@rootColor, 0.8);
+  }
+  &.cart-confirm-address_no {
+    background-color: @rootColor;
+    .van-cell {
+      padding: 15px;
+    }
+    .van-cell__title {
+      text-align: center;
+    }
+  }
+}
+
+.cart-confirm-list {
+  .cart-confirm-list_head {
+    .van-cell__title {
+      font-weight: bold;
+    }
+  }
+}
+
+.cart-confirm-delivery {
+  background-color: #fff;
+  .cart-confirm-delivery_radio {
+    padding: 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .cart-confirm-delivery_checkbox {
+    padding: 0 15px 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+  }
+}
+
+.cart-confirm-order {
+  background-color: #fff;
+  padding: 10px 0;
+  .van-cell {
+    color: #999;
+    font-size: 12px;
+    padding: 0 15px;
+  }
+}
+
+.fiex-bottom .van-submit-bar {
+  position: relative;
+}
+</style>
+
+<template>
+    <scroll-view scroll-y style="height: {{windowHeight}}px;">
+        <!-- <view class="cart-confirm-margin_bottom10 cart-confirm-address cart-confirm-address_no">
+        <van-cell title="新增收货地址" border="{{ false }}" is-link center url="../address/index"/>
+        </view>-->
+        <view class="cart-confirm-margin_bottom10 cart-confirm-address">
+            <van-cell is-link border="{{ false }}" center url="../address/index">
+                <view slot="title">
+                    <view class="van-cell-info">
+                        <view class="van-cell-name">收货人 13651828033</view>
+                        <text>上海市普陀区</text>
+                        <text>真北路999弄</text>
+                    </view>
+                </view>
+            </van-cell>
+        </view>
+        <view class="cart-confirm-margin_bottom10 cart-confirm-cll_title cart-confirm-list">
+            <view class="cart-confirm-list_head">
+                <van-cell title="商品" value="¥299"/>
+            </view>
+            <van-cell-group>
+                <repeat for="{{cardProList}}" key="index" index="index" item="cardProItem">
+                    <van-cell>
+                        <view slot="title">
+                            <view class="mk-cart-card_list">
+                                <view class="mk-cart-card_check">
+                                    <van-checkbox
+                                        checked-color="#e26431"
+                                        value="{{ cardProItem.checked }}"
+                                        bind:change="onChangeCartChecke(event,{{index}})"
+                                    ></van-checkbox>
+                                </view>
+                                <van-card
+                                    centered
+                                    custom-class="mk-card_item"
+                                    thumb-class="mk-card_img"
+                                    title-class="mk-card_title"
+                                    price="{{cardProItem.price}}"
+                                    title="{{cardProItem.title}}"
+                                    thumb="{{cardProItem.thumb}}"
+                                    thumb-mode="aspectFill"
+                                >
+                                    <view slot="desc" class="mk-card_desc">
+                                        <text>单位:{{cardProItem.unit}}</text>
+                                        <text>规格:{{cardProItem.specs}}</text>
+                                    </view>
+                                    <view slot="footer" class="mk-card_item_stepper">
+                                        <text>剩余2330份</text>
+                                        <van-stepper
+                                            integer
+                                            min="1"
+                                            max="40"
+                                            step="1"
+                                            bind:change="onChange"
+                                        />
+                                    </view>
+                                </van-card>
+                            </view>
+                        </view>
+                    </van-cell>
+                    <van-cell>
+                        <view slot="title">
+                            <view class="mk-cart-card_list">
+                                <view class="mk-cart-card_check">
+                                    <van-checkbox
+                                        checked-color="#e26431"
+                                        value="{{ cardProItem.checked }}"
+                                        bind:change="onChangeCartChecke(event,{{index}})"
+                                    ></van-checkbox>
+                                </view>
+                                <van-card
+                                    centered
+                                    custom-class="mk-card_item"
+                                    thumb-class="mk-card_img"
+                                    title-class="mk-card_title"
+                                    price="{{cardProItem.price}}"
+                                    title="{{cardProItem.title}}"
+                                    thumb="{{cardProItem.thumb}}"
+                                    thumb-mode="aspectFill"
+                                >
+                                    <view slot="desc" class="mk-card_desc">
+                                        <text>单位:{{cardProItem.unit}}</text>
+                                        <text>规格:{{cardProItem.specs}}</text>
+                                    </view>
+                                    <view slot="footer" class="mk-card_item_stepper">
+                                        <text>剩余2330份</text>
+                                        <van-stepper
+                                            integer
+                                            min="1"
+                                            max="40"
+                                            step="1"
+                                            bind:change="onChange"
+                                        />
+                                    </view>
+                                </van-card>
+                            </view>
+                        </view>
+                    </van-cell>
+                </repeat>
+            </van-cell-group>
+        </view>
+        <view class="cart-confirm-margin_bottom10 cart-confirm-cll_title cart-confirm-delivery">
+            <van-cell value="¥20">
+                <view slot="title">配送方式
+                    <van-icon name="info-o" color="#999"/>
+                </view>
+            </van-cell>
+            <van-radio-group class="cart-confirm-delivery_radio" value="3">
+                <van-radio name="1" checked-color="#e26431">自提</van-radio>
+                <van-radio name="2" checked-color="#e26431">快递</van-radio>
+                <van-radio name="3" checked-color="#e26431">物流</van-radio>
+                <van-radio name="3" checked-color="#e26431">到付</van-radio>
+            </van-radio-group>
+            <van-checkbox-group class="cart-confirm-delivery_checkbox">
+                <van-checkbox name="1" use-icon-slot>
+                    <van-button type="default" size="small">货栈自提</van-button>
+                </van-checkbox>
+                <van-checkbox name="2" use-icon-slot>
+                    <van-button type="warning" plain size="small">送货上门</van-button>
+                </van-checkbox>
+            </van-checkbox-group>
+        </view>
+        <view class="cart-confirm-margin_bottom10">
+            <van-field type="textarea" placeholder="添加留言或备注信息" autosize border="{{ false }}"/>
+        </view>
+    </scroll-view>
+    <van-submit-bar
+        class="fiex-bottom"
+        custom-class="cart-submit-bar"
+        button-text="确认订单"
+        tip="您的收货地址不支持同城送, 我们已为您推荐快递"
+        bind:submit="onSubmitOrder"
+    >
+        <view class="cart-submit-bar_right">
+            <van-checkbox checked-color="#e26431">全选</van-checkbox>
+            <view>
+                <view class="text">商品金额:
+                    <text class="van-submit-bar__price">¥1920.20</text>
+                </view>
+                <view class="text text2">2种商品,共计1000件</view>
+            </view>
+        </view>
+    </van-submit-bar>
+    <van-dialog id="van-dialog"/>
+</template>
+
+<script>
+import wepy from 'wepy';
+import Dialog from '../../components/vant/dialog/dialog';
+
+export default class info extends wepy.page {
+  config = {
+    navigationBarTitleText: '确认订单',
+    navigationBarBackgroundColor: '#fff',
+    navigationBarTextStyle: 'black',
+    backgroundColor: '#fff',
+    usingComponents: {
+      'van-icon': '../../components/vant/icon/index',
+      'van-button': '../../components/vant/button/index',
+      'van-cell': '../../components/vant/cell/index',
+      'van-cell-group': '../../components/vant/cell-group/index',
+      'van-card': '../../components/vant/card/index',
+      'van-stepper': '../../components/vant/stepper/index',
+      'van-field': '../../components/vant/field/index',
+      'van-radio': '../../components/vant/radio/index',
+      'van-radio-group': '../../components/vant/radio-group/index',
+      'van-checkbox': '../../components/vant/checkbox/index',
+      'van-checkbox-group': '../../components/vant/checkbox-group/index',
+      'van-dialog': '../../components/vant/dialog/index',
+      'van-submit-bar': '../../components/vant/submit-bar/index'
+    }
+  };
+
+  components = {};
+
+  mixins = [];
+
+  data = {
+    windowHeight: 0,
+    cardProList: [
+      {
+        id: 1,
+        checked: true,
+        title: '格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...',
+        unit: '750ml',
+        specs: '750ml*6',
+        price: '299',
+        originPrice: '690',
+        thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
+      },
+      {
+        id: 2,
+        checked: false,
+        title: '格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...',
+        unit: '750ml',
+        specs: '750ml*6',
+        price: '299',
+        originPrice: '690',
+        thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
+      }
+    ]
+  };
+
+  computed = {};
+
+  watch = {};
+
+  methods = {
+    confirmOrder() {
+      Dialog.confirm({
+        title: '订单已生成',
+        message: '订单已经生成了，但是没有支付哦，可以这样也可以这样哦',
+        showCancelButton: true,
+        confirmButtonText: '继续微信支付',
+        cancelButtonText: '订单中心'
+      })
+        .then(() => {
+          // on confirm
+        })
+        .catch(() => {
+          // on cancel
+        });
+    }
+  };
+
+  events = {};
+
+  onLoad() {
+    let that = this;
+    let windowHeight = wx.getSystemInfoSync().windowHeight;
+    let query = wx.createSelectorQuery();
+    query
+      .select('.fiex-bottom')
+      .boundingClientRect()
+      .exec(function(res) {
+        that.windowHeight = windowHeight - res[0].height;
+      });
+  }
+}
+</script>

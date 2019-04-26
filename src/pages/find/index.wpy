@@ -1,35 +1,95 @@
 <style lang="less">
-</style>
-<template>
-  <view class="mk-search-box">
-    <view class="mk-search">
-      <van-search placeholder="请输入搜索关键词" background="transparent" shape="round"/>
-    </view>
-    <view class="mk-view">
-      <van-icon name="location-o" size="26px" color="#fff"/>
-    </view>
-    <view class="mk-view">
-      <van-icon name="user-circle-o" size="26px" color="#fff"/>
-    </view>
-  </view>
-  <!-- mk-search-box end -->
+@import '../../less/color.less';
+.find-list-items {
+  margin: 15px;
+  font-size: 14px;
+  .find-list-items_time {
+    text-align: center;
+    padding: 10px;
+    text {
+      background-color: #999;
+      color: #fff;
+      border-radius: 5px;
+      padding: 5px 10px;
+      font-size: 10px;
+    }
+  }
 
-  <view class="container-block">
-    <van-button type="default">默认按钮</van-button>
+  .find-list-items_card {
+    background-color: #fff;
+    border-radius: 5px;
+
+    .find-list-items_card_head {
+      background-color: @rootColor;
+      color: #fff;
+      border-radius: 5px 5px 0 0;
+      image{
+        display: block;
+        width: 100%;
+        border-radius: 5px 5px 0 0;
+      }
+    }
+    .find-list-items_card_info {
+      padding: 10px 10px 0 10px;
+      font-size: 12px;
+      .find-list-items_card_info_text {
+        color: #333;
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        text {
+          flex: 1;
+          padding-bottom: 10px;
+        }
+        .text {
+          color: #999;
+          flex: none;
+          width: 70px;
+        }
+      }
+    }
+  }
+  
+}
+</style>
+
+<template>
+  <view class="find-list">
+    <view class="find-list-items">
+      <view class="find-list-items_time">
+        <text>2018-02-22 19:00</text>
+      </view>
+      <view class="find-list-items_card">
+        <view class="find-list-items_card_head">
+          <image src="https://images.unsplash.com/photo-1551334787-21e6bd3ab135?w=640">
+        </view>
+        <view class="find-list-items_card_info">
+          <view class="find-list-items_card_info_text">
+            <text class="text">活动名称</text>
+            <text>订货人订货人订货人</text>
+          </view>
+          <view class="find-list-items_card_info_text">
+            <text class="text">起止时间</text>
+            <text>订货人订货人订货人</text>
+          </view>
+          <view class="find-list-items_card_info_text">
+            <text class="text">活动时间</text>
+            <text>订货人订货人订货人订货人订货人订货人订货人订货人订货人</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <!-- order-list-items end -->
   </view>
 </template>
 
 <script>
 import wepy from 'wepy';
 
-export default class Find extends wepy.page {
+export default class info extends wepy.page {
   config = {
     navigationBarTitleText: '发现',
-    usingComponents: {
-      'van-button': '../../components/vant/button/index',
-      'van-search': '../../components/vant/search/index',
-      'van-icon': '../../components/vant/icon/index'
-    }
+    usingComponents: {}
   };
 
   components = {};

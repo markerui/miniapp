@@ -1,0 +1,36 @@
+<style lang="less">
+@import '../../less/color.less';
+</style>
+
+<template>22</template>
+
+<script>
+import wepy from 'wepy';
+
+export default class info extends wepy.page {
+  config = {
+    navigationBarTitleText: '产品列表',
+    usingComponents: {
+      'van-icon': '../../components/vant/icon/index',
+      'van-button': '../../components/vant/button/index',
+      'van-cell': '../../components/vant/cell/index',
+      'van-cell-group': '../../components/vant/cell-group/index',
+      'van-card': '../../components/vant/card/index'
+    }
+  };
+
+  components = {};
+
+  mixins = [];
+
+  data = {};
+
+  computed = {};
+
+  methods = {};
+
+  events = {};
+
+  onLoad() {}
+}
+</script>
