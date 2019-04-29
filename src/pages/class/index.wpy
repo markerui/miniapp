@@ -59,7 +59,7 @@
       <van-search placeholder="请输入搜索关键词" background="transparent" shape="round"/>
     </view>
     <view class="mk-view">
-      <view class="all">
+      <view class="all" bindtap="toList">
         <text>全部</text>
         <van-icon name="arrow" color="#fff"/>
       </view>
@@ -158,7 +158,13 @@ export default class Class extends wepy.page {
 
   computed = {};
 
-  methods = {};
+  methods = {
+    toList(){
+      wx.navigateTo({
+        url: '../product/list'
+      })
+    }
+  };
 
   events = {};
 

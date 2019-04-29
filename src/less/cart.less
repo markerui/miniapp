@@ -10,26 +10,32 @@
   }
 }
 
-.cart-submit-bar .cart-submit-bar_right {
-  padding: 0 15px;
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  color: #999;
+.cart-submit-bar {
+  .van-submit-bar__text {
+    flex: none;
+  }
 
-  .text {
-    display: block;
-    text-align: right;
+  .cart-submit-bar_right {
+    padding: 0 15px;
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    color: #999;
 
-    text {
-      color: @rootColor;
-      font-weight: bold;
-    }
+    .text {
+      display: block;
+      text-align: right;
 
-    &.text2 {
-      font-size: 12px;
+      text {
+        color: @rootColor;
+        font-weight: bold;
+      }
+
+      &.text2 {
+        font-size: 12px;
+      }
     }
   }
 }

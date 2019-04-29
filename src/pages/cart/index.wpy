@@ -2,8 +2,14 @@
 @import '../../less/color.less';
 @import '../../less/cardlist.less';
 @import '../../less/cart.less';
-.fiex-bottom .van-submit-bar {
-  position: relative;
+.fiex-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  .van-submit-bar {
+    position: relative;
+  }
 }
 </style>
 
@@ -157,6 +163,26 @@ export default class info extends wepy.page {
         price: '299',
         originPrice: '690',
         thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
+      },
+      {
+        id: 2,
+        checked: false,
+        title: '格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...',
+        unit: '750ml',
+        specs: '750ml*6',
+        price: '299',
+        originPrice: '690',
+        thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
+      },
+      {
+        id: 2,
+        checked: false,
+        title: '格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...',
+        unit: '750ml',
+        specs: '750ml*6',
+        price: '299',
+        originPrice: '690',
+        thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
       }
     ]
   };
@@ -172,7 +198,11 @@ export default class info extends wepy.page {
         title: '订单确认失败',
         message: '库存不足',
         messageAlign: 'left'
-      }).then(() => {});
+      }).then(() => {
+        wx.navigateTo({
+          url: 'confirm'
+        });
+      });
     }
   };
 
@@ -186,7 +216,7 @@ export default class info extends wepy.page {
       .select('.fiex-bottom')
       .boundingClientRect()
       .exec(function(res) {
-        that.windowHeight = windowHeight - res[0].height;
+        that.windowHeight = windowHeight - res[0].height - 30;
       });
   }
 }

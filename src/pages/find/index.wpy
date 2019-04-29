@@ -59,7 +59,7 @@
       <view class="find-list-items_time">
         <text>2018-02-22 19:00</text>
       </view>
-      <view class="find-list-items_card">
+      <view class="find-list-items_card" bindtap="toLogin">
         <view class="find-list-items_card_head">
           <image src="https://images.unsplash.com/photo-1551334787-21e6bd3ab135?w=640">
         </view>
@@ -100,7 +100,13 @@ export default class info extends wepy.page {
 
   computed = {};
 
-  methods = {};
+  methods = {
+    toLogin(){
+      wx.navigateTo({
+        url: 'login'
+      })
+    }
+  };
 
   events = {};
 
