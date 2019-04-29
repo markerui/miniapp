@@ -25,7 +25,7 @@
         top: -25px;
       }
       &:before {
-        bottom: -25px;
+        bottom: -15px;
       }
       .card-list_items_num {
         color: @rootColor;
