@@ -11,13 +11,14 @@
     border-radius: 5px;
     .card-list_items_left {
       position: relative;
+      flex: 1;
       &:after,
       &::before {
         content: '';
         position: absolute;
         width: 20px;
         height: 20px;
-        background-color: #f00;
+        background-color: #edebec;
         right: 0;
         border-radius: 100%;
       }
@@ -25,7 +26,7 @@
         top: -25px;
       }
       &:before {
-        bottom: -15px;
+        bottom: -25px;
       }
       .card-list_items_num {
         color: @rootColor;
@@ -43,28 +44,80 @@
         }
       }
     }
+    .card-list-list_items_right {
+      padding: 0 10px 0 20px;
+      flex: none;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
   }
+}
+
+.card-list_more {
+  padding-bottom: 15px;
+  font-size: 12px;
+  text-align: center;
+  color: #999;
+  text {
+    color: @rootColor;
+  }
+}
+
+.fiex-bottom {
+  background-color: #fff;
+  padding: 15px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 </style>
 
 <template>
+  <scroll-view scroll-y style="height: {{windowHeight}}px;">
     <view class="card-list">
-        <view class="card-list_items">
-            <view class="card-list_items_left">
-                <view class="card-list_items_num">
-                    <text>150</text>
-                    <text>元</text>
-                </view>
-                <view class="card-list_items_desc">
-                    <text>有效期至2019-02-21</text>
-                    <text>满300元使用</text>
-                </view>
-            </view>
-            <view class="card-list-list_items_right">
-                <van-button type="danger" plain>立即使用</van-button>
-            </view>
+      <view class="card-list_items">
+        <view class="card-list_items_left">
+          <view class="card-list_items_num">
+            <text>150</text>
+            <text>元</text>
+          </view>
+          <view class="card-list_items_desc">
+            <text>有效期至2019-02-21</text>
+            <text>满300元使用</text>
+          </view>
         </view>
+        <view class="card-list-list_items_right">
+          <van-button type="danger" size="small" round plain>立即使用</van-button>
+        </view>
+      </view>
+      <!-- list_items end -->
+      <view class="card-list_items">
+        <view class="card-list_items_left">
+          <view class="card-list_items_num">
+            <text>150</text>
+            <text>元</text>
+          </view>
+          <view class="card-list_items_desc">
+            <text>有效期至2019-02-21</text>
+            <text>满300元使用</text>
+          </view>
+        </view>
+        <view class="card-list-list_items_right">
+          <van-button type="danger" size="small" round plain>立即使用</van-button>
+        </view>
+      </view>
+      <!-- list_items end -->
     </view>
+    <view class="card-list_more">失效的礼品卡已被隐藏,
+      <text>点击查看</text>
+    </view>
+  </scroll-view>
+  <!-- card-list_more end -->
+  <view class="fiex-bottom">
+    <van-button type="danger" size="small" round >立即使用</van-button>
+  </view>
 </template>
 
 <script>
@@ -85,7 +138,9 @@ export default class info extends wepy.page {
 
   mixins = [];
 
-  data = {};
+  data = {
+    windowHeight: 0
+  };
 
   computed = {};
 
@@ -93,6 +148,16 @@ export default class info extends wepy.page {
 
   events = {};
 
-  onLoad() {}
+  onLoad() {
+    let that = this;
+    let windowHeight = wx.getSystemInfoSync().windowHeight;
+    let query = wx.createSelectorQuery();
+    query
+      .select('.fiex-bottom')
+      .boundingClientRect()
+      .exec(function(res) {
+        that.windowHeight = windowHeight - res[0].height - 30;
+      });
+  }
 }
 </script>
