@@ -44,7 +44,7 @@
 // mk-tab_nav end
 
 .mk-tab_list {
-  margin-top: 15px;
+  margin-top: 10px;
   .mk_tab_list_arrw {
     color: #b4b4b4;
     display: flex;
@@ -70,9 +70,9 @@
   <scroll-view scroll-y style="height: {{windowHeight}}px;">
     <view class="mk-swiper-container">
       <swiper circular autoplay="{{autoplay}}" bindchange="swiperChange" class="mk-swiper">
-        <repeat for="{{swiper.imgUrls}}" key="index">
+        <repeat for="{{swiper.imgUrls}}" key="index" item="item">
           <swiper-item>
-            <image src="{{swiper.imgUrls}}" class="mk-slide-image">
+            <image src="{{item.imagePath}}" class="mk-slide-image">
           </swiper-item>
         </repeat>
       </swiper>
@@ -87,10 +87,10 @@
       <view class="mk-tab_nav_scroll_wapper">
         <scroll-view scroll-x class="mk-tab_nav_scroll">
           <view class="mk-tab_nav_wapper">
-            <repeat for="{{tabNav}}" key="index" index="index" item="tabNavItem">
-              <view class="mk-tab_nav_item">
-                <image src="{{tabNavItem.thumb}}" class="mk-tab_nav_image">
-                <text class="mk-tab_nav_text">{{tabNavItem.title}}</text>
+            <repeat for="{{suitableList}}" key="index" index="index" item="suitableListItem">
+              <view class="mk-tab_nav_item" id="{{suitableListItem.id}}">
+                <image src="{{suitableListItem.imagePath}}" class="mk-tab_nav_image">
+                <text class="mk-tab_nav_text">{{suitableListItem.name}}</text>
               </view>
             </repeat>
           </view>
@@ -101,50 +101,38 @@
       </view>
     </view>
     <!-- mk-tab_nav end -->
-    <view class="mk-tab_list">
-      <van-tabs>
+    <view class="mk-tab_list" >
+      <van-tabs  @click="onClickTabs">
         <view slot="nav-right" class="mk_tab_list_arrw">
           <van-icon name="arrow"/>
         </view>
-        <van-tab title="4月上新">
-            <van-cell-group>
-              <repeat for="{{cardProList}}" key="index" index="index" item="cardProItem">
-                <van-cell url="../product/index">
-                    <view slot="title">
-                      <van-card
-                        centered
-                        custom-class="mk-card_item"
-                        thumb-class="mk-card_img"
-                        title-class="mk-card_title"
-                        price="{{cardProItem.price}}"
-                        origin-price="{{cardProItem.originPrice}}"
-                        title="{{cardProItem.title}}"
-                        thumb="{{cardProItem.thumb}}"
-                        thumb-mode="aspectFill"
-                      >
-                        <view slot="desc" class="mk-card_desc">
-                          <text>单位:{{cardProItem.unit}}</text>
-                          <text>规格:{{cardProItem.specs}}</text>
-                        </view>
-                        <view slot="footer" class="mk-card_item_tocar">
-                          <van-icon
-                            name="shopping-cart-o"
-                            custom-style="margin-top:3px;"
-                            size="20px"
-                            color="#fff"
-                          />
-                        </view>
-                    </van-card>
-                  </view>
-                </van-cell>
-              </repeat>
-            </van-cell-group>
-        </van-tab>
-        <van-tab title="掌柜推荐">内容 2</van-tab>
-        <van-tab title="特价促销">内容 3</van-tab>
-        <van-tab title="暂未上线">内容 4</van-tab>
-        <van-tab title="更多推荐">内容 5</van-tab>
+        <repeat for="{{sectionList}}" key="index" index="index" item="sectionListItem">
+          <van-tab id="{{index}}" title="{{sectionListItem.name}}"></van-tab>
+        </repeat>
       </van-tabs>
+      <van-cell-group>
+        <repeat for="{{cardProList.list0}}" key="index" index="index" item="cardProItem">
+            <prolist :cardProItem="cardProItem"></prolist>
+        </repeat>
+        <repeat for="{{cardProList.list1}}" key="index" index="index" item="cardProItem">
+            <prolist :cardProItem="cardProItem"></prolist>
+        </repeat>
+        <repeat for="{{cardProList.list2}}" key="index" index="index" item="cardProItem">
+            <prolist :cardProItem="cardProItem"></prolist>
+        </repeat> 
+        <repeat for="{{cardProList.list3}}" key="index" index="index" item="cardProItem">
+            <prolist :cardProItem="cardProItem"></prolist>
+        </repeat> 
+        <repeat for="{{cardProList.list4}}" key="index" index="index" item="cardProItem">
+            <prolist :cardProItem="cardProItem"></prolist>
+        </repeat> 
+        <repeat for="{{cardProList.list5}}" key="index" index="index" item="cardProItem">
+            <prolist :cardProItem="cardProItem"></prolist>
+        </repeat> 
+        <repeat for="{{cardProList.list6}}" key="index" index="index" item="cardProItem">
+            <prolist :cardProItem="cardProItem"></prolist>
+        </repeat>  
+      </van-cell-group>
     </view>
     <!-- mk-tab_list end -->
   </scroll-view>
@@ -152,6 +140,8 @@
 
 <script>
 import wepy from 'wepy';
+import Api from "../../utils/api";
+import proList from "../../components/prolist";
 
 export default class Index extends wepy.page {
   config = {
@@ -168,71 +158,59 @@ export default class Index extends wepy.page {
     }
   };
 
-  components = {};
+  components = {
+    prolist: proList
+  };
 
   mixins = [];
 
   data = {
     windowHeight: 0,
     swiper: {
-      imgUrls: [
-        'https://images.unsplash.com/photo-1551334787-21e6bd3ab135?w=640',
-        'https://images.unsplash.com/photo-1551214012-84f95e060dee?w=640',
-        'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
-      ],
+      imgUrls: [],
       swiperCurrent: 0,
       autoplay: true
     },
-    tabNav: [
-      {
-        id: 1,
-        title: '葡萄酒1',
-        thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
+    suitableList: [],
+    cardProList: {
+      listInfo:{
+        pageSize: 2,
+        list0:{
+          pageIndex : 1
+        },
+        list1:{
+          pageIndex : 1
+        },
+        list2:{
+          pageIndex : 1
+        },
+        list3:{
+          pageIndex : 1
+        },
+        list4:{
+          pageIndex : 1
+        },
+        list5:{
+          pageIndex : 1
+        },
+        list6:{
+          pageIndex : 1
+        }
       },
-      {
-        id: 2,
-        title: '葡萄酒2',
-        thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
-      },
-      {
-        id: 3,
-        title: '葡萄酒3',
-        thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
-      },
-      {
-        id: 4,
-        title: '葡萄酒4',
-        thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
-      },
-      {
-        id: 5,
-        title: '葡萄酒5',
-        thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
-      }
-    ],
-    cardProList: [
-      {
-        id: 1,
-        title: '格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...',
-        unit: '750ml',
-        specs: '750ml*6',
-        price: '299',
-        originPrice: '690',
-        thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
-      },
-      {
-        id: 2,
-        title: '格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...',
-        unit: '750ml',
-        specs: '750ml*6',
-        price: '299',
-        originPrice: '690',
-        thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
-      }
-    ]
+      list0: [],
+      list1: [],
+      list2: [],
+      list3: [],
+      list4: [],
+      list5: [],
+      list6: []
+    },
+    sectionList:[]
   };
 
-  computed = {};
+  computed = {
+    
+  };
 
   methods = {
     swiperChange(e) {
@@ -247,6 +225,62 @@ export default class Index extends wepy.page {
       wx.navigateTo({
         url: 'shoplist'
       });
+    },
+    onClickTabs(e){
+      let that = this;
+      var index = e.detail.index;
+      var Data = {
+        id: index,
+        pageSize: that.cardProList.listInfo.pageSize,
+        sortField: 'sort',
+        isDesc: true
+      };
+      switch(index){
+        case 0:
+          Data['pageIndex'] = that.cardProList.listInfo.list0.pageIndex;
+          Api.HomeGetSectionList(Data,function(res){
+            that.cardProList.list0 = res.resultData.dataList;
+          });
+          break;
+        case 1:
+          Data['pageIndex'] = that.cardProList.listInfo.list1.pageIndex;
+          Api.HomeGetSectionList(Data,function(res){
+            that.cardProList.list1 = res.resultData.dataList;
+          });
+          break;
+        case 2:
+          Data['pageIndex'] = that.cardProList.listInfo.list2.pageIndex;
+          Api.HomeGetSectionList(Data,function(res){
+            that.cardProList.list2 = res.resultData.dataList;
+          });
+          break;
+        case 3:
+          Data['pageIndex'] = that.cardProList.listInfo.list3.pageIndex;
+          Api.HomeGetSectionList(Data,function(res){
+            that.cardProList.list3 = res.resultData.dataList;
+          });
+        case 4:
+          Data['pageIndex'] = that.cardProList.listInfo.list4.pageIndex;
+          Api.HomeGetSectionList(Data,function(res){
+            that.cardProList.list4 = res.resultData.dataList;
+          });
+          break;
+        case 5:
+          Data['pageIndex'] = that.cardProList.listInfo.list5.pageIndex;
+          Api.HomeGetSectionList(Data,function(res){
+            that.cardProList.list5 = res.resultData.dataList;
+          });
+          break;
+        case 6:
+          Data['pageIndex'] = that.cardProList.listInfo.list6.pageIndex;
+          Api.HomeGetSectionList(Data,function(res){
+            that.cardProList.list6 = res.resultData.dataList;
+          });
+          break;
+        default:
+            break;
+      }
+      
     }
   };
 
@@ -262,6 +296,18 @@ export default class Index extends wepy.page {
       .exec(function(res) {
         that.windowHeight = windowHeight - res[0].height;
       });
-  }
+  },
+
+  onReady(){
+    let that = this;
+		Api.HomeGetShopIndex(function(res){
+      that.swiper.imgUrls = res.resultData.bannerList;
+      that.suitableList = res.resultData.suitableList;
+      that.sectionList = res.resultData.sectionList;
+      wx.setNavigationBarTitle({
+        title: res.resultData.title
+      });
+    });
+	}
 }
 </script>

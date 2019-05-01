@@ -44,8 +44,8 @@
 		<view class="shop-list_box">
 			<view class="shop-list">
 				<van-cell-group custom-class="shop-list_item">
-					<van-cell title="上海徐汇美罗城店" value="Hello旗舰店"  label="上海市徐汇区肇嘉浜路144号" is-link/></van-cell>
-					<van-cell title="上海徐汇美罗城店" value="Hello旗舰店" label="上海市徐汇区肇嘉浜路144号" is-link/></van-cell>
+					<van-cell title="上海徐汇美罗城店" value="Hello旗舰店"  label="上海市徐汇区肇嘉浜路144号"/></van-cell>
+					<van-cell title="上海徐汇美罗城店" value="Hello旗舰店" label="上海市徐汇区肇嘉浜路144号"/></van-cell>
 				</van-cell-group>
 			</view>
 
@@ -60,6 +60,7 @@
 
 <script>
 import wepy from 'wepy';
+import area from "../../utils/area";
 
 export default class search extends wepy.page {
   config = {
@@ -78,65 +79,65 @@ export default class search extends wepy.page {
   mixins = [];
 
   data = {
-	windowHeight: 0,
-	shopTips: '提示文字哦提示文字哦提示文字哦提示文字哦提示文字哦提示文字哦提示文字哦',
-	areaPopupShow: false,
-	currentArea: '上海市普陀区',
-    areaList: {
-        province_list: {
-            110000: '北京市',
-            120000: '天津市'
-        },
-        city_list: {
-            110100: '北京市',
-            120100: '天津市',
-        },
-        county_list: {
-            110101: '东城区',
-            110102: '西城区',
-            110105: '朝阳区',
-            110106: '丰台区',
-            120101: '和平区',
-            120102: '河东区',
-            120103: '河西区',
-            120104: '南开区',
-            120105: '河北区'
-        }
-    }
-  };
+		windowHeight: 0,
+		shopTips: '提示文字哦提示文字哦提示文字哦提示文字哦提示文字哦提示文字哦提示文字哦',
+		areaPopupShow: false,
+		areaList: [],
+		area_province: 0,
+		area_city: 0,
+		area_county: 0,
+		area_province_name: '请选择',
+		area_city_name: '你要查看',
+		area_county_name: '的城市',
+	};
 
-  computed = {};
+  computed = {
+		currentArea(){
+			return this.area_province_name + this.area_city_name + this.area_county_name;
+		}
+	};
 
   methods = {
     selectCity(){
-        this.areaPopupShow = true;
-	},
-	areaPopupClose(){
-		this.areaPopupShow = false;
-	},
-	cancelAreaList(){
-		this.areaPopupShow = false;
-	},
-	confirmAreaList(e){
-		this.areaPopupShow = false;
-		console.log(e)
-	},
-	changeAreaList(e){
-		console.log(e)
-	}
+      this.areaPopupShow = true;
+		},
+		areaPopupClose(){
+			this.areaPopupShow = false;
+		},
+		cancelAreaList(){
+			this.areaPopupShow = false;
+		},
+		confirmAreaList(e){
+			var that = this;
+			that.areaPopupShow = false;
+			that.area_province = e.detail.values[0].code.split('-')[1];
+			that.area_city = e.detail.values[1].code.split('-')[1];
+			that.area_county = e.detail.values[2].code.split('-')[1];
+			that.area_province_name = e.detail.values[0].name;
+			that.area_city_name = e.detail.values[1].name;
+			that.area_county_name = e.detail.values[2].name;
+			console.log(that.$data)
+			console.log(e)
+		}
   };
 
   events = {};
 
   onLoad() {
-	let that = this;
-	let windowHeight = wx.getSystemInfoSync().windowHeight;
-	let query = wx.createSelectorQuery();
-	query.select('.shop-area_current')
-		.boundingClientRect()
-		.exec(function(res) {
-			that.windowHeight = windowHeight - res[0].height ;
-		});
-  }
+		let that = this;
+		let windowHeight = wx.getSystemInfoSync().windowHeight;
+		let query = wx.createSelectorQuery();
+		query.select('.shop-area_current')
+			.boundingClientRect()
+			.exec(function(res) {
+				that.windowHeight = windowHeight - res[0].height ;
+			});
+	};
+
+	onReady(){
+		let that = this;
+		console.log(that.$parent.globalData.weChatInfo)
+		that.areaList = area.areaList;
+	}
 }
 </script>

@@ -126,7 +126,7 @@
                 </view>
                 <view slot="footer" class="mk-card_item_stepper">
                   <text>剩余2330份</text>
-                  <van-stepper integer min="1" max="40" step="1" bind:change="onChange"/>
+                  <van-stepper disabled integer min="1" max="40" step="1" bind:change="onChange"/>
                 </view>
               </van-card>
             </view>

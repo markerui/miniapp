@@ -15,15 +15,19 @@ page {
 
 <script>
 import wepy from 'wepy';
+import Api from "./utils/api";
 import 'wepy-async-function';
 
 export default class extends wepy.app {
   config = {
     pages: [
-      'pages/card/giftList',
+      'pages/my/index',
+      'pages/my/collect',
+      'pages/my/info',
       'pages/index/index',
       'pages/index/search',
       'pages/index/shoplist',
+      'pages/card/giftList',
       'pages/cart/index',
       'pages/cart/confirm',
       'pages/find/login',
@@ -35,9 +39,7 @@ export default class extends wepy.app {
       'pages/product/index',
       'pages/order/index',
       'pages/order/list',
-      'pages/my/index',
-      'pages/my/collect',
-      'pages/my/info',
+      
       'pages/address/add',
       'pages/address/index'
     ],
@@ -80,7 +82,8 @@ export default class extends wepy.app {
   };
 
   globalData = {
-    userInfo: null
+    userInfo: null,
+    weChatInfo: null
   };
 
   constructor() {
@@ -88,7 +91,23 @@ export default class extends wepy.app {
     this.use('requestfix');
   }
 
-  onLaunch() {}
+  onLaunch() {
+    var that = this;
+    wx.login({
+      success(res) {
+        if (res.code) {
+          var Data = {
+            code: res.code
+          }
+          Api.Login(Data,function(res){
+            that.globalData.weChatInfo = res.resultData;
+          })
+        } else {
+          console.log('登录失败！' + res.errMsg)
+        }
+      }
+    })
+  }
 
   getUserInfo(cb) {
     const that = this;
