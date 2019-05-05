@@ -69,69 +69,50 @@
   <view class="class-scroll_box">
     <view class="class-scroll_left">
       <scroll-view scroll-y style="height: {{windowHeight}}px;">
-        <van-badge-group active="{{ active }}" bind:change="onChange">
-          <van-badge title="热卖产品"/>
-          <van-badge title="品牌"/>
-          <van-badge title="产地"/>
-          <van-badge title="类型"/>
-          <van-badge title="用途"/>
+        <van-badge-group active="{{ dataListActive }}" bind:change="onBadgeChange">
+          <repeat for="{{dataList}}" key="index" index="index" item="item">
+            <van-badge title="{{item.name}}"/>
+           </repeat>
         </van-badge-group>
       </scroll-view>
     </view>
+    <!-- class-scroll_left end -->
     <view class="class-scroll_right">
+      
       <scroll-view scroll-y style="height: {{windowHeight}}px; ">
-        <van-panel custom-class="class-item">
-          <view slot="header" class="class-item_header">
-            <text>热卖产品</text>
-          </view>
-          <view class="class-item_content">
-            <van-row gutter="10">
-              <van-col span="8">
-                <view class="class-item_content_item">
-                  <image
-                    src="https://images.unsplash.com/photo-1551446591-142875a901a1?w=640"
-                    class="class-item_content_img"
-                  >
-                  <text class="class-item_content_text">葡萄酒</text>
-                </view>
-              </van-col>
-              <van-col span="8">
-                <view class="class-item_content_item">
-                  <image
-                    src="https://images.unsplash.com/photo-1551446591-142875a901a1?w=640"
-                    class="class-item_content_img"
-                  >
-                  <text class="class-item_content_text">葡萄酒</text>
-                </view>
-              </van-col>
-              <van-col span="8">
-                <view class="class-item_content_item">
-                  <image
-                    src="https://images.unsplash.com/photo-1551446591-142875a901a1?w=640"
-                    class="class-item_content_img"
-                  >
-                  <text class="class-item_content_text">葡萄酒</text>
-                </view>
-              </van-col>
-              <van-col span="8">
-                <view class="class-item_content_item">
-                  <image
-                    src="https://images.unsplash.com/photo-1551446591-142875a901a1?w=640"
-                    class="class-item_content_img"
-                  >
-                  <text class="class-item_content_text">葡萄酒</text>
-                </view>
-              </van-col>
-            </van-row>
-          </view>
-        </van-panel>
+        <repeat for="{{dataList}}" key="index" index="index" item="item2">
+        <view hidden="{{index != dataListActive}}">
+          <repeat for="{{item2.list}}" key="index3" index="index3" item="item3">
+            <van-panel custom-class="class-item">
+              <view slot="header" class="class-item_header">
+                <text>{{item3.name}}</text>
+              </view>
+              <view class="class-item_content">
+                <van-row gutter="10">
+                  <repeat for="{{item3.list}}" key="index4" index="index4" item="item4">
+                    <van-col span="8" id="{{item4.sortId}}">
+                      <view class="class-item_content_item">
+                        <image class="class-item_content_img" src="{{item4.logo}}">
+                        <text class="class-item_content_text">{{item4.name}}</text>
+                      </view>
+                    </van-col>
+                  </repeat>
+                </van-row>
+              </view>
+            </van-panel>
+          </repeat>
+        </view>
+        </repeat>
       </scroll-view>
+        
     </view>
+    <!-- class-scroll_right end -->
   </view>
 </template>
 
 <script>
 import wepy from 'wepy';
+import Api from "../../utils/api";
 
 export default class Class extends wepy.page {
   config = {
@@ -153,7 +134,8 @@ export default class Class extends wepy.page {
 
   data = {
     windowHeight: 0,
-    active: 0
+    dataListActive: 0,
+    dataList: []
   };
 
   computed = {};
@@ -163,6 +145,9 @@ export default class Class extends wepy.page {
       wx.navigateTo({
         url: '../product/list'
       })
+    },
+    onBadgeChange(e){
+      this.dataListActive = e.detail;
     }
   };
 
@@ -178,6 +163,12 @@ export default class Class extends wepy.page {
       .exec(function(res) {
         that.windowHeight = windowHeight - res[0].height;
       });
+
+    Api.GetSortList(function(res){
+      that.dataList = res.resultData.dataList;
+      that.$apply();
+    });
+      
   }
 }
 </script>

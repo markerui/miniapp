@@ -7,7 +7,7 @@
     <image
       mode="aspectFill"
        style="height: {{windowHeight}}px; width:100%"
-      src="https://images.unsplash.com/photo-1551446591-142875a901a1?w=640"
+      src="{{imgSrc}}"
     >
     <van-dialog use-slot title="请先登录" show="{{ true }}" bind:confirm="onConfirm">
       <view style="padding-top:12px">
@@ -49,6 +49,7 @@ export default class info extends wepy.page {
 
   data = {
     windowHeight: 0,
+    imgSrc : ''
   };
 
   computed = {};
@@ -63,8 +64,11 @@ export default class info extends wepy.page {
 
   events = {};
 
-  onLoad() {
-    this.windowHeight = wx.getSystemInfoSync().windowHeight;
+  onLoad(e) {
+    var that = this;
+    console.log(e)
+    that.imgSrc = e.img;
+    that.windowHeight = wx.getSystemInfoSync().windowHeight;
   }
 }
 </script>

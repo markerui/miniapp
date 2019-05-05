@@ -55,36 +55,39 @@
 
 <template>
   <view class="find-list">
-    <view class="find-list-items">
-      <view class="find-list-items_time">
-        <text>2018-02-22 19:00</text>
-      </view>
-      <view class="find-list-items_card" bindtap="toLogin">
-        <view class="find-list-items_card_head">
-          <image src="https://images.unsplash.com/photo-1551334787-21e6bd3ab135?w=640">
+    <view wx:for="{{findList}}" wx:key="item">
+      <view class="find-list-items">
+        <view class="find-list-items_time">
+          <text>{{item.createTime}}</text>
         </view>
-        <view class="find-list-items_card_info">
-          <view class="find-list-items_card_info_text">
-            <text class="text">活动名称</text>
-            <text>订货人订货人订货人</text>
+        <view class="find-list-items_card" id="{{item.id}}" data-banner="{{item.banner}}" bindtap="toLogin">
+          <view class="find-list-items_card_head">
+            <image src="{{item.banner}}">
           </view>
-          <view class="find-list-items_card_info_text">
-            <text class="text">起止时间</text>
-            <text>订货人订货人订货人</text>
-          </view>
-          <view class="find-list-items_card_info_text">
-            <text class="text">活动时间</text>
-            <text>订货人订货人订货人订货人订货人订货人订货人订货人订货人</text>
+          <view class="find-list-items_card_info">
+            <view class="find-list-items_card_info_text">
+              <text class="text">活动名称</text>
+              <text>{{item.name}}</text>
+            </view>
+            <view class="find-list-items_card_info_text">
+              <text class="text">起止时间</text>
+              <text>{{item.startDate}}</text>
+            </view>
+            <view class="find-list-items_card_info_text">
+              <text class="text">活动时间</text>
+              <text>{{item.endDate}}</text>
+            </view>
           </view>
         </view>
       </view>
+      <!-- order-list-items end -->
     </view>
-    <!-- order-list-items end -->
   </view>
 </template>
 
 <script>
 import wepy from 'wepy';
+import Api from "../../utils/api";
 
 export default class info extends wepy.page {
   config = {
@@ -96,20 +99,34 @@ export default class info extends wepy.page {
 
   mixins = [];
 
-  data = {};
+  data = {
+    pageIndex: 1,
+    pageSize: 3,
+    findList: []
+  };
 
   computed = {};
 
   methods = {
-    toLogin(){
+    toLogin(e){
       wx.navigateTo({
-        url: 'login'
+        url: 'login?id=' + e.currentTarget.id + '&img=' +e.currentTarget.dataset.banner
       })
     }
   };
 
   events = {};
 
-  onLoad() {}
+  onLoad() {
+    var that = this;
+    var data = {
+      pageIndex: that.data.pageIndex,
+      pageSize: that.data.pageSize
+    };
+    Api.GetCampaignList(data,function(res){
+      that.findList = res.resultData.dataList;
+      that.$apply();
+    });
+  }
 }
 </script>

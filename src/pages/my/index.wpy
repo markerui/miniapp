@@ -191,7 +191,13 @@ export default class My extends wepy.page {
         unionid: that.$parent.globalData.weChatInfo.unionid
       };
       Api.LoginUser(Data,function(res){
-        console.log(res)
+        try {
+          wx.setStorageSync('tokenId', res.resultData.tokenId);
+          var memberData = {
+            tokenId: res.resultData.tokenId
+          };
+          that.GetMemberInfo(memberData);
+        } catch (e) { }
       });
     },
     goUserInfo(){
@@ -199,15 +205,26 @@ export default class My extends wepy.page {
         url: 'info'
       })
     },
+    GetMemberInfo(data){
+      Api.GetMemberInfo(data,function(memberRes){
+        console.log(memberRes)
+      });
+    }
   };
 
   events = {};
 
   onShow() {
     var that = this;
+    console.log(that)
     wx.getSetting({
       success(res) {
-        if (!res.authSetting['scope.userInfo']) {
+        if (res.authSetting['scope.userInfo']) {
+          var memberData = {
+            tokenId: wx.getStorageSync("tokenId")
+          };
+          that.methods.GetMemberInfo(memberData);
+        }else{
           that.isGetUserInfo = true;
           that.$apply();
         }

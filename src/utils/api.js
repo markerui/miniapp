@@ -73,7 +73,7 @@ function HomeGetShopIndex(cb){
     });
 }
 
-//s首页tablist
+//首页tablist
 function HomeGetSectionList(data,cb){
     GetData('Home/GetSectionList', data, function (res) {
         if (cb) {
@@ -91,7 +91,7 @@ function Login(data, cb) {
     });
 }
 
-//登录
+//登录授权
 function LoginUser(data, cb) {
     PostData('auth/GetUserInfo', data, function (res) {
         if (cb) {
@@ -101,6 +101,35 @@ function LoginUser(data, cb) {
 }
 
 
+//获取用户信息
+function GetMemberInfo(data, cb) {
+    PostData('Member/GetMemberInfo', data, function (res) {
+        if (cb) {
+            cb(res)
+        }
+    });
+}
+
+//获取发现列表
+function GetCampaignList(data,cb){
+    GetData('Campaign/GetCampaignList', data, function (res) {
+        if (cb) {
+            cb(res)
+        }
+    });
+}
+
+
+//商品分类
+
+function GetSortList(cb){
+    GetData('Product/GetSortList', '',function (res) {
+        if (cb) {
+            cb(res)
+        }
+    });
+}
+
 
 
 module.exports = {
@@ -109,5 +138,8 @@ module.exports = {
     Login: Login,
     LoginUser: LoginUser,
     HomeGetShopIndex: HomeGetShopIndex,
-    HomeGetSectionList: HomeGetSectionList
+    HomeGetSectionList: HomeGetSectionList,
+    GetMemberInfo: GetMemberInfo,
+    GetCampaignList: GetCampaignList,
+    GetSortList:GetSortList
 };

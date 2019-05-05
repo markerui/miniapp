@@ -107,32 +107,17 @@
           <van-icon name="arrow"/>
         </view>
         <repeat for="{{sectionList}}" key="index" index="index" item="sectionListItem">
-          <van-tab id="{{index}}" title="{{sectionListItem.name}}"></van-tab>
+          <van-tab id="{{index}}" title="{{sectionListItem.name}}">
+            {{index}}
+            <van-cell-group>
+            <!-- <repeat for="{{cardProList.dataList.list}}" key="index2" index="index2" item="cardProItem">
+                <prolist :cardProItem="cardProItem"></prolist>
+            </repeat> -->
+            </van-cell-group>
+          </van-tab>
         </repeat>
       </van-tabs>
-      <van-cell-group>
-        <repeat for="{{cardProList.list0}}" key="index" index="index" item="cardProItem">
-            <prolist :cardProItem="cardProItem"></prolist>
-        </repeat>
-        <repeat for="{{cardProList.list1}}" key="index" index="index" item="cardProItem">
-            <prolist :cardProItem="cardProItem"></prolist>
-        </repeat>
-        <repeat for="{{cardProList.list2}}" key="index" index="index" item="cardProItem">
-            <prolist :cardProItem="cardProItem"></prolist>
-        </repeat> 
-        <repeat for="{{cardProList.list3}}" key="index" index="index" item="cardProItem">
-            <prolist :cardProItem="cardProItem"></prolist>
-        </repeat> 
-        <repeat for="{{cardProList.list4}}" key="index" index="index" item="cardProItem">
-            <prolist :cardProItem="cardProItem"></prolist>
-        </repeat> 
-        <repeat for="{{cardProList.list5}}" key="index" index="index" item="cardProItem">
-            <prolist :cardProItem="cardProItem"></prolist>
-        </repeat> 
-        <repeat for="{{cardProList.list6}}" key="index" index="index" item="cardProItem">
-            <prolist :cardProItem="cardProItem"></prolist>
-        </repeat>  
-      </van-cell-group>
+
     </view>
     <!-- mk-tab_list end -->
   </scroll-view>
@@ -174,6 +159,7 @@ export default class Index extends wepy.page {
     suitableList: [],
     cardProList: {
       listInfo:{
+        currentList : 0,
         pageSize: 2,
         list0:{
           pageIndex : 1
@@ -197,13 +183,7 @@ export default class Index extends wepy.page {
           pageIndex : 1
         }
       },
-      list0: [],
-      list1: [],
-      list2: [],
-      list3: [],
-      list4: [],
-      list5: [],
-      list6: []
+      dataList:[]
     },
     sectionList:[]
   };
@@ -229,57 +209,17 @@ export default class Index extends wepy.page {
     onClickTabs(e){
       let that = this;
       var index = e.detail.index;
+      that.cardProList.listInfo.currentList = e.detail.index;
       var Data = {
         id: index,
         pageSize: that.cardProList.listInfo.pageSize,
         sortField: 'sort',
         isDesc: true
       };
-      switch(index){
-        case 0:
-          Data['pageIndex'] = that.cardProList.listInfo.list0.pageIndex;
-          Api.HomeGetSectionList(Data,function(res){
-            that.cardProList.list0 = res.resultData.dataList;
-          });
-          break;
-        case 1:
-          Data['pageIndex'] = that.cardProList.listInfo.list1.pageIndex;
-          Api.HomeGetSectionList(Data,function(res){
-            that.cardProList.list1 = res.resultData.dataList;
-          });
-          break;
-        case 2:
-          Data['pageIndex'] = that.cardProList.listInfo.list2.pageIndex;
-          Api.HomeGetSectionList(Data,function(res){
-            that.cardProList.list2 = res.resultData.dataList;
-          });
-          break;
-        case 3:
-          Data['pageIndex'] = that.cardProList.listInfo.list3.pageIndex;
-          Api.HomeGetSectionList(Data,function(res){
-            that.cardProList.list3 = res.resultData.dataList;
-          });
-        case 4:
-          Data['pageIndex'] = that.cardProList.listInfo.list4.pageIndex;
-          Api.HomeGetSectionList(Data,function(res){
-            that.cardProList.list4 = res.resultData.dataList;
-          });
-          break;
-        case 5:
-          Data['pageIndex'] = that.cardProList.listInfo.list5.pageIndex;
-          Api.HomeGetSectionList(Data,function(res){
-            that.cardProList.list5 = res.resultData.dataList;
-          });
-          break;
-        case 6:
-          Data['pageIndex'] = that.cardProList.listInfo.list6.pageIndex;
-          Api.HomeGetSectionList(Data,function(res){
-            that.cardProList.list6 = res.resultData.dataList;
-          });
-          break;
-        default:
-            break;
-      }
+      Data['pageIndex'] = that.cardProList.listInfo.list0.pageIndex;
+      Api.HomeGetSectionList(Data,function(res){
+        that.cardProList.list0 = res.resultData.dataList;
+      });
       
     }
   };
@@ -296,11 +236,8 @@ export default class Index extends wepy.page {
       .exec(function(res) {
         that.windowHeight = windowHeight - res[0].height;
       });
-  },
-
-  onReady(){
-    let that = this;
-		Api.HomeGetShopIndex(function(res){
+      
+    Api.HomeGetShopIndex(function(res){
       that.swiper.imgUrls = res.resultData.bannerList;
       that.suitableList = res.resultData.suitableList;
       that.sectionList = res.resultData.sectionList;
@@ -308,6 +245,7 @@ export default class Index extends wepy.page {
         title: res.resultData.title
       });
     });
-	}
+  }
+
 }
 </script>
