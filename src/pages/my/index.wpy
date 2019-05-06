@@ -4,7 +4,7 @@
   background-color: @rootColor;
   color: #fff;
   text-align: center;
-  padding-bottom: 30px;
+  padding: 20px 20px 30px;
   text{
     font-size: 14px;
   }
@@ -12,7 +12,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 20px 0 20px;
+    padding-bottom: 20px;
     image{
       height: 60px;
       width: 60px;
@@ -60,29 +60,38 @@
 </style>
 
 <template>
-
-  <view class="user-head">
-    <view class="user-head_title" bind:tap="goUserInfo">
-      <view>
-        <image src="https://images.unsplash.com/photo-1551446591-142875a901a1?w=640"></image>
+  <view  wx:if="{{!isGetUserInfo}}">
+    <view class="user-head">
+      <view class="user-head_title" bind:tap="goUserInfo">
+        <view>
+          <image src="{{memberInfo.headImg}}"></image>
+        </view>
+        <text class="user-head_name">{{memberInfo.nickName}} </text>
       </view>
-      <text class="user-head_name">刘云行 <text>|</text>智力名酒格雷曼</text>
+      <van-row class="user-head_info">
+        <van-col span="12">
+          <view class="user-head_info_item">
+            <text class="user-head_info_text">优惠券</text>
+            <text class="user-head_info_num">{{memberInfo.giftCardCount}}</text>
+          </view>
+        </van-col>
+        <van-col span="12">
+          <view class="user-head_info_item" style="border:none;">
+            <text class="user-head_info_text">礼品卡</text>
+            <text class="user-head_info_num">{{memberInfo.couponCount}}</text>
+          </view>
+        </van-col>
+      </van-row>
     </view>
-    <van-row class="user-head_info">
-      <van-col span="12">
-        <view class="user-head_info_item">
-          <text class="user-head_info_text">优惠券</text>
-          <text class="user-head_info_num">12</text>
-        </view>
-      </van-col>
-      <van-col span="12">
-        <view class="user-head_info_item" style="border:none;">
-          <text class="user-head_info_text">礼品卡</text>
-          <text class="user-head_info_num">2</text>
-        </view>
-      </van-col>
-    </van-row>
   </view>
+
+  </view wx:else>
+    <view class="user-head">
+      <van-button type="warning" open-type="getUserInfo"
+      bind:getuserinfo="getUserInfo" plain>授权登录才可以使用</van-button>
+    </view>
+  </view>
+  <!-- user-head end -->
 
   <view class="my-cell_list">
     <view class="van-cell-group_view">
@@ -130,22 +139,20 @@
     </view>
   </view>
 
-  <view class="my-shop_entry">
+  <!-- <view class="my-shop_entry">
     <view>
         <image src="https://images.unsplash.com/photo-1551446591-142875a901a1?w=640"></image>
       </view>
       <text>我的店铺</text>
-  </view>
+  </view> -->
 
   <van-dialog
-    async-close="{{true}}"
     title="授权提示"
     message="您需要授权登录，才可以继续操作"
     show="{{ isGetUserInfo }}"
-    show-cancel-button
     confirm-button-open-type="getUserInfo"
-    bind:close="onCloseUserInfo"
     bind:getuserinfo="getUserInfo"
+
   >
   </van-dialog>
 
@@ -164,7 +171,8 @@ export default class My extends wepy.page {
       "van-col": "../../components/vant/col/index",
       "van-cell": "../../components/vant/cell/index",
       "van-cell-group": "../../components/vant/cell-group/index",
-      "van-dialog": "../../components/vant/dialog/index"
+      "van-dialog": "../../components/vant/dialog/index",
+      "van-button": "../../components/vant/button/index"
     }
   };
 
@@ -173,15 +181,13 @@ export default class My extends wepy.page {
   mixins = [];
 
   data = {
-    isGetUserInfo: false
+    isGetUserInfo: false,
+    memberInfo: []
   };
 
   computed = {};
 
   methods = {
-    onCloseUserInfo(){
-      this.isGetUserInfo = false;
-    },
     getUserInfo(e){
       var that = this;
       var Data = {
@@ -190,25 +196,29 @@ export default class My extends wepy.page {
         iv: e.detail.iv,
         unionid: that.$parent.globalData.weChatInfo.unionid
       };
-      Api.LoginUser(Data,function(res){
+      Api.getUserInfo(Data,function(res){
         try {
           wx.setStorageSync('tokenId', res.resultData.tokenId);
-          var memberData = {
-            tokenId: res.resultData.tokenId
-          };
-          that.GetMemberInfo(memberData);
+          that.GetMemberCenter();
         } catch (e) { }
+      });
+    },
+    GetMemberCenter(){
+      var that = this;
+      Api.GetMemberCenter(function(memberRes){
+        if(memberRes.result){
+          that.memberInfo = memberRes.resultData.memberInfo;
+          // that.$apply();
+          console.log(that.memberInfo)
+        }else{
+          that.isGetUserInfo = true; 
+        }
       });
     },
     goUserInfo(){
       wx.navigateTo({
         url: 'info'
       })
-    },
-    GetMemberInfo(data){
-      Api.GetMemberInfo(data,function(memberRes){
-        console.log(memberRes)
-      });
     }
   };
 
@@ -216,14 +226,10 @@ export default class My extends wepy.page {
 
   onShow() {
     var that = this;
-    console.log(that)
     wx.getSetting({
       success(res) {
         if (res.authSetting['scope.userInfo']) {
-          var memberData = {
-            tokenId: wx.getStorageSync("tokenId")
-          };
-          that.methods.GetMemberInfo(memberData);
+          that.methods.GetMemberCenter();
         }else{
           that.isGetUserInfo = true;
           that.$apply();

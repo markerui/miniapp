@@ -6,42 +6,15 @@
 <template>
   <van-cell-group>
     <repeat for="{{cardProList}}" key="index" index="index" item="cardProItem">
-      <van-cell>
-        <view slot="title">
-          <view class="mk-cart-card_list">
-            <van-card
-              centered
-              custom-class="mk-card_item"
-              thumb-class="mk-card_img"
-              title-class="mk-card_title"
-              price="{{cardProItem.price}}"
-              origin-price="{{cardProItem.originPrice}}"
-              title="{{cardProItem.title}}"
-              thumb="{{cardProItem.thumb}}"
-              thumb-mode="aspectFill"
-            >
-              <view slot="desc" class="mk-c ard_desc">
-                <text>单位:{{cardProItem.unit}}</text>
-                <text>规格:{{cardProItem.specs}}</text>
-              </view>
-              <view slot="footer" class="mk-card_item_tocar">
-                <van-icon
-                  name="shopping-cart-o"
-                  custom-style="margin-top:3px;"
-                  size="20px"
-                  color="#fff"
-                />
-              </view>
-            </van-card>
-          </view>
-        </view>
-      </van-cell>
+      <prolist :cardProItem="cardProItem"></prolist>
     </repeat>
   </van-cell-group>
 </template>
 
 <script>
 import wepy from 'wepy';
+import Api from '../../utils/api';
+import proList from '../../components/prolist';
 
 export default class info extends wepy.page {
   config = {
@@ -55,34 +28,22 @@ export default class info extends wepy.page {
     }
   };
 
-  components = {};
+  components = {
+    prolist: proList
+  };
 
   mixins = [];
 
   data = {
     windowHeight: 0,
-    cardProList: [
-      {
-        id: 1,
-        checked: true,
-        title: '格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...',
-        unit: '750ml',
-        specs: '750ml*6',
-        price: '299',
-        originPrice: '690',
-        thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
-      },
-      {
-        id: 2,
-        checked: false,
-        title: '格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...',
-        unit: '750ml',
-        specs: '750ml*6',
-        price: '299',
-        originPrice: '690',
-        thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
-      }
-    ]
+    reqData: {
+      id: 0,
+      pageIndex: 1,
+      pageSize: 5,
+      sortField: 'sort',
+      isDesc: true
+    },
+    cardProList: []
   };
 
   computed = {};
@@ -91,6 +52,13 @@ export default class info extends wepy.page {
 
   events = {};
 
-  onLoad() {}
+  onLoad(e) {
+    var that = this;
+    that.reqData.id = e.id;
+    Api.HomeGetSectionList(that.reqData, function(res) {
+      that.cardProList = res.resultData.dataList;
+      that.$apply();
+    });
+  }
 }
 </script>

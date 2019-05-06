@@ -88,7 +88,7 @@
         <scroll-view scroll-x class="mk-tab_nav_scroll">
           <view class="mk-tab_nav_wapper">
             <repeat for="{{suitableList}}" key="index" index="index" item="suitableListItem">
-              <view class="mk-tab_nav_item" id="{{suitableListItem.id}}">
+              <view class="mk-tab_nav_item" id="{{suitableListItem.id}}" bindtap="onSuiTableClick">
                 <image src="{{suitableListItem.imagePath}}" class="mk-tab_nav_image">
                 <text class="mk-tab_nav_text">{{suitableListItem.name}}</text>
               </view>
@@ -220,7 +220,11 @@ export default class Index extends wepy.page {
       Api.HomeGetSectionList(Data,function(res){
         that.cardProList.list0 = res.resultData.dataList;
       });
-      
+    },
+    onSuiTableClick(e){
+      wx.navigateTo({
+        url: '../product/list?id='+e.currentTarget.id
+      });
     }
   };
 

@@ -10,7 +10,7 @@
 <template>
     <scroll-view scroll-y style="height: {{windowHeight}}px;">
       <view class="mk-swiper-container">
-        <swiper circular autoplay="{{autoplay}}" bindchange="swiperChange" class="mk-swiper">
+        <swiper circular autoplay="{{swiper.autoplay}}" bindchange="swiperChange" class="mk-swiper">
           <repeat for="{{swiper.imgUrls}}" key="index">
             <swiper-item>
               <image src="{{swiper.imgUrls}}" class="mk-slide-image">
@@ -27,16 +27,16 @@
 
       <view class="product-head">
         <view class="product-head_info">
-          <view class="product-head_title">格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒</view>
-          <view class="product-head_desc">格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒</view>
-          <view class="product-head_price">¥ 2.00</view>
+          <view class="product-head_title">{{productInfo.productName}}</view>
+          <view class="product-head_desc">{{productInfo.subheading}}</view>
+          <view class="product-head_price">¥ {{productInfo.realPrice}}</view>
           <view class="product-head_origin_price">
-            <text>会员价:¥ 2.00</text>
-            <text>市场价:¥ 2.00</text>
+            <text>会员价:¥ {{productInfo.vipPrice}}</text>
+            <text>市场价:¥ {{productInfo.marketPrice}}</text>
           </view>
         </view>
-        <view class="product-head_collect" bind:tap="onClickCollect">
-          <van-icon name="star" size="32px" color="#e26431" wx:if="{{isCollect}}" />
+        <view class="product-head_collect" bind:tap="onClickIsFavor">
+          <van-icon name="star" size="32px" color="#e26431" wx:if="{{isFavor}}" />
           <van-icon name="star-o" size="32px"  wx:else />
           <text>收藏</text>
         </view>
@@ -46,13 +46,13 @@
       <view class="product-info">
         <view class="product-title">基本信息</view>
         <van-row custom-class="product-info_list">
-          <van-col span="12"><text>品牌</text> 我也不知道</van-col>
-          <van-col span="12"><text>类型</text> 我也不知道</van-col>
-          <van-col span="12"><text>原产地</text> 我也不知道</van-col>
-          <van-col span="12"><text>品种</text> 我也不知道</van-col>
-          <van-col span="12"><text>生产商</text> 我也不知道</van-col>
-          <van-col span="12"><text>规格</text> 我也不知道</van-col>
-          <van-col span="12"><text>单位</text> 我也不知道</van-col>
+          <van-col span="12"><text>品牌</text> {{productInfo.brandName}}</van-col>
+          <van-col span="12"><text>类型</text> {{productInfo.productLocalityName}}</van-col>
+          <van-col span="12"><text>原产地</text> {{productInfo.categoryName}}</van-col>
+          <van-col span="12"><text>品种</text> 暂无</van-col>
+          <van-col span="12"><text>生产商</text> 暂无</van-col>
+          <van-col span="12"><text>规格</text> {{productInfo.unit}}</van-col>
+          <van-col span="12"><text>单位</text> {{productInfo.size}}</van-col>
         </van-row>
 
       </view>
@@ -60,7 +60,8 @@
 
       <view class="product-content">
         <view class="product-title">产品详情</view>
-        <rich-text nodes="{{nodes}}" ></rich-text>
+        <rich-text nodes="{{detailsNodes}}" >
+        </rich-text>
       </view>
       <!-- product-content end -->
     </scroll-view>
@@ -80,7 +81,7 @@
         <van-goods-action-icon
             icon="cart-o"
             text="购物车"
-            info="5"
+            info="{{cartCount}}"
             bind:click="onClickIcon"
         />
         <van-goods-action-button
@@ -100,6 +101,8 @@
 
 <script>
 import wepy from 'wepy';
+var weRich = require('we-rich');
+import Api from '../../utils/api';
 import Toast from '../../components/vant/toast/toast';
 
 export default class info extends wepy.page {
@@ -122,27 +125,45 @@ export default class info extends wepy.page {
 
   data = {
     windowHeight:0,
+    detailsNodes: [],
+    productInfo: [],
+    cartCount: 0,
+    isFavor: false,
     swiper: {
-      imgUrls: [
-        'https://images.unsplash.com/photo-1551334787-21e6bd3ab135?w=640',
-        'https://images.unsplash.com/photo-1551214012-84f95e060dee?w=640',
-        'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
-      ],
+      imgUrls: [],
       swiperCurrent: 0,
       autoplay: true
-    },
-    isCollect: false
+    }
   };
 
   computed = {};
 
   methods = {
-    onClickCollect(){
-      this.isCollect = !this.isCollect;
-      if(this.isCollect){
-        Toast.success('收藏成功');
+    swiperChange(e) {
+      this.swiper.swiperCurrent = e.detail.current;
+    },
+    onClickIsFavor(){
+      var that = this;
+      var reqData = {
+        id: that.productInfo.id
+      };
+      that.isFavor = !that.isFavor;
+      if(this.isFavor){
+        Api.PostMemberAddFavor(reqData,function(res){
+          if(res.result){
+            Toast.success('收藏成功');
+          }else{
+            Toast.fail('收藏失败,请重试');
+          }
+        });
       }else{
-        Toast.fail('取消收藏成功');
+        Api.PostMemberDeleteFavor(reqData,function(res){
+          if(res.result){
+            Toast.success('取消收藏成功');
+          }else{
+            Toast.fail('取消收藏失败,请重试');
+          }
+        });
       } 
     },
     onClickToCart(){
@@ -152,7 +173,7 @@ export default class info extends wepy.page {
 
   events = {};
 
-  onLoad() {
+  onLoad(e) {
     let that = this;
     let windowHeight = wx.getSystemInfoSync().windowHeight;
     let query = wx.createSelectorQuery();
@@ -162,6 +183,18 @@ export default class info extends wepy.page {
       .exec(function(res) {
         that.windowHeight = windowHeight - res[0].height;
       });
+
+    var reqData = {
+      id: e.id
+    };
+    Api.GetProductDetail(reqData,function(res){
+      that.productInfo = res.resultData.productInfo;
+      that.isFavor = res.resultData.isFavor;
+      that.cartCount = res.resultData.cartCount;
+      that.swiper.imgUrls = res.resultData.productInfo.productImage;
+      that.detailsNodes = weRich.parse(res.resultData.productInfo.details);
+    })
+    
   }
 }
 </script>
