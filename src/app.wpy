@@ -99,10 +99,8 @@ export default class extends wepy.app {
             code: res.code
           };
           Api.Login(Data, function(res) {
-            if (res.result) {
-              that.globalData.weChatInfo = res.resultData;
-              wx.setStorageSync('tokenId', res.resultData.tokenId);
-            }
+            that.globalData.weChatInfo = res.resultData;
+            wx.setStorageSync('tokenId', res.resultData.tokenId);
           });
         } else {
           console.log('登录失败！' + res.errMsg);

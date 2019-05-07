@@ -189,6 +189,7 @@ export default class My extends wepy.page {
   methods = {
     getUserInfo(e){
       var that = this;
+      console.log(that.$parent.globalData)
       var Data = {
         openId: that.$parent.globalData.weChatInfo.openId,
         encryptedData: e.detail.encryptedData,
@@ -216,6 +217,7 @@ export default class My extends wepy.page {
     Api.GetMemberCenter(function(memberRes){
       if(memberRes.result){
         that.memberInfo = memberRes.resultData.memberInfo;
+        that.isGetUserInfo = false; 
       }else{
         that.isGetUserInfo = true; 
       }
