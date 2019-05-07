@@ -60,7 +60,13 @@
 </style>
 
 <template>
-  <view  wx:if="{{!isGetUserInfo}}">
+
+  <view class="user-head" wx:if="{{isGetUserInfo}}">
+    <van-button type="warning" open-type="getUserInfo"
+    bind:getuserinfo="getUserInfo" plain>授权登录才可以使用</van-button>
+  </view>
+
+  </view wx:else>
     <view class="user-head">
       <view class="user-head_title" bind:tap="goUserInfo">
         <view>
@@ -82,13 +88,6 @@
           </view>
         </van-col>
       </van-row>
-    </view>
-  </view>
-
-  </view wx:else>
-    <view class="user-head">
-      <van-button type="warning" open-type="getUserInfo"
-      bind:getuserinfo="getUserInfo" plain>授权登录才可以使用</van-button>
     </view>
   </view>
   <!-- user-head end -->
@@ -197,45 +196,45 @@ export default class My extends wepy.page {
         unionid: that.$parent.globalData.weChatInfo.unionid
       };
       Api.getUserInfo(Data,function(res){
-        try {
-          wx.setStorageSync('tokenId', res.resultData.tokenId);
+        if(res.result){
           that.GetMemberCenter();
-        } catch (e) { }
-      });
-    },
-    GetMemberCenter(){
-      var that = this;
-      Api.GetMemberCenter(function(memberRes){
-        if(memberRes.result){
-          that.memberInfo = memberRes.resultData.memberInfo;
-          // that.$apply();
-          console.log(that.memberInfo)
-        }else{
-          that.isGetUserInfo = true; 
+          wx.setStorageSync('tokenId', res.resultData.tokenId);
         }
       });
     },
     goUserInfo(){
       wx.navigateTo({
         url: 'info'
-      })
+      });
     }
   };
 
   events = {};
+
+  GetMemberCenter(){
+    var that = this;
+    Api.GetMemberCenter(function(memberRes){
+      if(memberRes.result){
+        that.memberInfo = memberRes.resultData.memberInfo;
+      }else{
+        that.isGetUserInfo = true; 
+      }
+      that.$apply();
+    });
+  };
 
   onShow() {
     var that = this;
     wx.getSetting({
       success(res) {
         if (res.authSetting['scope.userInfo']) {
-          that.methods.GetMemberCenter();
+          that.GetMemberCenter();
         }else{
           that.isGetUserInfo = true;
           that.$apply();
         }
       }
-    })
+    });
   }
 }
 </script>

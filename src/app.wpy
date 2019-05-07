@@ -15,7 +15,7 @@ page {
 
 <script>
 import wepy from 'wepy';
-import Api from "./utils/api";
+import Api from './utils/api';
 import 'wepy-async-function';
 
 export default class extends wepy.app {
@@ -97,18 +97,18 @@ export default class extends wepy.app {
         if (res.code) {
           var Data = {
             code: res.code
-          }
-          Api.Login(Data,function(res){
-            that.globalData.weChatInfo = res.resultData;
-            try {
+          };
+          Api.Login(Data, function(res) {
+            if (res.result) {
+              that.globalData.weChatInfo = res.resultData;
               wx.setStorageSync('tokenId', res.resultData.tokenId);
-            } catch (e) { }
-          })
+            }
+          });
         } else {
-          console.log('登录失败！' + res.errMsg)
+          console.log('登录失败！' + res.errMsg);
         }
       }
-    })
+    });
   }
 
   getUserInfo(cb) {
