@@ -60,13 +60,8 @@
 </style>
 
 <template>
-
-  <view class="user-head" wx:if="{{isGetUserInfo}}">
-    <van-button type="warning" open-type="getUserInfo"
-    bind:getuserinfo="getUserInfo" plain>授权登录才可以使用</van-button>
-  </view>
-
-  </view wx:else>
+  
+  <view  wx:if="{{isLogin}}">
     <view class="user-head">
       <view class="user-head_title" bind:tap="goUserInfo">
         <view>
@@ -88,6 +83,13 @@
           </view>
         </van-col>
       </van-row>
+    </view>
+  </view>
+
+  <view wx:else>
+    <view class="user-head">
+      <van-button type="warning" open-type="getUserInfo"
+      bind:getuserinfo="getUserInfo" plain>授权登录才可以使用</van-button>
     </view>
   </view>
   <!-- user-head end -->
@@ -180,6 +182,7 @@ export default class My extends wepy.page {
   mixins = [];
 
   data = {
+    isLogin: false,
     isGetUserInfo: false,
     memberInfo: []
   };
@@ -217,7 +220,7 @@ export default class My extends wepy.page {
     Api.GetMemberCenter(function(memberRes){
       if(memberRes.result){
         that.memberInfo = memberRes.resultData.memberInfo;
-        that.isGetUserInfo = false; 
+        that.isLogin = true; 
       }else{
         that.isGetUserInfo = true; 
       }

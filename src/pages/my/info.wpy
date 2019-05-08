@@ -10,27 +10,32 @@
 
 <template>
   <van-cell-group>
-    <van-field label="姓    名" placeholder="请输入您的真实姓名"/>
-    <van-field label="手机号码" placeholder="请输入您的常用手机号码"/>
-    <van-field label="联系电话" placeholder="请输入您的常用联系电话"/>
-    <van-field label="所在城市" bind:tap="selectCity" disabled placeholder="请输入您的常用联系地址"/>
-    <van-field type="textarea" placeholder="请输入您的详细地址" autosize/>
+    <van-field label="姓    名" placeholder="请输入您的真实姓名" value="{{ MemberInfo.name }}"/>
+    <van-field label="手机号码" placeholder="请输入您的常用手机号码" value="{{ MemberInfo.mobile }}"/>
+    <van-field label="联系电话" placeholder="请输入您的常用联系电话" value="{{ MemberInfo.tel }}"/>
+    <van-field label="所在城市" bind:tap="selectCity" readonly value="{{currentArea}}" placeholder="请输入您的常用联系地址"/>
+    <van-field type="textarea" placeholder="请输入您的详细地址" value="{{ MemberInfo.address }}" autosize/>
   </van-cell-group>
   <view class="save-info">
-    <van-button type="warning" custom-class="save-info_btn" size="large" block round>保存</van-button>
+    <van-button type="warning" custom-class="save-info_btn" size="large" block round bindtap="SaveMemberInfo">保存</van-button>
   </view>
   <van-popup show="{{ areaPopupShow }}" position="bottom" bind:close="areaPopupClose">
     <van-area
       area-list="{{ areaList }}"
+      value="{{MemberInfo.county}}" 
       bind:confirm="confirmAreaList"
       bind:cancel="cancelAreaList"
-      bind:change="changeAreaList"
     />
   </van-popup>
+
+  <van-toast id="van-toast" />
 </template>
 
 <script>
 import wepy from 'wepy';
+import Api from '../../utils/api';
+import area from '../../utils/area';
+import Toast from '../../components/vant/toast/toast';
 
 export default class info extends wepy.page {
   config = {
@@ -39,6 +44,7 @@ export default class info extends wepy.page {
       'van-field': '../../components/vant/field/index',
       'van-area': '../../components/vant/area/index',
       'van-popup': '../../components/vant/popup/index',
+      "van-toast": "../../components/vant/toast/index",
       'van-button': '../../components/vant/button/index'
     }
   };
@@ -49,31 +55,18 @@ export default class info extends wepy.page {
 
   data = {
     areaPopupShow: false,
-    currentArea: '上海市普陀区',
-    areaList: {
-      province_list: {
-        110000: '北京市',
-        120000: '天津市'
-      },
-      city_list: {
-        110100: '北京市',
-        120100: '天津市'
-      },
-      county_list: {
-        110101: '东城区',
-        110102: '西城区',
-        110105: '朝阳区',
-        110106: '丰台区',
-        120101: '和平区',
-        120102: '河东区',
-        120103: '河西区',
-        120104: '南开区',
-        120105: '河北区'
-      }
-    }
+    areaList: [],
+    area_province_name: '请选择',
+		area_city_name: '你要查看',
+		area_county_name: '的城市',
+    MemberInfo: []
   };
 
-  computed = {};
+  computed = {
+		currentArea(){
+			return this.area_province_name + this.area_city_name + this.area_county_name;
+		}
+	};
 
   methods = {
     selectCity() {
@@ -86,16 +79,45 @@ export default class info extends wepy.page {
       this.areaPopupShow = false;
     },
     confirmAreaList(e) {
-      this.areaPopupShow = false;
-      console.log(e);
+      var that = this;
+      that.areaPopupShow = false;
+			that.MemberInfo.province = e.detail.values[0].code.split('-')[1];
+			that.MemberInfo.city = e.detail.values[1].code.split('-')[1];
+			that.MemberInfo.county = e.detail.values[2].code.split('-')[1];
+			that.area_province_name = e.detail.values[0].name;
+			that.area_city_name = e.detail.values[1].name;
+			that.area_county_name = e.detail.values[2].name;
     },
-    changeAreaList(e) {
-      console.log(e);
+    SaveMemberInfo() {
+      var that = this;
+      Api.SaveMemberInfo(that.MemberInfo,function(res){
+        if(res.result){
+          Toast.success('修改个人信息成功');
+          setTimeout(function(){
+            wx.navigateBack();
+          },1000);
+        }else{
+          Toast.fail('请稍后重试');
+        }
+      });
     }
   };
 
+  GetMemberInfo() {
+    var that = this;
+    Api.GetMemberInfo(function(res){
+      that.MemberInfo = res.resultData.memberInfo;
+      that.$apply();
+    });
+  };
+
+
   events = {};
 
-  onLoad() {}
+  onLoad() {
+    var that = this;
+    that.areaList = area.areaList;
+    that.GetMemberInfo();
+  }
 }
 </script>

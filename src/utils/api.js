@@ -127,6 +127,16 @@ function GetMemberInfo(cb) {
   });
 }
 
+//更新用户信息
+function SaveMemberInfo(data, cb) {
+  PostData('Member/SaveMemberInfo', data, function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
+
+
 //添加收藏
 function PostMemberAddFavor(data, cb) {
   PostData('Member/AddFavor', data, function (res) {
@@ -188,6 +198,7 @@ module.exports = {
   HomeGetStoreList: HomeGetStoreList,
   GetMemberInfo: GetMemberInfo,
   GetMemberCenter: GetMemberCenter,
+  SaveMemberInfo: SaveMemberInfo,
   PostMemberAddFavor: PostMemberAddFavor,
   PostMemberDeleteFavor: PostMemberDeleteFavor,
   GetCampaignList: GetCampaignList,
