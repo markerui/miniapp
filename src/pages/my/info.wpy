@@ -108,7 +108,9 @@ export default class info extends wepy.page {
     Api.GetMemberInfo(function(res){
       that.MemberInfo = res.resultData.memberInfo;
       that.$apply();
+      console.log(that.MemberInfo.county)
     });
+
   };
 
 

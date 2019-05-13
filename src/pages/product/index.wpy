@@ -36,9 +36,14 @@
           </view>
         </view>
         <view class="product-head_collect" bind:tap="onClickIsFavor">
-          <van-icon name="star" size="32px" color="#e26431" wx:if="{{isFavor}}" />
-          <van-icon name="star-o" size="32px"  wx:else />
-          <text>收藏</text>
+          <view  wx:if="{{isFavor}}">
+            <van-icon name="star" size="32px" color="#e26431" />
+            <text>已收藏</text>
+          </view>
+          <view wx:else >
+            <van-icon name="star-o" size="32px"/>
+            <text>收藏</text>
+          </view>
         </view>
       </view>
       <!-- product head -->
@@ -157,6 +162,9 @@ export default class info extends wepy.page {
           }
         });
       }else{
+        reqData = {
+          ids: [that.productInfo.id]
+        };
         Api.PostMemberDeleteFavor(reqData,function(res){
           if(res.result){
             Toast.success('取消收藏成功');

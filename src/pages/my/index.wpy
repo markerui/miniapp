@@ -71,13 +71,13 @@
       </view>
       <van-row class="user-head_info">
         <van-col span="12">
-          <view class="user-head_info_item">
+          <view class="user-head_info_item" bindtap="goYhq">
             <text class="user-head_info_text">优惠券</text>
             <text class="user-head_info_num">{{memberInfo.giftCardCount}}</text>
           </view>
         </van-col>
         <van-col span="12">
-          <view class="user-head_info_item" style="border:none;">
+          <view class="user-head_info_item" bindtap="goLpk" style="border:none;">
             <text class="user-head_info_text">礼品卡</text>
             <text class="user-head_info_num">{{memberInfo.couponCount}}</text>
           </view>
@@ -192,21 +192,36 @@ export default class My extends wepy.page {
   methods = {
     getUserInfo(e){
       var that = this;
-      console.log(that.$parent.globalData)
-      var Data = {
+      var reqData = {
         openId: that.$parent.globalData.weChatInfo.openId,
         encryptedData: e.detail.encryptedData,
         iv: e.detail.iv,
         unionid: that.$parent.globalData.weChatInfo.unionid
       };
-      Api.getUserInfo(Data,function(res){
+      Api.getUserInfo(reqData,function(res){
         if(res.result){
           that.GetMemberCenter();
           wx.setStorageSync('tokenId', res.resultData.tokenId);
+        }else{
+          wx.showModal({
+            title: '提示',
+            content: res.message,
+            showCancel: false,
+            success(res) {
+              if (res.confirm) {
+                console.log('用户点击确定')
+              }
+            }
+          })
         }
       });
     },
     goUserInfo(){
+      wx.navigateTo({
+        url: 'info'
+      });
+    },
+    goYhq(){
       wx.navigateTo({
         url: 'info'
       });

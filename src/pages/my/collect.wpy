@@ -4,45 +4,28 @@
 </style>
 
 <template>
-    <repeat for="{{cardProList}}" key="index" index="index" item="cardProItem">
-        <van-swipe-cell right-width="{{ 65 }}">
-            <van-cell>
-                <view slot="title">
-                    <van-card
-                        centered
-                        custom-class="mk-card_item"
-                        thumb-class="mk-card_img"
-                        title-class="mk-card_title"
-                        price="{{cardProItem.price}}"
-                        origin-price="{{cardProItem.originPrice}}"
-                        title="{{cardProItem.title}}"
-                        thumb="{{cardProItem.thumb}}"
-                        thumb-mode="aspectFill"
-                    >
-                        <view slot="desc" class="mk-card_desc">
-                            <text>单位:{{cardProItem.unit}}</text>
-                            <text>规格:{{cardProItem.specs}}</text>
-                        </view>
-                        <view slot="footer" class="mk-card_item_tocar">
-                            <van-icon
-                                name="shopping-cart-o"
-                                custom-style="margin-top:3px;"
-                                size="20px"
-                                color="#fff"
-                            />
-                        </view>
-                    </van-card>
-                </view>
-            </van-cell>
-            <view slot="right" class="collect-right_btn">
-                <text>删除</text>
-            </view>
-        </van-swipe-cell>
-    </repeat>
+  <repeat for="{{cardProList}}" key="index" index="index" item="cardProItem">
+    <van-swipe-cell right-width="{{ 65 }}">
+      <prolist :cardProItem="cardProItem"></prolist>
+      <view
+        slot="right"
+        class="collect-right_btn"
+        id="{{cardProItem.id}}"
+        data-index="{{index}}"
+        bindtap="onClickIsFavor"
+      >
+        <text>删除</text>
+      </view>
+    </van-swipe-cell>
+  </repeat>
+  <van-toast id="van-toast"/>
 </template>
 
 <script>
 import wepy from 'wepy';
+import Api from '../../utils/api';
+import proList from '../../components/prolist';
+import Toast from '../../components/vant/toast/toast';
 
 export default class info extends wepy.page {
   config = {
@@ -53,43 +36,53 @@ export default class info extends wepy.page {
       'van-button': '../../components/vant/button/index',
       'van-cell': '../../components/vant/cell/index',
       'van-cell-group': '../../components/vant/cell-group/index',
-      'van-card': '../../components/vant/card/index'
+      'van-card': '../../components/vant/card/index',
+      'van-toast': '../../components/vant/toast/index'
     }
   };
 
-  components = {};
+  components = {
+    prolist: proList
+  };
 
   mixins = [];
 
   data = {
-    cardProList: [
-      {
-        id: 1,
-        title: '格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...',
-        unit: '750ml',
-        specs: '750ml*6',
-        price: '299',
-        originPrice: '690',
-        thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
-      },
-      {
-        id: 2,
-        title: '格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...',
-        unit: '750ml',
-        specs: '750ml*6',
-        price: '299',
-        originPrice: '690',
-        thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
-      }
-    ]
+    reqData: {
+      pageIndex: 1,
+      pageSize: 2
+    },
+    cardProList: []
   };
 
   computed = {};
 
-  methods = {};
+  methods = {
+    onClickIsFavor(e) {
+      var that = this;
+      var reqData = {
+        ids: [e.target.id]
+      };
+      Api.PostMemberDeleteFavor(reqData, function(res) {
+        if (res.result) {
+          that.cardProList.splice(e.target.dataset.index);
+          that.$apply();
+          Toast.success('取消收藏成功');
+        } else {
+          Toast.fail('取消收藏失败,请重试');
+        }
+      });
+    }
+  };
 
   events = {};
 
-  onLoad() {}
+  onLoad() {
+    var that = this;
+    Api.GetMemberMyFavor(that.reqData, function(res) {
+      that.cardProList = res.resultData.dataList;
+      that.$apply();
+    });
+  }
 }
 </script>

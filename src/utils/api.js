@@ -127,6 +127,25 @@ function GetMemberInfo(cb) {
   });
 }
 
+//获取我的收藏
+function GetMemberMyFavor(data, cb) {
+  PostData('Member/MyFavor', data, function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
+
+//获取我的购物车
+function GetMemberMyCart(data, cb) {
+  PostData('Member/MyCart', data, function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
+
+
 //更新用户信息
 function SaveMemberInfo(data, cb) {
   PostData('Member/SaveMemberInfo', data, function (res) {
@@ -198,7 +217,9 @@ module.exports = {
   HomeGetStoreList: HomeGetStoreList,
   GetMemberInfo: GetMemberInfo,
   GetMemberCenter: GetMemberCenter,
+  GetMemberMyCart: GetMemberMyCart,
   SaveMemberInfo: SaveMemberInfo,
+  GetMemberMyFavor: GetMemberMyFavor,
   PostMemberAddFavor: PostMemberAddFavor,
   PostMemberDeleteFavor: PostMemberDeleteFavor,
   GetCampaignList: GetCampaignList,
