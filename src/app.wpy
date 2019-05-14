@@ -24,10 +24,14 @@ export default class extends wepy.app {
       'pages/my/index',
       'pages/my/collect',
       'pages/my/info',
+      'pages/address/index',
+      'pages/address/add',
+
       'pages/index/index',
       'pages/index/search',
       'pages/index/shoplist',
       'pages/card/giftList',
+      'pages/card/couponList',
       'pages/cart/index',
       'pages/cart/confirm',
       'pages/find/login',
@@ -38,10 +42,7 @@ export default class extends wepy.app {
       'pages/product/list',
       'pages/product/index',
       'pages/order/index',
-      'pages/order/list',
-
-      'pages/address/add',
-      'pages/address/index'
+      'pages/order/list'
     ],
     window: {
       backgroundTextStyle: 'light',

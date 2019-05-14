@@ -174,6 +174,79 @@ function PostMemberDeleteFavor(data, cb) {
   });
 }
 
+//我的优惠券
+function PostMemberMyCoupon(cb) {
+  PostData('Member/MyCoupon', '', function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
+
+//我的礼品卡
+function PostMemberMyGiftCard(data, cb) {
+  PostData('Member/MyGiftCard', data, function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
+
+
+//激活礼品卡
+function PostMemberActivateGiftCard(data, cb) {
+  PostData('Member/ActivateGiftCard', data, function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
+
+//获取收货地址
+function PostMemberGetAddressList(data, cb) {
+  PostData('Member/GetAddressList', data, function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
+
+
+//添加收货地址
+function PostMemberAddAddress(data, cb) {
+  PostData('Member/AddAddress', data, function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
+
+//获取收货地址
+function PostMemberGetAddress(data, cb) {
+  PostData('Member/GetAddress', data, function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
+
+//编辑地址
+function PostMemberEditAddress(data, cb) {
+  PostData('Member/EditAddress', data, function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
+
+//删除地址
+function PostMemberDeleteAddress(data, cb) {
+  PostData('Member/DeleteAddress', data, function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
 
 
 //获取发现列表
@@ -220,6 +293,14 @@ module.exports = {
   GetMemberMyCart: GetMemberMyCart,
   SaveMemberInfo: SaveMemberInfo,
   GetMemberMyFavor: GetMemberMyFavor,
+  PostMemberMyCoupon: PostMemberMyCoupon,
+  PostMemberMyGiftCard: PostMemberMyGiftCard,
+  PostMemberGetAddressList: PostMemberGetAddressList,
+  PostMemberAddAddress: PostMemberAddAddress,
+  PostMemberGetAddress: PostMemberGetAddress,
+  PostMemberEditAddress: PostMemberEditAddress,
+  PostMemberDeleteAddress: PostMemberDeleteAddress,
+  PostMemberActivateGiftCard: PostMemberActivateGiftCard,
   PostMemberAddFavor: PostMemberAddFavor,
   PostMemberDeleteFavor: PostMemberDeleteFavor,
   GetCampaignList: GetCampaignList,

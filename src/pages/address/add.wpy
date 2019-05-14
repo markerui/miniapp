@@ -19,22 +19,24 @@
 
 <template>
   <van-cell-group>
-    <van-field label="收件人" placeholder="请输入您的真实姓名"/>
-    <van-field label="收货电话" placeholder="请输入您的常用手机号码"/>
-    <van-field label="所在地区" bind:tap="selectCity" disabled placeholder="请输入您的常用联系地址"/>
-    <van-field type="textarea" placeholder="请输入您的详细地址" autosize/>
+    <van-field label="收件人" value="{{AddAddressData.name}}" data-name="name"  bind:change="onInput" placeholder="请输入您的真实姓名"/>
+    <van-field label="收货电话" value="{{AddAddressData.mobile}}" data-name="mobile"  bind:change="onInput" placeholder="请输入您的常用手机号码"/>
+    <van-field label="所在地区" bind:tap="selectCity" disabled placeholder="{{currentArea}}"/>
+    <van-field type="textarea" value="{{AddAddressData.address}}" data-name="address"  bind:change="onInput" placeholder="请输入您的详细地址" autosize/>
   </van-cell-group>
   <view class="address-site_default">
     <van-switch-cell
       active-color="#e26431"
       title="设为默认"
-      checked="{{ addressDefaultChecked }}"
+      checked="{{ AddAddressData.isDefault }}"
       bind:change="addressDefaultChecked"
     />
   </view>
   <view class="save-address">
-    <van-button type="warning" custom-class="save-address_btn" size="large" block round>保存</van-button>
-    <van-button type="default" custom-class="del-address_btn" size="large" block round>删除</van-button>
+    <van-button type="warning" custom-class="save-address_btn" size="large" block round bindtap="saveAddress">保存</van-button>
+    <block wx:if="{{addType == 0}}">
+      <van-button type="default" custom-class="del-address_btn" size="large" block round bindtap="delAddress">删除</van-button>
+    </block>
   </view>
   <van-popup show="{{ areaPopupShow }}" position="bottom" bind:close="areaPopupClose">
     <van-area
@@ -44,10 +46,14 @@
       bind:change="changeAreaList"
     />
   </van-popup>
+  <van-toast id="van-toast" />
 </template>
 
 <script>
 import wepy from 'wepy';
+import Api from '../../utils/api';
+import area from '../../utils/area';
+import Toast from '../../components/vant/toast/toast';
 
 export default class info extends wepy.page {
   config = {
@@ -62,7 +68,8 @@ export default class info extends wepy.page {
       'van-button': '../../components/vant/button/index',
       'van-cell': '../../components/vant/cell/index',
       'van-cell-group': '../../components/vant/cell-group/index',
-      'van-switch-cell': '../../components/vant/switch-cell/index'
+      'van-switch-cell': '../../components/vant/switch-cell/index',
+       "van-toast": "../../components/vant/toast/index"
     }
   };
 
@@ -71,37 +78,40 @@ export default class info extends wepy.page {
   mixins = [];
 
   data = {
-    areaPopupShow: false,
-    addressDefaultChecked: false,
     currentArea: '上海市普陀区',
-    areaList: {
-      province_list: {
-        110000: '北京市',
-        120000: '天津市'
-      },
-      city_list: {
-        110100: '北京市',
-        120100: '天津市'
-      },
-      county_list: {
-        110101: '东城区',
-        110102: '西城区',
-        110105: '朝阳区',
-        110106: '丰台区',
-        120101: '和平区',
-        120102: '河东区',
-        120103: '河西区',
-        120104: '南开区',
-        120105: '河北区'
-      }
+    addType: 0,
+    areaPopupShow: false,
+    areaList: [],
+    area_province_name: '请输入',
+    area_city_name: '您的',
+    area_county_name: '常用联系地址',
+    AddAddressData: {
+      name: '',
+      mobile: '',
+      province: '',
+      city: '',
+      county: '',
+      address: '',
+      isDefault: false
     }
   };
 
-  computed = {};
+  computed = {
+    currentArea() {
+      return (
+        this.area_province_name + this.area_city_name + this.area_county_name
+      );
+    }
+  };
 
   methods = {
+    onInput(e){
+      var value = e.detail;
+      var name = e.currentTarget.dataset.name;
+      this.AddAddressData[name] = value;
+    },
     addressDefaultChecked({ detail }) {
-      this.addressDefaultChecked = detail;
+      this.AddAddressData.isDefault = detail;
     },
     selectCity() {
       this.areaPopupShow = true;
@@ -113,16 +123,78 @@ export default class info extends wepy.page {
       this.areaPopupShow = false;
     },
     confirmAreaList(e) {
-      this.areaPopupShow = false;
-      console.log(e);
+      var that = this;
+      that.areaPopupShow = false;
+      that.AddAddressData.province = e.detail.values[0].code.split('-')[1];
+      that.AddAddressData.city = e.detail.values[1].code.split('-')[1];
+      that.AddAddressData.county = e.detail.values[2].code.split('-')[1];
+      that.area_province_name = e.detail.values[0].name;
+      that.area_city_name = e.detail.values[1].name;
+      that.area_county_name = e.detail.values[2].name;
     },
-    changeAreaList(e) {
-      console.log(e);
+    saveAddress(){
+      var that = this;
+      if(AddAddressData.id){
+        Api.PostMemberEditAddress(that.AddAddressData,function(res){
+          if(res.result){
+            Toast.success(res.message);
+            setTimeout(function(){
+              wx.navigateBack();
+            },1000);
+          }else{
+            Toast.fail(res.message);
+          }
+        });
+      }else{
+        Api.PostMemberAddAddress(that.AddAddressData,function(res){
+          if(res.result){
+            Toast.success(res.message);
+            setTimeout(function(){
+              wx.navigateBack();
+            },1000);
+          }else{
+            Toast.fail(res.message);
+          }
+        });
+      }
+    },
+    delAddress(){
+      var that = this;
+      var reqData = {
+        id : that.AddAddressData.id
+      };
+      Api.PostMemberDeleteAddress(reqData,function(res){
+        if(res.result){
+          Toast.success(res.message);
+          setTimeout(function(){
+            wx.navigateBack();
+          },1000);
+        }else{
+          Toast.fail(res.message);
+        }
+      });
     }
   };
 
   events = {};
 
-  onLoad() {}
+  onLoad(e) {
+    var that = this;
+    that.areaList = area.areaList;
+    that.addType = e.addType;
+    if(e.id){
+      var reqData = {
+        id : e.id
+      };
+      Api.PostMemberGetAddress(reqData,function(res){
+        if(res.result){
+          that.AddAddressData = res.resultData.adressInfo;
+          that.$apply();
+        }else{
+          Toast.fail(res.message);
+        }
+      });
+    }
+  }
 }
 </script>

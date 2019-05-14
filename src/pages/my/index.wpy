@@ -61,7 +61,7 @@
 
 <template>
   
-  <view  wx:if="{{isLogin}}">
+  <block wx:if="{{isLogin}}">
     <view class="user-head">
       <view class="user-head_title" bind:tap="goUserInfo">
         <view>
@@ -84,14 +84,14 @@
         </van-col>
       </van-row>
     </view>
-  </view>
+  </block>
 
-  <view wx:else>
+  <block wx:else>
     <view class="user-head">
       <van-button type="warning" open-type="getUserInfo"
       bind:getuserinfo="getUserInfo" plain>授权登录才可以使用</van-button>
     </view>
-  </view>
+  </block>
   <!-- user-head end -->
 
   <view class="my-cell_list">
@@ -223,7 +223,12 @@ export default class My extends wepy.page {
     },
     goYhq(){
       wx.navigateTo({
-        url: 'info'
+        url: '../card/couponList'
+      });
+    },
+    goLpk(){
+      wx.navigateTo({
+        url: '../card/giftList'
       });
     }
   };

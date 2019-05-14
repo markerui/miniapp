@@ -24,45 +24,46 @@
 </style>
 
 <template>
-    <view class="address-head">
-        <view class="mk-search-box">
-            <view class="mk-search">
-                <van-search
-                    placeholder="输入关键词搜索"
-                    background="transparent"
-                    shape="round"
-                    bind:search="onSearch"
-                    bind:cancel="closeSearch"
-                ></van-search>
-            </view>
-        </view>
-        <!-- mk-search-box end -->
-        <van-cell-group custom-class="plus-address">
-            <van-cell title="新增收货地址" border="false" url="add" is-link icon="plus"/>
-        </van-cell-group>
+  <view class="address-head">
+    <view class="mk-search-box">
+      <view class="mk-search">
+        <van-search
+          placeholder="输入关键词搜索"
+          background="transparent"
+          shape="round"
+          bind:search="onSearch"
+          bind:cancel="closeSearch"
+        ></van-search>
+      </view>
     </view>
-    <scroll-view scroll-y style="height: {{windowHeight}}px; margin-top:10px;">
-        <van-cell-group custom-class="address-items">
-            <van-cell center is-link>
-                <view slot="title">
-                    <view class="van-cell-text">
-                        <van-tag type="danger" class="address-items_tag">默认</van-tag>收货人信息
-                    </view>
-                    <view class="address-items_label">描述信息描述信息描述信息描述信息描述信息描述信息22</view>
-                </view>
-            </van-cell>
-            <van-cell center is-link>
-                <view slot="title">
-                    <view class="van-cell-text">收货人信息</view>
-                    <view class="address-items_label">描述信息描述信息描述信息描述信息描述信息描述信息22</view>
-                </view>
-            </van-cell>
-        </van-cell-group>
-    </scroll-view>
+    <!-- mk-search-box end -->
+    <van-cell-group custom-class="plus-address">
+      <van-cell title="新增收货地址" border="false" url="add?addType=1" is-link icon="plus"/>
+    </van-cell-group>
+  </view>
+  <scroll-view scroll-y style="height: {{windowHeight}}px; margin-top:10px;">
+    <van-cell-group custom-class="address-items">
+      <repeat for="{{addressList}}" key="index" index="index" item="item">
+        <van-cell center is-link url="add?addType=0&id={{item.id}}">
+          <view slot="title">
+            <view class="van-cell-text">
+              <block wx:if="{{item.isDefault}}">
+                <van-tag type="danger" class="address-items_tag">默认</van-tag>
+              </block>
+              {{item.name}}
+              {{item.mobile}}
+            </view>
+            <view class="address-items_label">{{item.address}}</view>
+          </view>
+        </van-cell>
+      </repeat>
+    </van-cell-group>
+  </scroll-view>
 </template>
 
 <script>
 import wepy from 'wepy';
+import Api from '../../utils/api';
 
 export default class info extends wepy.page {
   config = {
@@ -83,6 +84,12 @@ export default class info extends wepy.page {
   mixins = [];
 
   data = {
+    reqData: {
+      pageIndex: 1,
+      pageSize: 10,
+      keyword: ''
+    },
+    addressList: [],
     windowHeight: 0
   };
 
@@ -92,7 +99,7 @@ export default class info extends wepy.page {
 
   events = {};
 
-  onLoad() {
+  onShow() {
     let that = this;
     let windowHeight = wx.getSystemInfoSync().windowHeight;
     let query = wx.createSelectorQuery();
@@ -102,6 +109,10 @@ export default class info extends wepy.page {
       .exec(function(res) {
         that.windowHeight = windowHeight - res[0].height;
       });
+    Api.PostMemberGetAddressList(that.reqData, function(res) {
+      that.addressList = res.resultData.dataList;
+      that.$apply();
+    });
   }
 }
 </script>

@@ -60,14 +60,15 @@ export default class info extends wepy.page {
   methods = {
     onClickIsFavor(e) {
       var that = this;
+      var index = e.currentTarget.dataset.index;
       var reqData = {
-        ids: [e.target.id]
+        ids: [e.currentTarget.id]
       };
       Api.PostMemberDeleteFavor(reqData, function(res) {
         if (res.result) {
-          that.cardProList.splice(e.target.dataset.index);
-          that.$apply();
           Toast.success('取消收藏成功');
+          that.cardProList.splice(index, 1);
+          that.$apply();
         } else {
           Toast.fail('取消收藏失败,请重试');
         }

@@ -56,9 +56,9 @@ export default class info extends wepy.page {
   data = {
     areaPopupShow: false,
     areaList: [],
-    area_province_name: '请选择',
-		area_city_name: '你要查看',
-		area_county_name: '的城市',
+    area_province_name: '请输入',
+    area_city_name: '您的',
+    area_county_name: '常用联系地址',
     MemberInfo: []
   };
 
@@ -106,13 +106,11 @@ export default class info extends wepy.page {
   GetMemberInfo() {
     var that = this;
     Api.GetMemberInfo(function(res){
+      console.log(res)
       that.MemberInfo = res.resultData.memberInfo;
       that.$apply();
-      console.log(that.MemberInfo.county)
     });
-
   };
-
 
   events = {};
 
