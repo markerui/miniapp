@@ -32,18 +32,26 @@
                 custom-class="mk-card_item"
                 thumb-class="mk-card_img"
                 title-class="mk-card_title"
-                price="{{cardProItem.price}}"
-                title="{{cardProItem.title}}"
-                thumb="{{cardProItem.thumb}}"
+                price="{{cardProItem.realPrice}}"
+                title="{{cardProItem.productName}}"
+                thumb="{{cardProItem.defaultImage}}"
                 thumb-mode="aspectFill"
               >
                 <view slot="desc" class="mk-card_desc">
                   <text>单位:{{cardProItem.unit}}</text>
-                  <text>规格:{{cardProItem.specs}}</text>
+                  <text>规格:{{cardProItem.size}}</text>
                 </view>
                 <view slot="footer" class="mk-card_item_stepper">
-                  <text>剩余2330份</text>
-                  <van-stepper integer min="1" max="40" step="1" bind:change="onChange"/>
+                  <text>剩余{{cardProItem.stock}}份</text>
+                  <van-stepper
+                    id="{{cardProItem.productID}}"
+                    integer
+                    min="1"
+                    max="{{cardProItem.stock}}"
+                    value="{{ cardProItem.productCount }}"
+                    step="1"
+                    bind:change="onChangeStepper"
+                  />
                 </view>
               </van-card>
             </view>
@@ -77,7 +85,9 @@
 
 <script>
 import wepy from 'wepy';
+import Api from '../../utils/api';
 import Dialog from '../../components/vant/dialog/dialog';
+import Toast from '../../components/vant/toast/toast';
 
 export default class info extends wepy.page {
   config = {
@@ -93,7 +103,8 @@ export default class info extends wepy.page {
       'van-checkbox': '../../components/vant/checkbox/index',
       'van-checkbox-group': '../../components/vant/checkbox-group/index',
       'van-submit-bar': '../../components/vant/submit-bar/index',
-      'van-dialog': '../../components/vant/dialog/index'
+      'van-dialog': '../../components/vant/dialog/index',
+      'van-toast': '../../components/vant/toast/index'
     }
   };
 
@@ -103,88 +114,7 @@ export default class info extends wepy.page {
 
   data = {
     windowHeight: 0,
-    cardProList: [
-      {
-        id: 1,
-        checked: true,
-        title: '格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...',
-        unit: '750ml',
-        specs: '750ml*6',
-        price: '299',
-        originPrice: '690',
-        thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
-      },
-      {
-        id: 2,
-        checked: false,
-        title: '格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...',
-        unit: '750ml',
-        specs: '750ml*6',
-        price: '299',
-        originPrice: '690',
-        thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
-      },
-      {
-        id: 1,
-        checked: true,
-        title: '格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...',
-        unit: '750ml',
-        specs: '750ml*6',
-        price: '299',
-        originPrice: '690',
-        thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
-      },
-      {
-        id: 2,
-        checked: false,
-        title: '格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...',
-        unit: '750ml',
-        specs: '750ml*6',
-        price: '299',
-        originPrice: '690',
-        thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
-      },
-      {
-        id: 1,
-        checked: true,
-        title: '格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...',
-        unit: '750ml',
-        specs: '750ml*6',
-        price: '299',
-        originPrice: '690',
-        thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
-      },
-      {
-        id: 2,
-        checked: false,
-        title: '格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...',
-        unit: '750ml',
-        specs: '750ml*6',
-        price: '299',
-        originPrice: '690',
-        thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
-      },
-      {
-        id: 2,
-        checked: false,
-        title: '格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...',
-        unit: '750ml',
-        specs: '750ml*6',
-        price: '299',
-        originPrice: '690',
-        thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
-      },
-      {
-        id: 2,
-        checked: false,
-        title: '格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...',
-        unit: '750ml',
-        specs: '750ml*6',
-        price: '299',
-        originPrice: '690',
-        thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
-      }
-    ]
+    cardProList: []
   };
 
   computed = {};
@@ -192,6 +122,20 @@ export default class info extends wepy.page {
   methods = {
     onChangeCartChecke(e, index) {
       this.cardProList[index].checked = e.detail;
+    },
+    onChangeStepper(e) {
+      var that = this;
+      var reqData = {
+        id: e.currentTarget.id
+      };
+      Api.PostMemberAddCart(reqData, function(res) {
+        if (res.result) {
+          Toast.success('操作成功');
+          that.cardProItem.stock -= 1;
+        } else {
+          Toast.fail('操作失败,请重试');
+        }
+      });
     },
     onSubmitOrder() {
       Dialog.alert({
@@ -218,6 +162,10 @@ export default class info extends wepy.page {
       .exec(function(res) {
         that.windowHeight = windowHeight - res[0].height - 30;
       });
+    Api.GetMemberMyCart(function(res) {
+      that.cardProList = res.resultData.dataList;
+      that.$apply();
+    });
   }
 }
 </script>

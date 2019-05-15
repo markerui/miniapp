@@ -10,7 +10,7 @@
       <view
         slot="right"
         class="collect-right_btn"
-        id="{{cardProItem.id}}"
+        id="{{cardProItem.productID}}"
         data-index="{{index}}"
         bindtap="onClickIsFavor"
       >

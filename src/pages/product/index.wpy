@@ -87,12 +87,12 @@
             icon="cart-o"
             text="购物车"
             info="{{cartCount}}"
-            bind:click="onClickIcon"
+            bind:click="onClickCart"
         />
         <van-goods-action-button
             text="加入购物车"
             type="warning"
-            bind:click="onClickToCart"
+            bind:click="onClickAddCart"
         />
         <van-goods-action-button
             text="立即购买"
@@ -174,9 +174,25 @@ export default class info extends wepy.page {
         });
       } 
     },
-    onClickToCart(){
-      Toast.success('加入购物车成功');
+    onClickAddCart(){
+      var that = this;
+      var reqData = {
+        id: that.productInfo.id
+      };
+      Api.PostMemberAddCart(reqData,function(res){
+        if(res.result){
+          Toast.success('加入购物车成功');
+          that.cartCount += 1;
+        }else{
+          Toast.fail('操作失败,请重试'); 
+        }
+      })
     },
+    onClickCart(){
+      wx.navigateTo({
+        url: '../cart/index'
+      });
+    }
   };
 
   events = {};

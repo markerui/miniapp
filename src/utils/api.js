@@ -73,6 +73,30 @@ function Login(data, cb) {
   });
 }
 
+function wxLogin(cb) {
+  wx.login({
+    success(res) {
+      if (res.code) {
+        var Data = {
+          code: res.code
+        };
+        Login(Data, function (res) {
+          wx.setStorageSync('tokenId', res.resultData.tokenId);
+          if (cb) {
+            cb(res)
+          }
+        });
+      } else {
+        wx.showModal({
+          title: '提示',
+          content: '登录失败,请重试!',
+          showCancel: false
+        });
+      }
+    }
+  });
+}
+
 //登录授权
 function getUserInfo(data, cb) {
   PostData('auth/GetUserInfo', data, function (res) {
@@ -278,12 +302,28 @@ function GetProductDetail(data, cb) {
   });
 }
 
+//我的购物车
+function GetMemberMyCart(cb) {
+  PostData('Member/MyCart', '', function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
 
+//添加到购物车
+function PostMemberAddCart(data, cb) {
+  PostData('Member/AddCart', data, function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
 
 module.exports = {
   HOST_URI: HOST_URI,
   API_URL: API_URL,
-  Login: Login,
+  wxLogin: wxLogin,
   getUserInfo: getUserInfo,
   HomeGetShopIndex: HomeGetShopIndex,
   HomeGetSectionList: HomeGetSectionList,
@@ -291,6 +331,7 @@ module.exports = {
   GetMemberInfo: GetMemberInfo,
   GetMemberCenter: GetMemberCenter,
   GetMemberMyCart: GetMemberMyCart,
+  PostMemberAddCart: PostMemberAddCart,
   SaveMemberInfo: SaveMemberInfo,
   GetMemberMyFavor: GetMemberMyFavor,
   PostMemberMyCoupon: PostMemberMyCoupon,

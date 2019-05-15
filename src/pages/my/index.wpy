@@ -237,12 +237,18 @@ export default class My extends wepy.page {
 
   GetMemberCenter(){
     var that = this;
-    Api.GetMemberCenter(function(memberRes){
-      if(memberRes.result){
-        that.memberInfo = memberRes.resultData.memberInfo;
+    Api.GetMemberCenter(function(res){
+      if(res.result){
+        that.memberInfo = res.resultData.memberInfo;
         that.isLogin = true; 
       }else{
-        that.isGetUserInfo = true; 
+        if(res.errorCode == 1002){
+          Api.wxLogin(function(res){
+            that.GetMemberCenter();
+          });
+        }else{
+          that.isGetUserInfo = true; 
+        } 
       }
       that.$apply();
     });

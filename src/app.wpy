@@ -21,15 +21,14 @@ import 'wepy-async-function';
 export default class extends wepy.app {
   config = {
     pages: [
+      'pages/index/index',
+      'pages/index/search',
+      'pages/index/shoplist',
       'pages/my/index',
       'pages/my/collect',
       'pages/my/info',
       'pages/address/index',
       'pages/address/add',
-
-      'pages/index/index',
-      'pages/index/search',
-      'pages/index/shoplist',
       'pages/card/giftList',
       'pages/card/couponList',
       'pages/cart/index',
@@ -94,20 +93,8 @@ export default class extends wepy.app {
 
   onLaunch() {
     var that = this;
-    wx.login({
-      success(res) {
-        if (res.code) {
-          var Data = {
-            code: res.code
-          };
-          Api.Login(Data, function(res) {
-            that.globalData.weChatInfo = res.resultData;
-            wx.setStorageSync('tokenId', res.resultData.tokenId);
-          });
-        } else {
-          console.log('登录失败！' + res.errMsg);
-        }
-      }
+    Api.wxLogin(function(res) {
+      that.globalData.weChatInfo = res.resultData;
     });
   }
 
