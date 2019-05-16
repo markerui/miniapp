@@ -149,7 +149,7 @@ export default class Class extends wepy.page {
         })
       }else{
         wx.navigateTo({
-          url: '../product/list?id='+e.currentTarget.id
+          url: '../product/list2?id='+e.currentTarget.id
         })
       }
       

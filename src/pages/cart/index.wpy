@@ -76,7 +76,6 @@
     class="fiex-bottom"
     custom-class="cart-submit-bar"
     button-text="确认订单"
-    tip="您的收货地址不支持同城送, 我们已为您推荐快递"
     bind:submit="onSubmitOrder"
   >
     <view class="cart-submit-bar_right">
@@ -282,7 +281,7 @@ export default class info extends wepy.page {
       .select('.fiex-bottom')
       .boundingClientRect()
       .exec(function(res) {
-        that.windowHeight = windowHeight - res[0].height - 30;
+        that.windowHeight = windowHeight - res[0].height ;
       });
 
     Api.GetMemberMyCart(function(res) {

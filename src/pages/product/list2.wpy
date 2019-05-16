@@ -1,0 +1,111 @@
+<style lang="less">
+@import '../../less/color.less';
+@import '../../less/cardlist.less';
+.van-tab::after{
+  content: ' ';
+  position: absolute;
+  width:0; 
+  height:0;
+  border-width:5px;
+  border-style:solid;
+  border-color:#7d7e80 transparent transparent transparent;
+  top: 50%;
+  transform: scaleY(-50%);
+  right: 16px;
+  bottom: 0;
+}
+.van-tab--active::after{
+  border-color: #333 transparent transparent transparent;
+}
+</style>
+
+<template>
+
+  <van-tabs active="{{ active }}" nav-class="navtab" bind:change="onChange">
+    <van-tab title="最新"></van-tab>
+    <van-tab title="销量"></van-tab>
+    <van-tab title="价格"></van-tab>
+    <van-tab title="综合"></van-tab>
+  </van-tabs>
+
+  <van-cell-group>
+    <repeat for="{{cardProList}}" key="index" index="index" item="cardProItem">
+      <prolist :cardProItem="cardProItem"></prolist>
+    </repeat>
+  </van-cell-group>
+   <van-toast id="van-toast" />
+</template>
+
+<script>
+import wepy from 'wepy';
+import Api from '../../utils/api';
+import proList from '../../components/prolist2';
+import Toast from '../../components/vant/toast/toast';
+
+export default class info extends wepy.page {
+  config = {
+    navigationBarTitleText: '产品列表',
+    usingComponents: {
+      'van-icon': '../../components/vant/icon/index',
+      'van-button': '../../components/vant/button/index',
+      'van-cell': '../../components/vant/cell/index',
+      'van-cell-group': '../../components/vant/cell-group/index',
+      'van-card': '../../components/vant/card/index',
+      "van-toast": "../../components/vant/toast/index",
+      "van-tab": "../../components/vant/tab/index",
+      "van-tabs": "../../components/vant/tabs/index"
+    }
+  };
+
+  components = {
+    prolist: proList
+  };
+
+  mixins = [];
+
+  data = {
+    windowHeight: 0,
+    reqData: {
+      id: 0,
+      pageIndex: 1,
+      pageSize: 5,
+      sortField: 'sort',
+      isDesc: true
+    },
+    cardProList: []
+  };
+
+  computed = {};
+
+  methods = {
+    
+  };
+
+  events = {
+    addcart(e){
+      var that = this;
+      var reqData = {
+        id: e
+      };
+      Api.PostMemberAddCart(reqData,function(res){
+        if(res.result){
+          Toast.success('加入购物车成功');
+          that.cartCount += 1;
+        }else{
+          Toast.fail('操作失败,请重试'); 
+        }
+      })
+    }
+  };
+
+  onLoad(e) {
+    var that = this;
+    that.reqData.id = e.id;
+    that.reqData.id = 1009;
+    Api.HomeGetSectionList(that.reqData, function(res) {
+      that.cardProList = res.resultData.dataList;
+      that.$apply();
+    });
+  }
+}
+</script>
