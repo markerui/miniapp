@@ -329,6 +329,7 @@ function PostMemberModifyCart(data, cb) {
   });
 }
 
+
 //删除购物车
 function PostMemberDeleteCart(data, cb) {
   PostData('Member/DeleteCart', data, function (res) {
@@ -341,6 +342,53 @@ function PostMemberDeleteCart(data, cb) {
 //确认订单or直接购买
 function PostOrderConfirmOrder(data, cb) {
   PostData('Order/ConfirmOrder', data, function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
+
+//创建订单页
+function PostOrderCreateOrder(data, cb) {
+  PostData('Order/CreateOrder', data, function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
+
+
+//我的订单列表
+function PostMemberGetOrderList(data, cb) {
+  PostData('Member/GetOrderList', data, function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
+
+//我的订单详情
+function PostMemberOrderDetail(data, cb) {
+  PostData('Member/OrderDetail', data, function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
+
+
+//我的订单详情物流
+function PostMemberOrderLogistics(data, cb) {
+  PostData('Member/OrderLogistics', data, function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
+
+//设置订单状态
+function PostMemberSetOrderStatus(data, cb) {
+  PostData('Member/SetOrderStatus', data, function (res) {
     if (cb) {
       cb(res)
     }
@@ -376,5 +424,10 @@ module.exports = {
   GetCampaignList: GetCampaignList,
   GetProductSortList: GetProductSortList,
   GetProductDetail: GetProductDetail,
-  PostOrderConfirmOrder: PostOrderConfirmOrder
+  PostOrderConfirmOrder: PostOrderConfirmOrder,
+  PostOrderCreateOrder: PostOrderCreateOrder,
+  PostMemberGetOrderList: PostMemberGetOrderList,
+  PostMemberOrderDetail: PostMemberOrderDetail,
+  PostMemberOrderLogistics: PostMemberOrderLogistics,
+  PostMemberSetOrderStatus: PostMemberSetOrderStatus
 };

@@ -20,6 +20,10 @@
     color: #999;
     font-size: 12px;
   }
+  .address-items_edit{
+    height:100%;
+    padding:15px 0 15px 20px;
+  }
 }
 </style>
 
@@ -44,8 +48,8 @@
   <scroll-view scroll-y style="height: {{windowHeight}}px; margin-top:10px;">
     <van-cell-group custom-class="address-items">
       <repeat for="{{addressList}}" key="index" index="index" item="item">
-        <van-cell center is-link url="add?addType=0&id={{item.id}}">
-          <view slot="title">
+        <van-cell center>
+          <view slot="title" id="{{item.id}}" bindtap="onCheckAddress">
             <view class="van-cell-text">
               <block wx:if="{{item.isDefault}}">
                 <van-tag type="danger" class="address-items_tag">默认</van-tag>
@@ -54,6 +58,9 @@
               {{item.mobile}}
             </view>
             <view class="address-items_label">{{item.address}}</view>
+          </view>
+          <view slot="right-icon" class="address-items_edit" id="{{item.id}}"  bindtap="onClikcToEdit">
+            <van-icon name="edit"  />
           </view>
         </van-cell>
       </repeat>
@@ -75,7 +82,8 @@ export default class info extends wepy.page {
       'van-search': '../../components/vant/search/index',
       'van-cell': '../../components/vant/cell/index',
       'van-cell-group': '../../components/vant/cell-group/index',
-      'van-tag': '../../components/vant/tag/index'
+      'van-tag': '../../components/vant/tag/index',
+      "van-icon": '../../components/vant/icon/index'
     }
   };
 
@@ -95,7 +103,16 @@ export default class info extends wepy.page {
 
   computed = {};
 
-  methods = {};
+  methods = {
+    onClikcToEdit(e){
+      wx.navigateTo({
+        url: 'add?addType=0&id='+ e.currentTarget.id
+      });
+    },
+    onCheckAddress(e){
+      
+    }
+  };
 
   events = {};
 

@@ -203,16 +203,17 @@ export default class My extends wepy.page {
           that.GetMemberCenter();
           wx.setStorageSync('tokenId', res.resultData.tokenId);
         }else{
-          wx.showModal({
-            title: '提示',
-            content: res.message,
-            showCancel: false,
-            success(res) {
-              if (res.confirm) {
-                console.log('用户点击确定')
-              }
-            }
-          })
+          if(res.errCode == 1002){
+            Api.wxLogin(function(res){
+              that.GetMemberCenter();
+            });
+          }else{
+            wx.showModal({
+              title: '提示',
+              content: res.message,
+              showCancel: false
+            });
+          }
         }
       });
     },
@@ -242,13 +243,7 @@ export default class My extends wepy.page {
         that.memberInfo = res.resultData.memberInfo;
         that.isLogin = true; 
       }else{
-        if(res.errorCode == 1002){
-          Api.wxLogin(function(res){
-            that.GetMemberCenter();
-          });
-        }else{
-          that.isGetUserInfo = true; 
-        } 
+        that.isGetUserInfo = true; 
       }
       that.$apply();
     });

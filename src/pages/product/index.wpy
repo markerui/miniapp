@@ -216,7 +216,8 @@ export default class info extends wepy.page {
       that.isFavor = res.resultData.isFavor;
       that.cartCount = res.resultData.cartCount;
       that.swiper.imgUrls = res.resultData.productInfo.productImage;
-      that.detailsNodes = weRich.parse(res.resultData.productInfo.details);
+      that.detailsNodes = weRich.parse(res.resultData.productInfo.details.replace(/\<img/gi, '<img style="max-width:100%;height:auto"'));
+      that.$apply();
     })
     
   }

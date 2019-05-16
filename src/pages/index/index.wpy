@@ -228,7 +228,22 @@ export default class Index extends wepy.page {
     }
   };
 
-  events = {};
+  events = {
+    addcart(e){
+      var that = this;
+      var reqData = {
+        id: e
+      };
+      Api.PostMemberAddCart(reqData,function(res){
+        if(res.result){
+          Toast.success('加入购物车成功');
+          that.cartCount += 1;
+        }else{
+          Toast.fail('操作失败,请重试'); 
+        }
+      })
+    }
+  };
 
   onLoad() {
     let that = this;
@@ -248,6 +263,7 @@ export default class Index extends wepy.page {
       wx.setNavigationBarTitle({
         title: res.resultData.title
       });
+      that.$apply();
     });
   }
 

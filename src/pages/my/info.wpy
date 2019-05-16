@@ -10,11 +10,11 @@
 
 <template>
   <van-cell-group>
-    <van-field label="姓    名" placeholder="请输入您的真实姓名" value="{{ MemberInfo.name }}"/>
-    <van-field label="手机号码" placeholder="请输入您的常用手机号码" value="{{ MemberInfo.mobile }}"/>
-    <van-field label="联系电话" placeholder="请输入您的常用联系电话" value="{{ MemberInfo.tel }}"/>
+    <van-field label="姓    名" placeholder="请输入您的真实姓名" value="{{ MemberInfo.name }}" data-name="name"  bind:change="onInput" />
+    <van-field label="手机号码" placeholder="请输入您的常用手机号码" value="{{ MemberInfo.mobile }}" data-name="mobile"  bind:change="onInput" />
+    <van-field label="联系电话" placeholder="请输入您的常用联系电话" value="{{ MemberInfo.tel }}" data-name="tel"  bind:change="onInput" />
     <van-field label="所在城市" bind:tap="selectCity" readonly value="{{currentArea}}" placeholder="请输入您的常用联系地址"/>
-    <van-field type="textarea" placeholder="请输入您的详细地址" value="{{ MemberInfo.address }}" autosize/>
+    <van-field type="textarea" placeholder="请输入您的详细地址" value="{{ MemberInfo.address }}" data-name="address"  bind:change="onInput"  autosize/>
   </van-cell-group>
   <view class="save-info">
     <van-button type="warning" custom-class="save-info_btn" size="large" block round bindtap="SaveMemberInfo">保存</van-button>
@@ -69,6 +69,11 @@ export default class info extends wepy.page {
 	};
 
   methods = {
+    onInput(e){
+      var value = e.detail;
+      var name = e.currentTarget.dataset.name;
+      this.MemberInfo[name] = value;
+    },
     selectCity() {
       this.areaPopupShow = true;
     },

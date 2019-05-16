@@ -90,7 +90,7 @@
               <view class="class-item_content">
                 <van-row gutter="10">
                   <repeat for="{{item3.list}}" key="index4" index="index4" item="item4">
-                    <van-col span="8" id="{{item4.sortId}}"  bindtap="toList">
+                    <van-col span="8" id="{{item4.sortId}}" data-hasbanner="{{item4.hasBanner}}"  bindtap="toList">
                       <view class="class-item_content_item">
                         <image class="class-item_content_img" src="{{item4.logo}}">
                         <text class="class-item_content_text">{{item4.name}}</text>
@@ -142,9 +142,17 @@ export default class Class extends wepy.page {
 
   methods = {
     toList(e){
-      wx.navigateTo({
-        url: '../product/list?id='+e.currentTarget.id
-      })
+      var hasbanner = e.currentTarget.dataset.hasbanner;
+      if(hasbanner){
+        wx.navigateTo({
+          url: '../product/listBanner?id='+e.currentTarget.id
+        })
+      }else{
+        wx.navigateTo({
+          url: '../product/list?id='+e.currentTarget.id
+        })
+      }
+      
     },
     onBadgeChange(e){
       this.dataListActive = e.detail;
