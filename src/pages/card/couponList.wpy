@@ -59,6 +59,10 @@ export default class info extends wepy.page {
   mixins = [];
 
   data = {
+    reqData: {
+      pageIndex: 1,
+      pageSize: 2
+    },
     windowHeight: 0,
     couponList: []
   };
@@ -71,7 +75,7 @@ export default class info extends wepy.page {
 
   onLoad() {
     let that = this;
-    Api.PostMemberMyCoupon(function(res) {
+    Api.PostMemberMyCoupon(that.reqData, function(res) {
       if (res.result) {
         that.couponList = res.resultData.dataList;
         that.$apply();

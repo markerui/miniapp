@@ -197,6 +197,7 @@
 
 <script>
 import wepy from 'wepy';
+import Api from '../../utils/api';
 import Dialog from '../../components/vant/dialog/dialog';
 
 export default class info extends wepy.page {
@@ -228,28 +229,7 @@ export default class info extends wepy.page {
   data = {
     payList: ['微信支付', '银联支付'],
     checkPayIndex: 0,
-    cardProList: [
-      {
-        id: 1,
-        checked: true,
-        title: '格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...',
-        unit: '750ml',
-        specs: '750ml*6',
-        price: '299',
-        originPrice: '690',
-        thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
-      },
-      {
-        id: 2,
-        checked: false,
-        title: '格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...',
-        unit: '750ml',
-        specs: '750ml*6',
-        price: '299',
-        originPrice: '690',
-        thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
-      }
-    ]
+    cardProList: []
   };
 
   computed = {
@@ -293,6 +273,10 @@ export default class info extends wepy.page {
 
   events = {};
 
-  onLoad() {}
+  onShow(e) {
+    console.log(e);
+    cartConfirmPro = wx.getStorageSync('cartConfirm');
+    console.log(cartConfirmPro);
+  }
 }
 </script>

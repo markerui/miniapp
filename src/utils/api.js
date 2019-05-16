@@ -199,8 +199,8 @@ function PostMemberDeleteFavor(data, cb) {
 }
 
 //我的优惠券
-function PostMemberMyCoupon(cb) {
-  PostData('Member/MyCoupon', '', function (res) {
+function PostMemberMyCoupon(data, cb) {
+  PostData('Member/MyCoupon', data, function (res) {
     if (cb) {
       cb(res)
     }
@@ -320,6 +320,33 @@ function PostMemberAddCart(data, cb) {
   });
 }
 
+//修改购物车
+function PostMemberModifyCart(data, cb) {
+  PostData('Member/ModifyCart', data, function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
+
+//删除购物车
+function PostMemberDeleteCart(data, cb) {
+  PostData('Member/DeleteCart', data, function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
+
+//确认订单or直接购买
+function PostOrderConfirmOrder(data, cb) {
+  PostData('Order/ConfirmOrder', data, function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
+
 module.exports = {
   HOST_URI: HOST_URI,
   API_URL: API_URL,
@@ -332,6 +359,8 @@ module.exports = {
   GetMemberCenter: GetMemberCenter,
   GetMemberMyCart: GetMemberMyCart,
   PostMemberAddCart: PostMemberAddCart,
+  PostMemberDeleteCart: PostMemberDeleteCart,
+  PostMemberModifyCart: PostMemberModifyCart,
   SaveMemberInfo: SaveMemberInfo,
   GetMemberMyFavor: GetMemberMyFavor,
   PostMemberMyCoupon: PostMemberMyCoupon,
@@ -346,5 +375,6 @@ module.exports = {
   PostMemberDeleteFavor: PostMemberDeleteFavor,
   GetCampaignList: GetCampaignList,
   GetProductSortList: GetProductSortList,
-  GetProductDetail: GetProductDetail
+  GetProductDetail: GetProductDetail,
+  PostOrderConfirmOrder: PostOrderConfirmOrder
 };

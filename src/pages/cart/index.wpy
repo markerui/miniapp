@@ -23,8 +23,9 @@
               <view class="mk-cart-card_check">
                 <van-checkbox
                   checked-color="#e26431"
+                  data-index="{{index}}"
                   value="{{ cardProItem.checked }}"
-                  bind:change="onChangeCartChecke(event,{{index}})"
+                  bind:change="onChangeCartChecke"
                 ></van-checkbox>
               </view>
               <van-card
@@ -45,19 +46,27 @@
                   <text>剩余{{cardProItem.stock}}份</text>
                   <van-stepper
                     id="{{cardProItem.productID}}"
+                    data-index="{{index}}"
                     integer
                     min="1"
                     max="{{cardProItem.stock}}"
                     value="{{ cardProItem.productCount }}"
                     step="1"
-                    bind:change="onChangeStepper"
+                    bind:plus="onChangeAddStepper"
+                    bind:minus="onChangeMinusStepper"
                   />
                 </view>
               </van-card>
             </view>
           </view>
         </van-cell>
-        <view slot="right" class="collect-right_btn">
+        <view
+          slot="right"
+          class="collect-right_btn"
+          id="{{cardProItem.id}}"
+          data-index="{{index}}"
+          bindtap="onClickDeleteCart"
+        >
           <text>删除</text>
         </view>
       </van-swipe-cell>
@@ -71,16 +80,21 @@
     bind:submit="onSubmitOrder"
   >
     <view class="cart-submit-bar_right">
-      <van-checkbox checked-color="#e26431">全选</van-checkbox>
+      <van-checkbox
+        value="{{ checkAll }}"
+        bind:change="onChangeCheckeAll"
+        checked-color="#e26431"
+      >全选</van-checkbox>
       <view>
         <view class="text">商品金额:
-          <text class="van-submit-bar__price">¥1920.20</text>
+          <text class="van-submit-bar__price">¥{{ProAllPrice}}</text>
         </view>
-        <view class="text text2">2种商品,共计1000件</view>
+        <view class="text text2">{{ProAllLength}}种商品,共计{{ProAllNum}}件</view>
       </view>
     </view>
   </van-submit-bar>
   <van-dialog id="van-dialog"/>
+  <van-toast id="van-toast"/>
 </template>
 
 <script>
@@ -114,43 +128,148 @@ export default class info extends wepy.page {
 
   data = {
     windowHeight: 0,
+    checkAll: false,
+    checkLength: 0,
     cardProList: []
   };
 
-  computed = {};
+  computed = {
+    ProAllLength() {
+      var AllLength = 0;
+      this.cardProList.forEach(function(e) {
+        if (e.checked) {
+          AllLength += 1;
+        }
+      });
+      return AllLength;
+    },
+    ProAllNum() {
+      var AllNum = 0;
+      this.cardProList.forEach(function(e) {
+        if (e.checked) {
+          AllNum += e.productCount;
+        }
+      });
+      return AllNum;
+    },
+    ProAllPrice() {
+      var AllPrice = 0;
+      this.cardProList.forEach(function(e) {
+        if (e.checked) {
+          AllPrice += e.productCount * e.realPrice;
+        }
+      });
+      return AllPrice;
+    }
+  };
 
   methods = {
-    onChangeCartChecke(e, index) {
-      this.cardProList[index].checked = e.detail;
+    onChangeCheckeAll(e) {
+      this.checkAll = e.detail;
+      this.cardProList.forEach(function(ev) {
+        ev.checked = e.detail;
+      });
+      if (e.detail) {
+        this.checkLength = this.cardProList.length;
+      } else {
+        this.checkLength = 0;
+      }
     },
-    onChangeStepper(e) {
+    onChangeCartChecke(e) {
+      var index = e.currentTarget.dataset.index;
+      this.cardProList[index].checked = e.detail;
+      if (e.detail) {
+        this.checkLength += 1;
+        if (this.checkLength == this.cardProList.length) {
+          this.checkAll = e.detail;
+        }
+      } else {
+        this.checkLength -= 1;
+        this.checkAll = e.detail;
+      }
+    },
+    onClickDeleteCart(e) {
       var that = this;
+      var index = e.currentTarget.dataset.index;
       var reqData = {
-        id: e.currentTarget.id
+        ids: [e.currentTarget.id]
       };
-      Api.PostMemberAddCart(reqData, function(res) {
+      Api.PostMemberDeleteCart(reqData, function(res) {
         if (res.result) {
-          Toast.success('操作成功');
-          that.cardProItem.stock -= 1;
+          Toast.success('删除成功');
+          that.cardProList.splice(index, 1);
+          that.$apply();
         } else {
-          Toast.fail('操作失败,请重试');
+          Toast.fail('删除失败,请重试');
         }
       });
     },
+    onChangeAddStepper(e) {
+      var that = this;
+      var index = e.currentTarget.dataset.index;
+      that.cardProList[index].productCount += 1;
+      var reqData = {
+        id: e.currentTarget.id,
+        productCount: that.cardProList[index].productCount
+      };
+      that.PostMemberModifyCart(reqData, index, 1);
+    },
+    onChangeMinusStepper(e) {
+      var that = this;
+      var index = e.currentTarget.dataset.index;
+      that.cardProList[index].productCount -= 1;
+      var reqData = {
+        id: e.currentTarget.id,
+        productCount: that.cardProList[index].productCount
+      };
+      that.PostMemberModifyCart(reqData, index, 0);
+    },
     onSubmitOrder() {
-      Dialog.alert({
-        title: '订单确认失败',
-        message: '库存不足',
-        messageAlign: 'left'
-      }).then(() => {
-        wx.navigateTo({
-          url: 'confirm'
-        });
+      var that = this;
+      var ids = [];
+      this.cardProList.forEach(function(e) {
+        if (e.checked) {
+          ids.push(e.id);
+        }
+      });
+      var reqData = {
+        ids: ids
+      };
+      Api.PostOrderConfirmOrder(reqData, function(res) {
+        wx.setStorageSync('cartConfirm', res.resultData);
+        if (res.result) {
+          wx.navigateTo({
+            url: 'confirm?type=1'
+          });
+        } else {
+          Dialog.alert({
+            title: '订单确认失败',
+            message: res.message,
+            messageAlign: 'left'
+          });
+        }
       });
     }
   };
 
   events = {};
+
+  PostMemberModifyCart(data, index, type) {
+    var that = this;
+    Api.PostMemberModifyCart(data, function(res) {
+      if (res.result) {
+        if (type) {
+          that.cardProList[index].stock += 1;
+          Toast.success('增加成功');
+        } else {
+          that.cardProList[index].stock -= 1;
+          Toast.success('减少成功');
+        }
+      } else {
+        Toast.fail('操作失败,请重试');
+      }
+    });
+  }
 
   onLoad() {
     let that = this;
@@ -162,8 +281,13 @@ export default class info extends wepy.page {
       .exec(function(res) {
         that.windowHeight = windowHeight - res[0].height - 30;
       });
+
     Api.GetMemberMyCart(function(res) {
-      that.cardProList = res.resultData.dataList;
+      var DataList = res.resultData.dataList;
+      DataList.forEach(function(e) {
+        e.checked = false;
+      });
+      that.cardProList = DataList;
       that.$apply();
     });
   }
