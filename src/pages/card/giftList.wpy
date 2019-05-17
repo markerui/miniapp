@@ -50,12 +50,14 @@
       <van-field type="password" value="{{ giftInput.pwd }}"  data-name="pwd"  bind:change="onInput" label="密码" border="{{ false }}" placeholder="请输入密码"/>
     </view>
   </van-dialog>
+  <van-toast id="van-toast"/>
 </template>
 
 <script>
 import wepy from 'wepy';
 import Api from '../../utils/api';
 import Dialog from '../../components/vant/dialog/dialog';
+import Toast from '../../components/vant/toast/toast';
 
 export default class info extends wepy.page {
   config = {
@@ -63,7 +65,8 @@ export default class info extends wepy.page {
     usingComponents: {
       'van-dialog': '../../components/vant/dialog/index',
       'van-field': '../../components/vant/field/index',
-      'van-button': '../../components/vant/button/index'
+      'van-button': '../../components/vant/button/index',
+      'van-toast': '../../components/vant/toast/index',
     }
   };
 
@@ -74,7 +77,7 @@ export default class info extends wepy.page {
   data = {
     reqData: {
       pageIndex: 1,
-      pageSize: 2
+      pageSize: 6
     },
     windowHeight: 0,
     giftDialogShow: false,
@@ -102,13 +105,24 @@ export default class info extends wepy.page {
       that.giftDialogShow = false;
       Api.PostMemberActivateGiftCard(that.giftInput,function(res){
         if(res.result){
-           that.$apply();
+           that.PostMemberMyGiftCard();
+           Toast.success('激活成功');
+        }else{
+          Toast.fail(res.message);
         }
       });
     }
   };
 
   events = {};
+
+  PostMemberMyGiftCard(){
+    let that = this;
+    Api.PostMemberMyGiftCard(that.reqData, function(res) {
+      that.giftList = res.resultData.dataList;
+      that.$apply();
+    });
+  };
 
   onLoad() {
     let that = this;
@@ -120,10 +134,7 @@ export default class info extends wepy.page {
       .exec(function(res) {
         that.windowHeight = windowHeight - res[0].height - 30;
       });
-    Api.PostMemberMyGiftCard(that.reqData, function(res) {
-      that.giftList = res.resultData.dataList;
-      that.$apply();
-    });
+    that.PostMemberMyGiftCard();
   }
 }
 </script>

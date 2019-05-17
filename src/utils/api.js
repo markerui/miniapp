@@ -124,6 +124,14 @@ function HomeGetSectionList(data, cb) {
   });
 }
 
+//商品分类产品
+function ProductGetSortProduct(data, cb) {
+  GetData('Product/GetSortProduct', data, function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
 //获取实体店接口
 function HomeGetStoreList(data, cb) {
   GetData('Home/GetStoreList', data, function (res) {
@@ -429,5 +437,6 @@ module.exports = {
   PostMemberGetOrderList: PostMemberGetOrderList,
   PostMemberOrderDetail: PostMemberOrderDetail,
   PostMemberOrderLogistics: PostMemberOrderLogistics,
-  PostMemberSetOrderStatus: PostMemberSetOrderStatus
+  PostMemberSetOrderStatus: PostMemberSetOrderStatus,
+  ProductGetSortProduct: ProductGetSortProduct
 };

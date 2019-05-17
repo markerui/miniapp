@@ -102,31 +102,30 @@
     </view>
     <!-- mk-tab_nav end -->
     <view class="mk-tab_list" >
-      <van-tabs  @click="onClickTabs">
+      <van-tabs @click="onClickTabs">
         <view slot="nav-right" class="mk_tab_list_arrw">
           <van-icon name="arrow"/>
         </view>
-        <repeat for="{{sectionList}}" key="index" index="index" item="sectionListItem">
-          <van-tab id="{{index}}" title="{{sectionListItem.name}}">
-            {{index}}
-            <van-cell-group>
-            <!-- <repeat for="{{cardProList.dataList.list}}" key="index2" index="index2" item="cardProItem">
-                <prolist :cardProItem="cardProItem"></prolist>
-            </repeat> -->
-            </van-cell-group>
-          </van-tab>
+        <repeat for="{{sectionList}}" key="index" index="index" item="item">
+          <van-tab id="{{item.id}}" title="{{item.name}}"></van-tab>
         </repeat>
       </van-tabs>
-
+      <van-cell-group>
+      <repeat for="{{cardProList.dataList}}" key="index" index="index" item="cardProItem">
+          <prolist :cardProItem="cardProItem"></prolist>
+      </repeat>
+      </van-cell-group>
     </view>
     <!-- mk-tab_list end -->
   </scroll-view>
+  <van-toast id="van-toast"/>
 </template>
 
 <script>
 import wepy from 'wepy';
 import Api from "../../utils/api";
 import proList from "../../components/prolist";
+import Toast from '../../components/vant/toast/toast';
 
 export default class Index extends wepy.page {
   config = {
@@ -139,7 +138,8 @@ export default class Index extends wepy.page {
       'van-tab': '../../components/vant/tab/index',
       'van-tabs': '../../components/vant/tabs/index',
       "van-cell": "../../components/vant/cell/index",
-      "van-cell-group": "../../components/vant/cell-group/index"
+      "van-cell-group": "../../components/vant/cell-group/index",
+      'van-toast': '../../components/vant/toast/index'
     }
   };
 
@@ -158,30 +158,13 @@ export default class Index extends wepy.page {
     },
     suitableList: [],
     cardProList: {
-      listInfo:{
-        currentList : 0,
+     currentIndex : 0,
+     reqData: {
+        id: 0,
+        pageIndex: 1,
         pageSize: 2,
-        list0:{
-          pageIndex : 1
-        },
-        list1:{
-          pageIndex : 1
-        },
-        list2:{
-          pageIndex : 1
-        },
-        list3:{
-          pageIndex : 1
-        },
-        list4:{
-          pageIndex : 1
-        },
-        list5:{
-          pageIndex : 1
-        },
-        list6:{
-          pageIndex : 1
-        }
+        sortField: 'sort',
+        isDesc: true
       },
       dataList:[]
     },
@@ -209,23 +192,24 @@ export default class Index extends wepy.page {
     onClickTabs(e){
       let that = this;
       var index = e.detail.index;
-      that.cardProList.listInfo.currentList = e.detail.index;
-      var Data = {
-        id: index,
-        pageSize: that.cardProList.listInfo.pageSize,
-        sortField: 'sort',
-        isDesc: true
-      };
-      Data['pageIndex'] = that.cardProList.listInfo.list0.pageIndex;
-      Api.HomeGetSectionList(Data,function(res){
-        that.cardProList.list0 = res.resultData.dataList;
-      });
+      that.cardProList.currentIndex = index;
+      that.cardProList.reqData.pageIndex = 1;
+      that.cardProList.reqData.id = that.sectionList[index].id;
+      that.HomeGetSectionList();
     },
     onSuiTableClick(e){
       wx.navigateTo({
         url: '../product/list?id='+e.currentTarget.id
       });
     }
+  };
+
+  HomeGetSectionList(){
+    var that = this;
+    Api.HomeGetSectionList(that.cardProList.reqData,function(res){
+      that.cardProList.dataList = res.resultData.dataList;
+      that.$apply();
+    });
   };
 
   events = {
@@ -263,7 +247,9 @@ export default class Index extends wepy.page {
       wx.setNavigationBarTitle({
         title: res.resultData.title
       });
-      that.$apply();
+      that.cardProList.reqData.pageIndex = 1;
+      that.cardProList.reqData.id = that.sectionList[0].id;
+      that.HomeGetSectionList();
     });
   }
 

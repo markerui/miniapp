@@ -21,7 +21,7 @@
   <van-cell-group>
     <van-field label="收件人" value="{{AddAddressData.name}}" data-name="name"  bind:change="onInput" placeholder="请输入您的真实姓名"/>
     <van-field label="收货电话" value="{{AddAddressData.mobile}}" data-name="mobile"  bind:change="onInput" placeholder="请输入您的常用手机号码"/>
-    <van-field label="所在地区" bind:tap="selectCity" disabled placeholder="{{currentArea}}"/>
+    <van-field label="所在地区" bind:tap="selectCity" readonly placeholder="{{currentArea}}"/>
     <van-field type="textarea" value="{{AddAddressData.address}}" data-name="address"  bind:change="onInput" placeholder="请输入您的详细地址" autosize/>
   </van-cell-group>
   <view class="address-site_default">
@@ -134,7 +134,7 @@ export default class info extends wepy.page {
     },
     saveAddress(){
       var that = this;
-      if(AddAddressData.id){
+      if(that.AddAddressData.id){
         Api.PostMemberEditAddress(that.AddAddressData,function(res){
           if(res.result){
             Toast.success(res.message);
@@ -189,6 +189,9 @@ export default class info extends wepy.page {
       Api.PostMemberGetAddress(reqData,function(res){
         if(res.result){
           that.AddAddressData = res.resultData.adressInfo;
+          that.area_province_name = res.resultData.adressInfo.provinceName;
+          that.area_city_name = res.resultData.adressInfo.cityName;
+          that.area_county_name = res.resultData.adressInfo.countyName;
           that.$apply();
         }else{
           Toast.fail(res.message);

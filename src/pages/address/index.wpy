@@ -20,9 +20,9 @@
     color: #999;
     font-size: 12px;
   }
-  .address-items_edit{
-    height:100%;
-    padding:15px 0 15px 20px;
+  .address-items_edit {
+    height: 100%;
+    padding: 15px 0 15px 20px;
   }
 }
 </style>
@@ -59,8 +59,13 @@
             </view>
             <view class="address-items_label">{{item.address}}</view>
           </view>
-          <view slot="right-icon" class="address-items_edit" id="{{item.id}}"  bindtap="onClikcToEdit">
-            <van-icon name="edit"  />
+          <view
+            slot="right-icon"
+            class="address-items_edit"
+            id="{{item.id}}"
+            bindtap="onClikcToEdit"
+          >
+            <van-icon name="edit" size="24px"/>
           </view>
         </van-cell>
       </repeat>
@@ -83,7 +88,7 @@ export default class info extends wepy.page {
       'van-cell': '../../components/vant/cell/index',
       'van-cell-group': '../../components/vant/cell-group/index',
       'van-tag': '../../components/vant/tag/index',
-      "van-icon": '../../components/vant/icon/index'
+      'van-icon': '../../components/vant/icon/index'
     }
   };
 
@@ -97,6 +102,7 @@ export default class info extends wepy.page {
       pageSize: 10,
       keyword: ''
     },
+    cartIn: false,
     addressList: [],
     windowHeight: 0
   };
@@ -104,19 +110,26 @@ export default class info extends wepy.page {
   computed = {};
 
   methods = {
-    onClikcToEdit(e){
+    onClikcToEdit(e) {
       wx.navigateTo({
-        url: 'add?addType=0&id='+ e.currentTarget.id
+        url: 'add?addType=0&id=' + e.currentTarget.id
       });
     },
-    onCheckAddress(e){
-      
+    onCheckAddress(e) {
+      var that = this;
+      wx.setStorage({
+        key: 'addressId',
+        data: e.currentTarget.id
+      });
+      if (that.cartIn) {
+        wx.navigateBack();
+      }
     }
   };
 
   events = {};
 
-  onShow() {
+  onLoad(e) {
     let that = this;
     let windowHeight = wx.getSystemInfoSync().windowHeight;
     let query = wx.createSelectorQuery();
@@ -126,6 +139,9 @@ export default class info extends wepy.page {
       .exec(function(res) {
         that.windowHeight = windowHeight - res[0].height;
       });
+    if (e.cart) {
+      that.cartIn = true;
+    }
     Api.PostMemberGetAddressList(that.reqData, function(res) {
       that.addressList = res.resultData.dataList;
       that.$apply();

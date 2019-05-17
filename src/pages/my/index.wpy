@@ -73,13 +73,13 @@
         <van-col span="12">
           <view class="user-head_info_item" bindtap="goYhq">
             <text class="user-head_info_text">优惠券</text>
-            <text class="user-head_info_num">{{memberInfo.giftCardCount}}</text>
+            <text class="user-head_info_num">{{memberInfo.couponCount}}</text>
           </view>
         </van-col>
         <van-col span="12">
           <view class="user-head_info_item" bindtap="goLpk" style="border:none;">
             <text class="user-head_info_text">礼品卡</text>
-            <text class="user-head_info_num">{{memberInfo.couponCount}}</text>
+            <text class="user-head_info_num">{{memberInfo.giftCardCount}}</text>
           </view>
         </van-col>
       </van-row>

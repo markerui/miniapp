@@ -95,6 +95,7 @@ export default class info extends wepy.page {
     },
     SaveMemberInfo() {
       var that = this;
+      console.log(that.MemberInfo)
       Api.SaveMemberInfo(that.MemberInfo,function(res){
         if(res.result){
           Toast.success('修改个人信息成功');
@@ -111,8 +112,10 @@ export default class info extends wepy.page {
   GetMemberInfo() {
     var that = this;
     Api.GetMemberInfo(function(res){
-      console.log(res)
       that.MemberInfo = res.resultData.memberInfo;
+      that.area_province_name = res.resultData.memberInfo.provinceName;
+      that.area_city_name = res.resultData.memberInfo.cityName;
+      that.area_county_name = res.resultData.memberInfo.countyName;
       that.$apply();
     });
   };

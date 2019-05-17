@@ -2,8 +2,8 @@
 
 .mk-card_item {
   &.van-card {
-    padding: 0;
-    background-color: #fff;
+    padding: 0 !important;
+    background-color: #fff !important;
   }
 
   .van-stepper__input {
@@ -55,6 +55,46 @@
       color: #999;
     }
   }
+
+
+}
+
+.card_item-list {
+
+  .van-card__header {
+    display: block;
+  }
+
+  .van-card__thumb {
+    width: 100%;
+    height: 150px;
+    padding-bottom: 10px;
+
+    image {
+      border-radius: 10px 10px 0 0;
+    }
+  }
+
+  .van-cell {
+    border: #edebec 10px solid;
+    padding: 0;
+    width: auto;
+    border-radius: 10px;
+  }
+
+
+  .van-card {
+    border-radius: 10px;
+
+    .van-card__content {
+      padding: 0 15px 15px;
+    }
+  }
+
+  .mk-card_item_tocar {
+    bottom: 15px;
+    right: 15px;
+  }
 }
 
 .van-swipe-cell__left,
@@ -71,4 +111,59 @@
   align-items: center;
   justify-content: center;
   height: 100%;
+}
+
+
+.sortField-tab {
+  background-color: #fff;
+}
+
+.sortField-tab .van-col-item .van-col {
+  position: relative;
+  font-size: 14px;
+  color: #7d7e80;
+  text-align: center;
+  padding: 10px 0;
+}
+
+.sortField-tab .van-col-item .van-col::after,
+.sortField-tab .van-col-item .van-col:before {
+  content: ' ';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #7d7e80 transparent transparent transparent;
+  top: 20px;
+  right: 16px;
+  color: #7d7e80;
+  display: none;
+}
+
+.sortField-tab .van-col-item .van-col::before {
+  border-color: transparent transparent #7d7e80 transparent;
+  top: 15px;
+}
+
+.sortField-tab .van-col-item_active .van-col {
+  color: #333;
+}
+
+.sortField-tab .van-col-item_active .van-col::after {
+  border-color: #333 transparent transparent transparent;
+  display: block;
+}
+
+.sortField-tab .van-col-item_active .van-col::before {
+  border-color: transparent transparent #333 transparent;
+  display: block;
+}
+
+.sortField-tab .van-col-item_active_desc1 .van-col::after {
+  display: none;
+}
+
+.sortField-tab .van-col-item_active_desc0 .van-col::before {
+  display: none;
 }

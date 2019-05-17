@@ -238,10 +238,10 @@ export default class info extends wepy.page {
         wx.setStorage({
           key: 'cartConfirm',
           data: res.resultData
-        })
+        });
         if (res.result) {
           wx.navigateTo({
-            url: 'confirm?type=1'
+            url: 'confirm?cart=1'
           });
         } else {
           Dialog.alert({
@@ -281,7 +281,7 @@ export default class info extends wepy.page {
       .select('.fiex-bottom')
       .boundingClientRect()
       .exec(function(res) {
-        that.windowHeight = windowHeight - res[0].height ;
+        that.windowHeight = windowHeight - res[0].height;
       });
 
     Api.GetMemberMyCart(function(res) {

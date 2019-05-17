@@ -58,6 +58,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    font-size: 14px;
   }
   .cart-confirm-delivery_checkbox {
     padding: 0 15px 15px;
@@ -87,23 +88,27 @@
 </style>
 
 <template>
-  <!-- <view class="cart-confirm-margin_bottom10 cart-confirm-address cart-confirm-address_no">
-        <van-cell title="新增收货地址" border="{{ false }}" is-link center url="../address/index"/>
-  </view>-->
-  <view class="cart-confirm-margin_bottom10 cart-confirm-address">
-    <van-cell is-link border="{{ false }}" center url="../address/index">
-      <view slot="title">
-        <view class="van-cell-info">
-          <view class="van-cell-name">收货人 13651828033</view>
-          <text>上海市普陀区</text>
-          <text>真北路999弄</text>
+  <block wx:if="{{confirmData.addressID}}">
+    <view class="cart-confirm-margin_bottom10 cart-confirm-address">
+      <van-cell is-link border="{{ false }}" center url="../address/index?cart=1">
+        <view slot="title">
+          <view class="van-cell-info">
+            <view class="van-cell-name">{{addressInfo.name}} {{addressInfo.mobile}}</view>
+            <text>{{addressInfo.provinceName}}-{{addressInfo.cityName}}-{{addressInfo.countyName}}</text>
+            <text>{{addressInfo.address}}</text>
+          </view>
         </view>
-      </view>
-    </van-cell>
-  </view>
+      </van-cell>
+    </view>
+  </block>
+  <block wx:else>
+    <view class="cart-confirm-margin_bottom10 cart-confirm-address cart-confirm-address_no">
+      <van-cell title="新增收货地址" border="{{ false }}" is-link center url="../address/index"/>
+    </view>
+  </block>
   <view class="cart-confirm-margin_bottom10 cart-confirm-cll_title cart-confirm-list">
     <view class="cart-confirm-list_head">
-      <van-cell title="商品" value="¥299"/>
+      <van-cell title="商品" value="¥{{productAmount}}"/>
     </view>
     <van-cell-group>
       <repeat for="{{cardProList}}" key="index" index="index" item="cardProItem">
@@ -129,7 +134,7 @@
                   <van-stepper
                     id="{{cardProItem.productID}}"
                     data-index="{{index}}"
-                    disabled 
+                    disabled = "cartIn"
                     integer
                     min="1"
                     max="{{cardProItem.stock}}"
@@ -147,27 +152,28 @@
     </van-cell-group>
   </view>
   <view class="cart-confirm-margin_bottom10 cart-confirm-cll_title cart-confirm-delivery">
-    <van-cell value="¥20">
-      <view slot="title">配送方式
-        <van-icon name="info-o" color="#999"/>
+    <van-cell value="¥0">
+      <view slot="title">
+        配送方式
+        <!-- <van-icon name="info-o" color="#999"/> -->
       </view>
     </van-cell>
-    <van-radio-group class="cart-confirm-delivery_radio" value="3">
-      <van-radio name="1" checked-color="#e26431">自提</van-radio>
-      <van-radio name="2" checked-color="#e26431">快递</van-radio>
-      <van-radio name="3" checked-color="#e26431">物流</van-radio>
-      <van-radio name="3" checked-color="#e26431">到付</van-radio>
-    </van-radio-group>
-    <van-checkbox-group class="cart-confirm-delivery_checkbox">
-      <van-checkbox name="1" use-icon-slot>
-        <van-button type="default" size="small">货栈自提</van-button>
-      </van-checkbox>
-      <van-checkbox name="2" use-icon-slot>
-        <van-button type="warning" plain size="small">送货上门</van-button>
-      </van-checkbox>
+    <van-checkbox-group class="cart-confirm-delivery_radio"  value="{{checkType1Result}}" bind:change="onChangeCheckType1Result">
+      <repeat for="{{checkType1}}" key="index" index="index" item="item">
+        <van-checkbox name="{{item}}" checked-color="#e26431">{{item}}</van-checkbox>
+       </repeat>
     </van-checkbox-group>
+    <block wx:hidden="{{checkType2Hide}}">
+      <van-checkbox-group class="cart-confirm-delivery_checkbox" value="{{checkType2Result}}">
+        <repeat for="{{checkType2}}" key="index" index="index" item="item">
+          <van-checkbox name="{{item}}" use-icon-slot>
+            <van-button type="{{checkType2checked[index].check?'warning':'default'}}" plain size="small">{{item}}</van-button>
+          </van-checkbox>
+        </repeat>
+      </van-checkbox-group>
+    </block>
   </view>
-  <view class="cart-confirm-margin_bottom10 cart-confirm-pay">
+  <view class="cart-confirm-margin_bottom10 cart-confirm-cll_title cart-confirm-pay">
     <van-cell title="支付方式" value="{{checkPay}}" bind:click="onCheckPay" is-link/>
   </view>
   <view class="cart-confirm-cll_title cart-confirm-coupon">
@@ -204,12 +210,14 @@
     >确认订单</van-button>
   </view>
   <van-dialog id="van-dialog"/>
+  <van-toast id="van-toast"/>
 </template>
 
 <script>
 import wepy from 'wepy';
 import Api from '../../utils/api';
 import Dialog from '../../components/vant/dialog/dialog';
+import Toast from '../../components/vant/toast/toast';
 
 export default class info extends wepy.page {
   config = {
@@ -229,7 +237,8 @@ export default class info extends wepy.page {
       'van-radio-group': '../../components/vant/radio-group/index',
       'van-checkbox': '../../components/vant/checkbox/index',
       'van-checkbox-group': '../../components/vant/checkbox-group/index',
-      'van-dialog': '../../components/vant/dialog/index'
+      'van-dialog': '../../components/vant/dialog/index',
+      'van-toast': '../../components/vant/toast/index'
     }
   };
 
@@ -240,18 +249,20 @@ export default class info extends wepy.page {
   data = {
     payList: ['微信支付', '银联支付'],
     checkPayIndex: 0,
+    checkType1:['自提','快递','物流','到付'],
+    checkType1Result: [],
+    checkType2Hide: true,
+    checkType2: ['货栈自提','送货上门'],
+    checkType2Result: [],
+    checkType2checked: [
+      {check: false},
+      {check: false}
+    ],
+    productAmount: 0,
+    cartIn: true,
+    addressInfo: [],
     cardProList: [],
-    confirmData: {
-        CartIds: [],
-        Message: 'ceshi',
-        AddressID: 1,
-        CouponID: 0,
-        GiftCardID: 0,
-        ShippingModel: 0,
-        ShippingFee: 1,
-        ActualTotalPrice: 0,
-    }
-   
+    confirmData: []
   };
 
   computed = {
@@ -263,6 +274,12 @@ export default class info extends wepy.page {
   watch = {};
 
   methods = {
+    onChangeCheckType1Result(e){
+      var detail = e.detail;
+      if(that.checkType1[0] == detail){
+        console.log(2)
+      }
+    },
     onCheckPay() {
       let that = this;
       wx.showActionSheet({
@@ -294,15 +311,55 @@ export default class info extends wepy.page {
   };
 
   events = {};
-
+  
+  PostMemberGetAddress(){
+    var that = this;
+    var reqData = {
+      id : that.confirmData.addressID
+    };
+    Api.PostMemberGetAddress(reqData,function(res){
+      if(res.result){
+        that.addressInfo = res.resultData.adressInfo;
+        that.$apply();
+      }else{
+        Toast.fail(res.message);
+      }
+    });
+  }
+  
   onLoad(e) {
     var that = this;
+    if(e.cart){
+      that.cartIn = true;
+    }else{
+      that.cartIn = false;
+    }
+    wx.removeStorage({
+      key: 'addressId'
+    });
     wx.getStorage({
       key: 'cartConfirm',
       success(res) {
+        console.log(res.data)
         that.cardProList = res.data.cartList;
+        that.confirmData = res.data.orderData;
+        that.productAmount = res.data.productAmount;
+        if(that.confirmData.addressID){
+          that.PostMemberGetAddress();
+        }
       }
-    })
+    });
+  };
+
+  onShow(e){
+    var that = this;
+    wx.getStorage({
+      key: 'addressId',
+      success(res) {
+        that.confirmData.addressID = res.data;
+        that.PostMemberGetAddress();
+      }
+    });
   }
 }
 </script>
