@@ -365,6 +365,24 @@ function PostOrderCreateOrder(data, cb) {
   });
 }
 
+//支付订单
+function PostOrderWeixinPay(data, cb) {
+  PostData('Order/WeixinPay', data, function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
+
+//获取运费
+function PostOrderGetShippingFee(data,cb){
+  PostData('Order/GetShippingFee', data, function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
+
 
 //我的订单列表
 function PostMemberGetOrderList(data, cb) {
@@ -403,6 +421,8 @@ function PostMemberSetOrderStatus(data, cb) {
   });
 }
 
+
+
 module.exports = {
   HOST_URI: HOST_URI,
   API_URL: API_URL,
@@ -434,6 +454,8 @@ module.exports = {
   GetProductDetail: GetProductDetail,
   PostOrderConfirmOrder: PostOrderConfirmOrder,
   PostOrderCreateOrder: PostOrderCreateOrder,
+  PostOrderWeixinPay: PostOrderWeixinPay,
+  PostOrderGetShippingFee: PostOrderGetShippingFee,
   PostMemberGetOrderList: PostMemberGetOrderList,
   PostMemberOrderDetail: PostMemberOrderDetail,
   PostMemberOrderLogistics: PostMemberOrderLogistics,

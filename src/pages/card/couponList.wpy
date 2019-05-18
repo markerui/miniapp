@@ -6,7 +6,7 @@
 <template>
   <view class="card-list">
     <repeat for="{{couponList}}" key="index" index="index" item="item">
-      <view class="card-list_items {{item.cardStatus>0 ? 'status' :''}}">
+      <view class="card-list_items {{item.cardStatus>0||productAmount<item.minPrice ? 'status' :''}}">
         <view class="card-list_items_left">
           <view class="card-list_items_num">
             <text>{{item.value}}</text>
@@ -18,8 +18,13 @@
           </view>
         </view>
         <view class="card-list-list_items_right">
-          <block wx:if="{{item.cardStatus == 0}}">
-            <van-button type="danger" size="small" round plain>立即使用</van-button>
+          <block wx:if="{{item.cardStatus == 0 }}">
+            <block wx:if="{{productAmount>item.minPrice}}">
+              <van-button type="danger" size="small"  data-num="{{item.value}}" id="{{item.id}}" round plain bindtap="onCheckCoupon">立即使用</van-button>
+            </block>
+            <block wx:else>
+              <van-button type="danger" size="small" round plain>无法使用</van-button>
+            </block>
           </block>
           <block wx:elif="{{item.cardStatus == 3}}">
             <van-button type="danger" size="small" round plain>已使用</van-button>
@@ -63,18 +68,45 @@ export default class info extends wepy.page {
       pageIndex: 1,
       pageSize: 6
     },
+    cartIn: false,
+    productAmount: 1000,
     windowHeight: 0,
     couponList: []
   };
 
   computed = {};
 
-  methods = {};
+  methods = {
+    onCheckCoupon(e) {
+      var that = this;
+      var setData = {
+        couponID:  e.currentTarget.id,
+        couponNum: e.currentTarget.dataset.num
+      };
+      wx.setStorage({
+        key: 'CouponID',
+        data: setData
+      });
+      if (that.cartIn) {
+        wx.navigateBack();
+      }else{
+        wx.navigateTo({
+          url: '../product/list2'
+        });
+      }
+    }
+  };
 
   events = {};
 
-  onLoad() {
+  onLoad(e) {
     let that = this;
+    if (e.cart) {
+      that.cartIn = true;
+    }
+    if(e.productAmount){
+      that.productAmount = e.productAmount;
+    }
     Api.PostMemberMyCoupon(that.reqData, function(res) {
       if (res.result) {
         that.couponList = res.resultData.dataList;

@@ -74,6 +74,7 @@
 
     <van-goods-action class="fiex-bottom">
         <van-goods-action-icon
+            bindtap="onGoIndex"
             icon="home-o"
             text="首页"
             bind:click="onClickIcon"
@@ -96,7 +97,7 @@
         />
         <van-goods-action-button
             text="立即购买"
-            bind:click="onClickButton"
+            bind:click="onGoCart"
         />
     </van-goods-action>
 
@@ -191,6 +192,34 @@ export default class info extends wepy.page {
     onClickCart(){
       wx.navigateTo({
         url: '../cart/index'
+      });
+    },
+    onGoIndex(){
+      wx.reLaunch({
+        url: '../index/index'
+      });
+    },
+    onGoCart(){
+      var that = this;
+      var reqData = {
+        pid: that.productInfo.id
+      };
+      Api.PostOrderConfirmOrder(reqData, function(res) {
+        wx.setStorage({
+          key: 'cartConfirm',
+          data: res.resultData
+        });
+        if (res.result) {
+          wx.navigateTo({
+            url: '../cart/confirm?cart=0'
+          });
+        } else {
+          Dialog.alert({
+            title: '订单确认失败',
+            message: res.message,
+            messageAlign: 'left'
+          });
+        }
       });
     }
   };

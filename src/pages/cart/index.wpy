@@ -261,15 +261,27 @@ export default class info extends wepy.page {
     Api.PostMemberModifyCart(data, function(res) {
       if (res.result) {
         if (type) {
-          that.cardProList[index].stock += 1;
+          that.cardProList[index].stock -= 1;
           Toast.success('增加成功');
         } else {
-          that.cardProList[index].stock -= 1;
+          that.cardProList[index].stock += 1;
           Toast.success('减少成功');
         }
       } else {
         Toast.fail('操作失败,请重试');
       }
+    });
+  }
+
+  GetMemberMyCart(){
+    let that = this;
+    Api.GetMemberMyCart(function(res) {
+      var DataList = res.resultData.dataList;
+      DataList.forEach(function(e) {
+        e.checked = false;
+      });
+      that.cardProList = DataList;
+      that.$apply();
     });
   }
 
@@ -283,15 +295,12 @@ export default class info extends wepy.page {
       .exec(function(res) {
         that.windowHeight = windowHeight - res[0].height;
       });
+    that.GetMemberMyCart();
+  }
 
-    Api.GetMemberMyCart(function(res) {
-      var DataList = res.resultData.dataList;
-      DataList.forEach(function(e) {
-        e.checked = false;
-      });
-      that.cardProList = DataList;
-      that.$apply();
-    });
+  onShow(){
+    let that = this;
+    that.GetMemberMyCart();
   }
 }
 </script>
