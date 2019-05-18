@@ -16,17 +16,22 @@
       </repeat>
     </van-row>
   </view>
-  <scroll-view scroll-y style="height: {{windowHeight}}px;">
-    <van-cell-group class="card_item-list">
-      <van-row>
-        <repeat for="{{cardProList}}" key="index" index="index" item="cardProItem">
-          <van-col span="12">
-            <prolist :cardProItem="cardProItem"></prolist>
-          </van-col>
-        </repeat>
-      </van-row>
-    </van-cell-group>
-  </scroll-view>
+  <block wx:if="{{cardProList}}">
+    <scroll-view scroll-y style="height: {{windowHeight}}px;">
+      <van-cell-group class="card_item-list">
+        <van-row>
+          <repeat for="{{cardProList}}" key="index" index="index" item="cardProItem">
+            <van-col span="12">
+              <prolist :cardProItem="cardProItem"></prolist>
+            </van-col>
+          </repeat>
+        </van-row>
+      </van-cell-group>
+    </scroll-view>
+  </block>
+  <block wx:else>
+    <nodata></nodata>
+  </blokc>
   <van-toast id="van-toast"/>
 </template>
 
@@ -35,6 +40,7 @@ import wepy from 'wepy';
 import Api from '../../utils/api';
 import proList from '../../components/prolist2';
 import Toast from '../../components/vant/toast/toast';
+import noData from '../../components/nodata';
 
 export default class info extends wepy.page {
   config = {
@@ -52,7 +58,8 @@ export default class info extends wepy.page {
   };
 
   components = {
-    prolist: proList
+    prolist: proList,
+    nodata: noData
   };
 
   mixins = [];
@@ -156,7 +163,6 @@ export default class info extends wepy.page {
       });
 
     that.reqData.id = e.id;
-    that.reqData.id = 1009;
     that.ProductGetSortProduct();
   }
 }

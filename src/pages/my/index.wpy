@@ -163,11 +163,13 @@
 import wepy from 'wepy';
 import Dialog from '../../components/vant/dialog/dialog';
 import Api from "../../utils/api";
+import noData from '../../components/nodata';
 
 export default class My extends wepy.page {
   config = {
     navigationBarTitleText: '个人中心',
     usingComponents: {
+      'van-icon': '../../components/vant/icon/index',
       "van-row": "../../components/vant/row/index",
       "van-col": "../../components/vant/col/index",
       "van-cell": "../../components/vant/cell/index",
@@ -177,7 +179,9 @@ export default class My extends wepy.page {
     }
   };
 
-  components = {};
+  components = {
+    nodata: noData
+  };
 
   mixins = [];
 

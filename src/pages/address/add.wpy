@@ -54,6 +54,7 @@ import wepy from 'wepy';
 import Api from '../../utils/api';
 import area from '../../utils/area';
 import Toast from '../../components/vant/toast/toast';
+import noData from '../../components/nodata';
 
 export default class info extends wepy.page {
   config = {
@@ -62,6 +63,7 @@ export default class info extends wepy.page {
     navigationBarTextStyle: 'black',
     backgroundColor: '#fff',
     usingComponents: {
+      'van-icon': '../../components/vant/icon/index',
       'van-field': '../../components/vant/field/index',
       'van-area': '../../components/vant/area/index',
       'van-popup': '../../components/vant/popup/index',
@@ -73,7 +75,9 @@ export default class info extends wepy.page {
     }
   };
 
-  components = {};
+  components = {
+    nodata: noData
+  };
 
   mixins = [];
 

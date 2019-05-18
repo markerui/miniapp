@@ -110,11 +110,16 @@
           <van-tab id="{{item.id}}" title="{{item.name}}"></van-tab>
         </repeat>
       </van-tabs>
-      <van-cell-group>
-      <repeat for="{{cardProList.dataList}}" key="index" index="index" item="cardProItem">
-          <prolist :cardProItem="cardProItem"></prolist>
-      </repeat>
-      </van-cell-group>
+      <block wx:if="{{cardProList.dataList}}">
+        <van-cell-group>
+          <repeat for="{{cardProList.dataList}}" key="index" index="index" item="cardProItem">
+              <prolist :cardProItem="cardProItem"></prolist>
+          </repeat>
+        </van-cell-group>
+      </block>
+      <block wx:else>
+          <nodata></nodata>
+      </blokc>
     </view>
     <!-- mk-tab_list end -->
   </scroll-view>
@@ -126,6 +131,7 @@ import wepy from 'wepy';
 import Api from "../../utils/api";
 import proList from "../../components/prolist";
 import Toast from '../../components/vant/toast/toast';
+import noData from '../../components/nodata';
 
 export default class Index extends wepy.page {
   config = {
@@ -144,7 +150,8 @@ export default class Index extends wepy.page {
   };
 
   components = {
-    prolist: proList
+    prolist: proList,
+    nodata: noData
   };
 
   mixins = [];

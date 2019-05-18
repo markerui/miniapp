@@ -58,11 +58,13 @@ import wepy from 'wepy';
 import Api from '../../utils/api';
 import Dialog from '../../components/vant/dialog/dialog';
 import Toast from '../../components/vant/toast/toast';
+import noData from '../../components/nodata';
 
 export default class info extends wepy.page {
   config = {
     navigationBarTitleText: '礼品卡',
     usingComponents: {
+      'van-icon': '../../components/vant/icon/index',
       'van-dialog': '../../components/vant/dialog/index',
       'van-field': '../../components/vant/field/index',
       'van-button': '../../components/vant/button/index',
@@ -70,7 +72,9 @@ export default class info extends wepy.page {
     }
   };
 
-  components = {};
+  components = {
+    nodata: noData
+  };
 
   mixins = [];
 

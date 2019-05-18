@@ -171,7 +171,7 @@
       <van-cell title="商品"/>
     </view>
     <van-cell-group>
-      <repeat for="{{cardProList}}" key="index" index="index" item="cardProItem">
+      <repeat for="{{orderDetailInfo.orderDetail}}" key="index" index="index" item="cardProItem">
         <van-cell>
           <view slot="title">
             <view class="mk-cart-card_list">
@@ -180,14 +180,14 @@
                 custom-class="mk-card_item"
                 thumb-class="mk-card_img"
                 title-class="mk-card_title"
-                price="{{cardProItem.price}} X 222"
-                title="{{cardProItem.title}}"
-                thumb="{{cardProItem.thumb}}"
+                price="{{cardProItem.actualPrice}} X {{cardProItem.productCount}}"
+                title="{{cardProItem.productName}}"
+                thumb="{{cardProItem.defaultImage}}"
                 thumb-mode="aspectFill"
               >
                 <view slot="desc" class="mk-card_desc">
                   <text>单位:{{cardProItem.unit}}</text>
-                  <text>规格:{{cardProItem.specs}}</text>
+                  <text>规格:{{cardProItem.size}}</text>
                 </view>
               </van-card>
             </view>
@@ -196,36 +196,7 @@
       </repeat>
     </van-cell-group>
   </view>
-  <view class="order-confirm-margin_bottom10 order-confirm-cll_title order-confirm-list">
-    <view class="order-confirm-list_head">
-      <van-cell title="赠品"/>
-    </view>
-    <van-cell-group>
-      <repeat for="{{cardProList}}" key="index" index="index" item="cardProItem">
-        <van-cell>
-          <view slot="title">
-            <view class="mk-cart-card_list">
-              <van-card
-                centered
-                custom-class="mk-card_item"
-                thumb-class="mk-card_img"
-                title-class="mk-card_title"
-                price="{{cardProItem.price}} X 222"
-                title="{{cardProItem.title}}"
-                thumb="{{cardProItem.thumb}}"
-                thumb-mode="aspectFill"
-              >
-                <view slot="desc" class="mk-card_desc">
-                  <text>单位:{{cardProItem.unit}}</text>
-                  <text>规格:{{cardProItem.specs}}</text>
-                </view>
-              </van-card>
-            </view>
-          </view>
-        </van-cell>
-      </repeat>
-    </van-cell-group>
-  </view>
+  
   <view class="order-confirm-margin_bottom10">
     <view class="order-confirm-cll_title">
       <van-cell title="订单金额" value="¥20"/>
@@ -260,6 +231,8 @@
 <script>
 import wepy from 'wepy';
 import Dialog from '../../components/vant/dialog/dialog';
+import Api from '../../utils/api';
+import noData from '../../components/nodata';
 
 export default class info extends wepy.page {
   config = {
@@ -280,34 +253,15 @@ export default class info extends wepy.page {
     }
   };
 
-  components = {};
+  components = {
+    nodata: noData
+  };
 
   mixins = [];
 
   data = {
     showDialog: false,
-    cardProList: [
-      {
-        id: 1,
-        checked: true,
-        title: '格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...',
-        unit: '750ml',
-        specs: '750ml*6',
-        price: '299',
-        originPrice: '690',
-        thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
-      },
-      {
-        id: 2,
-        checked: false,
-        title: '格雷曼-精选赤霞珠干红葡萄酒750ml 2018带logo酒...',
-        unit: '750ml',
-        specs: '750ml*6',
-        price: '299',
-        originPrice: '690',
-        thumb: 'https://images.unsplash.com/photo-1551446591-142875a901a1?w=640'
-      }
-    ]
+    orderDetailInfo:[] 
   };
 
   computed = {};
@@ -322,6 +276,17 @@ export default class info extends wepy.page {
 
   events = {};
 
-  onLoad() {}
+  
+
+  onLoad(e) {
+    var that = this;
+    var reqData = {
+      orderNum: e.id
+    };
+    Api.PostMemberOrderDetail(reqData,function(res){
+      that.orderDetailInfo = res.resultData;
+      that.$apply();
+    })
+  }
 }
 </script>

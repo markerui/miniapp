@@ -6,6 +6,7 @@
 
 <script>
 import wepy from 'wepy';
+import noData from '../../components/nodata';
 
 export default class info extends wepy.page {
   config = {
@@ -19,7 +20,9 @@ export default class info extends wepy.page {
     }
   };
 
-  components = {};
+  components = {
+    nodata: noData
+  };
 
   mixins = [];
 

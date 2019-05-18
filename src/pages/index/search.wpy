@@ -50,6 +50,7 @@ page {
 
 <script>
 import wepy from 'wepy';
+import noData from '../../components/nodata';
 
 export default class search extends wepy.page {
   config = {
@@ -58,12 +59,15 @@ export default class search extends wepy.page {
     navigationBarTextStyle: 'black',
     backgroundColor: '#fff',
     usingComponents: {
+      'van-icon': '../../components/vant/icon/index',
       'van-search': '../../components/vant/search/index',
       'van-tag': '../../components/vant/tag/index'
     }
   };
 
-  components = {};
+  components = {
+    nodata: noData
+  };
 
   mixins = [];
 

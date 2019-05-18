@@ -41,17 +41,21 @@
 		scroll-y
 		style="height: {{windowHeight}}px;"
 	>
-		<view class="shop-list_box">
-			<view class="shop-list">
-				<van-cell-group custom-class="shop-list_item">
-					<repeat for="{{storeList}}" key="index2" index="index2" item="storeListItem">
-						<van-cell title="{{storeListItem.storeName}}" value="{{storeListItem.typeName}}"  label="{{storeListItem.location}}"/></van-cell>
-					</repeat>
-				</van-cell-group>
+		<block wx:if="{{storeList}}">
+			<view class="shop-list_box">
+				<view class="shop-list">
+					<van-cell-group custom-class="shop-list_item">
+						<repeat for="{{storeList}}" key="index2" index="index2" item="storeListItem">
+							<van-cell title="{{storeListItem.storeName}}" value="{{storeListItem.typeName}}"  label="{{storeListItem.location}}"/></van-cell>
+						</repeat>
+					</van-cell-group>
+				</view>
+				<view class="shop-tips">{{shopTips}}</view>
 			</view>
-
-			<view class="shop-tips">{{shopTips}}</view>
-		</view>
+		</block>
+		<block wx:else>
+			<nodata></nodata>
+		</blokc>
 	</scroll-view>
 
 	<van-popup show="{{ areaPopupShow }}" position="bottom" bind:close="areaPopupClose">
@@ -63,6 +67,7 @@
 import wepy from 'wepy';
 import area from "../../utils/area";
 import Api from "../../utils/api";
+import noData from '../../components/nodata';
 
 export default class search extends wepy.page {
   config = {
@@ -76,78 +81,51 @@ export default class search extends wepy.page {
     }
   };
 
-  components = {};
+  components = {
+	nodata: noData
+  };
 
   mixins = [];
 
   data = {
-		windowHeight: 0,
-		shopTips: '提示文字哦提示文字哦提示文字哦提示文字哦提示文字哦提示文字哦提示文字哦',
-		areaPopupShow: false,
-		areaList: [],
-		storeList: [],
-		area_province: 0,
-		area_city: 0,
-		area_county: 0,
-		area_province_name: '请选择',
-		area_city_name: '你要查看',
-		area_county_name: '的城市',
-	};
+	windowHeight: 0,
+	shopTips: '提示文字哦提示文字哦提示文字哦提示文字哦提示文字哦提示文字哦提示文字哦',
+	areaPopupShow: false,
+	areaList: [],
+	storeList: [],
+	area_province: 0,
+	area_city: 0,
+	area_county: 0,
+	area_province_name: '请选择',
+	area_city_name: '你要查看',
+	area_county_name: '的城市',
+  };
 
   computed = {
-		currentArea(){
-			return this.area_province_name + this.area_city_name + this.area_county_name;
-		}
-	};
+	currentArea(){
+		return this.area_province_name + this.area_city_name + this.area_county_name;
+	}
+  };
 
   methods = {
     selectCity(){
       this.areaPopupShow = true;
-		},
-		areaPopupClose(){
-			this.areaPopupShow = false;
-		},
-		cancelAreaList(){
-			this.areaPopupShow = false;
-		},
-		confirmAreaList(e){
-			var that = this;
-			that.areaPopupShow = false;
-			that.area_province = e.detail.values[0].code.split('-')[1];
-			that.area_city = e.detail.values[1].code.split('-')[1];
-			that.area_county = e.detail.values[2].code.split('-')[1];
-			that.area_province_name = e.detail.values[0].name;
-			that.area_city_name = e.detail.values[1].name;
-			that.area_county_name = e.detail.values[2].name;
-			var reqData = {
-				province : that.area_province,
-				city: that.area_city,
-				county: that.area_county
-			};
-			Api.HomeGetStoreList(reqData,function(res){
-				that.storeList = res.resultData.dataList;
-				that.$apply();
-			});
-		}
-  };
-
-  events = {};
-
-  onLoad() {
-		let that = this;
-		let windowHeight = wx.getSystemInfoSync().windowHeight;
-		let query = wx.createSelectorQuery();
-		query.select('.shop-area_current')
-			.boundingClientRect()
-			.exec(function(res) {
-				that.windowHeight = windowHeight - res[0].height ;
-			});
-	};
-
-	onReady(){
-		let that = this;
-		// console.log(that.$parent.globalData.weChatInfo)
-		that.areaList = area.areaList;
+	},
+	areaPopupClose(){
+		this.areaPopupShow = false;
+	},
+	cancelAreaList(){
+		this.areaPopupShow = false;
+	},
+	confirmAreaList(e){
+		var that = this;
+		that.areaPopupShow = false;
+		that.area_province = e.detail.values[0].code.split('-')[1];
+		that.area_city = e.detail.values[1].code.split('-')[1];
+		that.area_county = e.detail.values[2].code.split('-')[1];
+		that.area_province_name = e.detail.values[0].name;
+		that.area_city_name = e.detail.values[1].name;
+		that.area_county_name = e.detail.values[2].name;
 		var reqData = {
 			province : that.area_province,
 			city: that.area_city,
@@ -158,5 +136,33 @@ export default class search extends wepy.page {
 			that.$apply();
 		});
 	}
+  };
+
+  events = {};
+
+  onLoad() {
+	let that = this;
+	let windowHeight = wx.getSystemInfoSync().windowHeight;
+	let query = wx.createSelectorQuery();
+	query.select('.shop-area_current')
+		.boundingClientRect()
+		.exec(function(res) {
+			that.windowHeight = windowHeight - res[0].height ;
+		});
+	
+	that.areaList = area.areaList;
+	var reqData = {
+		province : that.area_province,
+		city: that.area_city,
+		county: that.area_county
+	};
+	Api.HomeGetStoreList(reqData,function(res){
+		that.storeList = res.resultData.dataList;
+		that.$apply();
+	});
+
+  };
+
+
 }
 </script>

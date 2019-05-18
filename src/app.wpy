@@ -21,6 +21,9 @@ import 'wepy-async-function';
 export default class extends wepy.app {
   config = {
     pages: [
+      
+      'pages/order/list',
+      'pages/order/index',
       'pages/index/index',
       'pages/index/search',
       'pages/index/shoplist',
@@ -42,8 +45,7 @@ export default class extends wepy.app {
       'pages/product/list2',
       'pages/product/listBanner',
       'pages/product/index',
-      'pages/order/index',
-      'pages/order/list'
+      
     ],
     window: {
       backgroundTextStyle: 'light',

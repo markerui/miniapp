@@ -113,6 +113,7 @@
 <script>
 import wepy from 'wepy';
 import Api from "../../utils/api";
+import noData from '../../components/nodata';
 
 export default class Class extends wepy.page {
   config = {
@@ -128,7 +129,9 @@ export default class Class extends wepy.page {
     }
   };
 
-  components = {};
+  components = {
+    nodata: noData
+  };
 
   mixins = [];
 

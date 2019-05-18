@@ -4,11 +4,16 @@
 </style>
 
 <template>
-  <van-cell-group>
-    <repeat for="{{cardProList}}" key="index" index="index" item="cardProItem">
-      <prolist :cardProItem="cardProItem"></prolist>
-    </repeat>
-  </van-cell-group>
+  <block wx:if="{{cardProList}}">
+    <van-cell-group>
+      <repeat for="{{cardProList}}" key="index" index="index" item="cardProItem">
+        <prolist :cardProItem="cardProItem"></prolist>
+      </repeat>
+    </van-cell-group>
+  </block>
+  <block wx:else>
+    <nodata></nodata>
+  </blokc>
    <van-toast id="van-toast" />
 </template>
 
@@ -17,6 +22,7 @@ import wepy from 'wepy';
 import Api from '../../utils/api';
 import proList from '../../components/prolist';
 import Toast from '../../components/vant/toast/toast';
+import noData from '../../components/nodata';
 
 export default class info extends wepy.page {
   config = {
@@ -32,7 +38,8 @@ export default class info extends wepy.page {
   };
 
   components = {
-    prolist: proList
+    prolist: proList,
+    nodata: noData
   };
 
   mixins = [];
@@ -75,7 +82,6 @@ export default class info extends wepy.page {
   onLoad(e) {
     var that = this;
     that.reqData.id = e.id;
-    that.reqData.id = 1009;
     Api.HomeGetSectionList(that.reqData, function(res) {
       that.cardProList = res.resultData.dataList;
       that.$apply();

@@ -26,6 +26,7 @@ import wepy from 'wepy';
 import Api from '../../utils/api';
 import proList from '../../components/prolist';
 import Toast from '../../components/vant/toast/toast';
+import noData from '../../components/nodata';
 
 export default class info extends wepy.page {
   config = {
@@ -42,7 +43,8 @@ export default class info extends wepy.page {
   };
 
   components = {
-    prolist: proList
+    prolist: proList,
+    nodata: noData
   };
 
   mixins = [];

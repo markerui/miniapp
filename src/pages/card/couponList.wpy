@@ -49,17 +49,21 @@
 <script>
 import wepy from 'wepy';
 import Api from '../../utils/api';
+import noData from '../../components/nodata';
 
 export default class info extends wepy.page {
   config = {
     navigationBarTitleText: '优惠券',
     usingComponents: {
+      'van-icon': '../../components/vant/icon/index',
       'van-field': '../../components/vant/field/index',
       'van-button': '../../components/vant/button/index'
     }
   };
 
-  components = {};
+  components = {
+    nodata: noData
+  };
 
   mixins = [];
 

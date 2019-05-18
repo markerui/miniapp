@@ -76,6 +76,7 @@
 <script>
 import wepy from 'wepy';
 import Api from '../../utils/api';
+import noData from '../../components/nodata';
 
 export default class info extends wepy.page {
   config = {
@@ -84,6 +85,7 @@ export default class info extends wepy.page {
     navigationBarTextStyle: 'black',
     backgroundColor: '#fff',
     usingComponents: {
+      'van-icon': '../../components/vant/icon/index',
       'van-search': '../../components/vant/search/index',
       'van-cell': '../../components/vant/cell/index',
       'van-cell-group': '../../components/vant/cell-group/index',
@@ -92,7 +94,9 @@ export default class info extends wepy.page {
     }
   };
 
-  components = {};
+  components = {
+    nodata: noData
+  };
 
   mixins = [];
 

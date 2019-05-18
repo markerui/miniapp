@@ -88,14 +88,19 @@
 <script>
 import wepy from 'wepy';
 import Api from "../../utils/api";
+import noData from '../../components/nodata';
 
 export default class info extends wepy.page {
   config = {
     navigationBarTitleText: '发现',
-    usingComponents: {}
+    usingComponents: {
+      'van-icon': '../../components/vant/icon/index',
+    }
   };
 
-  components = {};
+  components = {
+    nodata: noData
+  };
 
   mixins = [];
 

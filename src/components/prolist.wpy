@@ -37,7 +37,6 @@
 
 <script>
 import wepy from 'wepy';
-import Api from '../utils/api';
 
 export default class prolist extends wepy.component {
   props = {
