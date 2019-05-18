@@ -184,7 +184,7 @@
     <van-cell title="礼品卡" value="¥{{giftCardNum}}" is-link url="../card/giftList?cart=1"/>
   </view>
   <view class="cart-confirm-margin_bottom10">
-    <van-field type="textarea" value="{{confirmData.Message}}" placeholder="添加留言或备注信息" autosize border="{{ false }}"/>
+    <van-field type="textarea" value="{{confirmData.Message}}" name="Message" bind:change="onInput" placeholder="添加留言或备注信息" autosize border="{{ false }}"/>
   </view>
   <view class="cart-confirm-margin_bottom10">
     <view class="cart-confirm-order">
@@ -275,6 +275,11 @@ export default class info extends wepy.page {
   computed = {
     checkPay() {
       return this.payList[this.checkPayIndex];
+    },
+    onInput(e){
+      var value = e.detail;
+      var name = e.currentTarget.dataset.name;
+      this.confirmData[name] = value;
     },
     AllproductAmount(){
       var AllproductAmount = 0;

@@ -55,6 +55,7 @@
 
 <template>
 <block wx:if="{{findList.length>0}}">
+  <scroll-view scroll-y style="height: {{windowHeight}}px; margin-top:10px;"  bindscrolltolower="scrollLower">
   <view class="find-list">
     <view wx:for="{{findList}}" wx:key="item">
       <view class="find-list-items">
@@ -84,22 +85,26 @@
       <!-- order-list-items end -->
     </view>
   </view>
+  </scroll-view>
 </block>
 <block wx:else>
     <nodata></nodata>
 </block>
+<van-toast id="van-toast" />
 </template>
 
 <script>
 import wepy from 'wepy';
 import Api from "../../utils/api";
 import noData from '../../components/nodata';
+import Toast from '../../components/vant/toast/toast';
 
 export default class info extends wepy.page {
   config = {
     navigationBarTitleText: '发现',
     usingComponents: {
       'van-icon': '../../components/vant/icon/index',
+      "van-toast": "../../components/vant/toast/index"
     }
   };
 
@@ -110,8 +115,12 @@ export default class info extends wepy.page {
   mixins = [];
 
   data = {
-    pageIndex: 1,
-    pageSize: 3,
+    reqData: {
+      pageIndex: 1,
+      pageSize: 3,
+    },
+    windowHeight: 0,
+    hasNextPage: true,
     findList: []
   };
 
@@ -122,21 +131,39 @@ export default class info extends wepy.page {
       wx.navigateTo({
         url: 'login?id=' + e.currentTarget.id + '&img=' +e.currentTarget.dataset.banner
       })
+    },
+    scrollLower(){
+      var that = this;
+      that.GetCampaignList();
     }
   };
 
   events = {};
 
+  GetCampaignList(){
+    var that = this;
+    var result = that.findList;
+    if(that.hasNextPage){
+      Toast.loading({
+        message: '加载中...',
+      });
+      Api.GetCampaignList(that.reqData,function(res){
+        that.findList = result.concat(res.resultData.dataList);
+        that.hasNextPage = res.resultData.hasNextPage;
+        that.reqData.pageIndex += 1;
+        Toast.clear();
+        that.$apply();
+      });
+    }else{
+      Toast('没有更多数据了~');
+    }
+  }
+
   onLoad() {
     var that = this;
-    var data = {
-      pageIndex: that.data.pageIndex,
-      pageSize: that.data.pageSize
-    };
-    Api.GetCampaignList(data,function(res){
-      that.findList = res.resultData.dataList;
-      that.$apply();
-    });
+    let windowHeight = wx.getSystemInfoSync().windowHeight;
+    that.windowHeight = windowHeight;
+    that.GetCampaignList();
   }
 }
 </script>

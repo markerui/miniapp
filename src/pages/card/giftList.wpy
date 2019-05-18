@@ -5,7 +5,7 @@
 
 <template>
 <block wx:if="{{giftList.length>0}}">
-  <scroll-view scroll-y style="height: {{windowHeight}}px;">
+  <scroll-view scroll-y style="height: {{windowHeight}}px;"   bindscrolltolower="scrollLower">
     <view class="card-list">
       <repeat for="{{giftList}}" key="index" index="index" item="item">
         <view class="card-list_items {{item.cardStatus>0 ? 'status' :''}}">
@@ -89,6 +89,7 @@ export default class info extends wepy.page {
       pageIndex: 1,
       pageSize: 6
     },
+    hasNextPage: true,
     windowHeight: 0,
     cartIn: false,
     giftDialogShow: false,
@@ -140,17 +141,32 @@ export default class info extends wepy.page {
           Toast.fail(res.message);
         }
       });
+    },
+    scrollLower(){
+      var that = this;
+      that.PostMemberMyGiftCard();
     }
   };
 
   events = {};
 
   PostMemberMyGiftCard(){
-    let that = this;
-    Api.PostMemberMyGiftCard(that.reqData, function(res) {
-      that.giftList = res.resultData.dataList;
-      that.$apply();
-    });
+    var that = this;
+    var result = that.giftList;
+    if(that.hasNextPage){
+      Toast.loading({
+        message: '加载中...',
+      });
+      Api.PostMemberMyGiftCard(that.reqData,function(res){
+        that.giftList = result.concat(res.resultData.dataList);
+        that.hasNextPage = res.resultData.hasNextPage;
+        that.reqData.pageIndex += 1;
+        Toast.clear();
+        that.$apply();
+      });
+    }else{
+      Toast('没有更多数据了~');
+    }
   };
 
   onLoad(e) {

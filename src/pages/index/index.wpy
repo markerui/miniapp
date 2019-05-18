@@ -67,7 +67,7 @@
     </view>
   </view>
   <!-- mk-search-box end -->
-  <scroll-view scroll-y style="height: {{windowHeight}}px;">
+  <scroll-view scroll-y style="height: {{windowHeight}}px;"  bindscrolltolower="scrollLower">
     <view class="mk-swiper-container">
       <swiper circular autoplay="{{autoplay}}" bindchange="swiperChange" class="mk-swiper">
         <repeat for="{{swiper.imgUrls}}" key="index" item="item">
@@ -169,10 +169,11 @@ export default class Index extends wepy.page {
      reqData: {
         id: 0,
         pageIndex: 1,
-        pageSize: 2,
+        pageSize: 6,
         sortField: 'sort',
         isDesc: true
       },
+      hasNextPage: true,
       dataList:[]
     },
     sectionList:[]
@@ -202,22 +203,21 @@ export default class Index extends wepy.page {
       that.cardProList.currentIndex = index;
       that.cardProList.reqData.pageIndex = 1;
       that.cardProList.reqData.id = that.sectionList[index].id;
+      that.cardProList.hasNextPage = true;
+      that.cardProList.dataList = [];
       that.HomeGetSectionList();
     },
     onSuiTableClick(e){
       wx.navigateTo({
         url: '../product/list?id='+e.currentTarget.id
       });
+    },
+    scrollLower(){
+      var that = this;
+      that.HomeGetSectionList();
     }
   };
 
-  HomeGetSectionList(){
-    var that = this;
-    Api.HomeGetSectionList(that.cardProList.reqData,function(res){
-      that.cardProList.dataList = res.resultData.dataList;
-      that.$apply();
-    });
-  };
 
   events = {
     addcart(e){
@@ -236,17 +236,8 @@ export default class Index extends wepy.page {
     }
   };
 
-  onLoad() {
-    let that = this;
-    let windowHeight = wx.getSystemInfoSync().windowHeight;
-    let query = wx.createSelectorQuery();
-    query
-      .select('.mk-search')
-      .boundingClientRect()
-      .exec(function(res) {
-        that.windowHeight = windowHeight - res[0].height;
-      });
-      
+  HomeGetShopIndex(){
+    var that = this;
     Api.HomeGetShopIndex(function(res){
       that.swiper.imgUrls = res.resultData.bannerList;
       that.suitableList = res.resultData.suitableList;
@@ -258,6 +249,41 @@ export default class Index extends wepy.page {
       that.cardProList.reqData.id = that.sectionList[0].id;
       that.HomeGetSectionList();
     });
+  }
+
+  HomeGetSectionList(){
+    var that = this;
+    var result = that.cardProList.dataList;
+    if(that.cardProList.hasNextPage){
+      Toast.loading({
+        message: '加载中...',
+      });
+      Api.HomeGetSectionList(that.cardProList.reqData,function(res){
+        that.cardProList.dataList = result.concat(res.resultData.dataList);
+        that.cardProList.hasNextPage = res.resultData.hasNextPage;
+        that.cardProList.reqData.pageIndex += 1;
+        Toast.clear();
+        that.$apply();
+      });
+    }else{
+      Toast('没有更多数据了~');
+    }
+    
+  };
+
+  onLoad() {
+    let that = this;
+    let windowHeight = wx.getSystemInfoSync().windowHeight;
+    let query = wx.createSelectorQuery();
+    query
+      .select('.mk-search')
+      .boundingClientRect()
+      .exec(function(res) {
+        that.windowHeight = windowHeight - res[0].height;
+      });
+    
+    that.HomeGetShopIndex();
+    
   }
 
 }

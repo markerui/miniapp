@@ -5,6 +5,7 @@
 
 <template>
 <block wx:if="{{couponList.length>0}}">
+  <scroll-view scroll-y style="height: {{windowHeight}}px; margin-top:10px;"  bindscrolltolower="scrollLower">
   <view class="card-list">
     <repeat for="{{couponList}}" key="index" index="index" item="item">
       <view class="card-list_items {{item.cardStatus>0||productAmount<item.minPrice ? 'status' :''}}">
@@ -45,16 +46,19 @@
       <text>点击查看</text>
   </view>-->
   <!-- card-list_more end -->
+  </scroll-view>
 </block>
 <block wx:else>
     <nodata></nodata>
 </block>
+<van-toast id="van-toast"/>
 </template>
 
 <script>
 import wepy from 'wepy';
 import Api from '../../utils/api';
 import noData from '../../components/nodata';
+import Toast from '../../components/vant/toast/toast';
 
 export default class info extends wepy.page {
   config = {
@@ -62,7 +66,8 @@ export default class info extends wepy.page {
     usingComponents: {
       'van-icon': '../../components/vant/icon/index',
       'van-field': '../../components/vant/field/index',
-      'van-button': '../../components/vant/button/index'
+      'van-button': '../../components/vant/button/index',
+      "van-toast": "../../components/vant/toast/index"
     }
   };
 
@@ -77,6 +82,8 @@ export default class info extends wepy.page {
       pageIndex: 1,
       pageSize: 6
     },
+    hasNextPage: true,
+    windowHeight: 0,
     cartIn: false,
     productAmount: 1000,
     windowHeight: 0,
@@ -103,25 +110,47 @@ export default class info extends wepy.page {
           url: '../product/list2'
         });
       }
+    },
+    scrollLower(){
+      var that = this;
+      that.PostMemberMyCoupon();
     }
   };
 
   events = {};
 
+  PostMemberMyCoupon(){
+    var that = this;
+    var result = that.couponList;
+    if(that.hasNextPage){
+      Toast.loading({
+        message: '加载中...',
+      });
+      Api.PostMemberMyCoupon(that.reqData,function(res){
+        that.couponList = result.concat(res.resultData.dataList);
+        that.hasNextPage = res.resultData.hasNextPage;
+        that.reqData.pageIndex += 1;
+        Toast.clear();
+        that.$apply();
+      });
+    }else{
+      Toast('没有更多数据了~');
+    }
+  }
+
   onLoad(e) {
     let that = this;
+    let windowHeight = wx.getSystemInfoSync().windowHeight;
+    that.windowHeight = windowHeight;
+
     if (e.cart) {
       that.cartIn = true;
     }
     if(e.productAmount){
       that.productAmount = e.productAmount;
     }
-    Api.PostMemberMyCoupon(that.reqData, function(res) {
-      if (res.result) {
-        that.couponList = res.resultData.dataList;
-        that.$apply();
-      }
-    });
+
+    that.PostMemberMyCoupon();
   }
 }
 </script>
