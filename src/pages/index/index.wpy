@@ -110,7 +110,7 @@
           <van-tab id="{{item.id}}" title="{{item.name}}"></van-tab>
         </repeat>
       </van-tabs>
-      <block wx:if="{{cardProList.dataList}}">
+      <block wx:if="{{cardProList.dataList.length>0}}">
         <van-cell-group>
           <repeat for="{{cardProList.dataList}}" key="index" index="index" item="cardProItem">
               <prolist :cardProItem="cardProItem"></prolist>
@@ -119,7 +119,7 @@
       </block>
       <block wx:else>
           <nodata></nodata>
-      </blokc>
+      </block>
     </view>
     <!-- mk-tab_list end -->
   </scroll-view>

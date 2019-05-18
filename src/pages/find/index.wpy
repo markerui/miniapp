@@ -54,6 +54,7 @@
 </style>
 
 <template>
+<block wx:if="{{findList.length>0}}">
   <view class="find-list">
     <view wx:for="{{findList}}" wx:key="item">
       <view class="find-list-items">
@@ -83,6 +84,10 @@
       <!-- order-list-items end -->
     </view>
   </view>
+</block>
+<block wx:else>
+    <nodata></nodata>
+</block>
 </template>
 
 <script>

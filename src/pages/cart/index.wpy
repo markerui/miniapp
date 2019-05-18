@@ -47,6 +47,7 @@
                   <van-stepper
                     id="{{cardProItem.productID}}"
                     data-index="{{index}}"
+                    disable-input
                     integer
                     min="1"
                     max="{{cardProItem.stock}}"

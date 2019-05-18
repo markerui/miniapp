@@ -4,6 +4,7 @@
 </style>
 
 <template>
+<block wx:if="{{giftList.length>0}}">
   <scroll-view scroll-y style="height: {{windowHeight}}px;">
     <view class="card-list">
       <repeat for="{{giftList}}" key="index" index="index" item="item">
@@ -41,6 +42,11 @@
     </view>-->
   </scroll-view>
   <!-- card-list_more end -->
+</block>
+<block wx:else>
+    <nodata></nodata>
+</block>
+
   <view class="fiex-bottom">
     <van-button type="danger" size="large" round block bindtap="onShowGiftDialog">激活礼品卡</van-button>
   </view>

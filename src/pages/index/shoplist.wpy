@@ -41,7 +41,7 @@
 		scroll-y
 		style="height: {{windowHeight}}px;"
 	>
-		<block wx:if="{{storeList}}">
+		<block wx:if="{{storeList.length>0}}">
 			<view class="shop-list_box">
 				<view class="shop-list">
 					<van-cell-group custom-class="shop-list_item">
@@ -55,7 +55,7 @@
 		</block>
 		<block wx:else>
 			<nodata></nodata>
-		</blokc>
+		</block>
 	</scroll-view>
 
 	<van-popup show="{{ areaPopupShow }}" position="bottom" bind:close="areaPopupClose">

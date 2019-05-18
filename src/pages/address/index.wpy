@@ -45,6 +45,7 @@
       <van-cell title="新增收货地址" border="false" url="add?addType=1" is-link icon="plus"/>
     </van-cell-group>
   </view>
+<block wx:if="{{addressList.length>0}}">
   <scroll-view scroll-y style="height: {{windowHeight}}px; margin-top:10px;">
     <van-cell-group custom-class="address-items">
       <repeat for="{{addressList}}" key="index" index="index" item="item">
@@ -71,6 +72,10 @@
       </repeat>
     </van-cell-group>
   </scroll-view>
+</block>
+<block wx:else>
+    <nodata></nodata>
+</block>
 </template>
 
 <script>

@@ -4,6 +4,7 @@
 </style>
 
 <template>
+<block wx:if="{{cardProList.length>0}}">
   <repeat for="{{cardProList}}" key="index" index="index" item="cardProItem">
     <van-swipe-cell right-width="{{ 65 }}">
       <prolist :cardProItem="cardProItem"></prolist>
@@ -18,6 +19,10 @@
       </view>
     </van-swipe-cell>
   </repeat>
+</block>
+<block wx:else>
+    <nodata></nodata>
+</block>
   <van-toast id="van-toast"/>
 </template>
 

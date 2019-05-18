@@ -17,11 +17,18 @@
 
   .mk-card_title {
     font-size: 14px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
   }
 
   .mk-card_desc {
     padding: 5px 0;
-
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
     text {
       padding-right: 15px;
       color: #7d7e80;
@@ -85,9 +92,14 @@
 
   .van-card {
     border-radius: 10px;
-
     .van-card__content {
       padding: 0 15px 15px;
+    }
+    .mk-card_desc{
+      
+      text{
+        padding-right: 5px;
+      }
     }
   }
 

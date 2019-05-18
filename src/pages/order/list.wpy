@@ -156,7 +156,7 @@
   </block>
   <block wx:else>
     <nodata></nodata>
-  </blokc>
+  </block>
 
 
 
@@ -240,7 +240,7 @@ export default class info extends wepy.page {
     orderList: []
   };
 
-  computed = {};
+
 
   methods = {
     onChangeOrderTabs(e){

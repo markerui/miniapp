@@ -135,6 +135,7 @@
                     id="{{cardProItem.productID}}"
                     data-index="{{index}}"
                     disabled = "{{cartIn}}"
+                    disable-input
                     integer
                     min="1"
                     max="{{cardProItem.stock}}"
