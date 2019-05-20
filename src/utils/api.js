@@ -132,6 +132,16 @@ function ProductGetSortProduct(data, cb) {
     }
   });
 }
+
+//商品列表
+function ProductGetProductList(data, cb) {
+  GetData('Product/GetProductList', data, function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
+
 //获取实体店接口
 function HomeGetStoreList(data, cb) {
   GetData('Home/GetStoreList', data, function (res) {
@@ -375,7 +385,7 @@ function PostOrderWeixinPay(data, cb) {
 }
 
 //获取运费
-function PostOrderGetShippingFee(data,cb){
+function PostOrderGetShippingFee(data, cb) {
   PostData('Order/GetShippingFee', data, function (res) {
     if (cb) {
       cb(res)
@@ -452,6 +462,7 @@ module.exports = {
   GetCampaignList: GetCampaignList,
   GetProductSortList: GetProductSortList,
   GetProductDetail: GetProductDetail,
+  ProductGetProductList: ProductGetProductList,
   PostOrderConfirmOrder: PostOrderConfirmOrder,
   PostOrderCreateOrder: PostOrderCreateOrder,
   PostOrderWeixinPay: PostOrderWeixinPay,

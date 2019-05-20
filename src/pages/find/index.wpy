@@ -155,7 +155,11 @@ export default class info extends wepy.page {
         that.$apply();
       });
     }else{
-      Toast('没有更多数据了~');
+      Toast({
+        position: 'bottom',
+        message: '没有更多数据了',
+        duration: 1000
+      });
     }
   }
 

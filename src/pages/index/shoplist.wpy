@@ -88,17 +88,17 @@ export default class search extends wepy.page {
   mixins = [];
 
   data = {
-	windowHeight: 0,
-	shopTips: '提示文字哦提示文字哦提示文字哦提示文字哦提示文字哦提示文字哦提示文字哦',
-	areaPopupShow: false,
-	areaList: [],
-	storeList: [],
-	area_province: 0,
-	area_city: 0,
-	area_county: 0,
-	area_province_name: '请选择',
-	area_city_name: '你要查看',
-	area_county_name: '的城市',
+		windowHeight: 0,
+		shopTips: '提示文字哦提示文字哦提示文字哦提示文字哦提示文字哦提示文字哦提示文字哦',
+		areaPopupShow: false,
+		areaList: [],
+		storeList: [],
+		area_province: 0,
+		area_city: 0,
+		area_county: 0,
+		area_province_name: '请选择',
+		area_city_name: '你要查看',
+		area_county_name: '的城市',
   };
 
   computed = {

@@ -17,7 +17,7 @@
     </van-row>
   </view>
   <block wx:if="{{cardProList.length>0}}">
-    <scroll-view scroll-y style="height: {{windowHeight}}px;"  bindscrolltolower="scrollLower">
+    <scroll-view scroll-y style="height: {{windowHeight}}px;" bindscrolltolower="scrollLower">
       <van-cell-group class="card_item-list">
         <van-row>
           <repeat for="{{cardProList}}" key="index" index="index" item="cardProItem">
@@ -125,11 +125,19 @@ export default class info extends wepy.page {
           that.reqData.sortField = 'sort';
           break;
       }
-      that.ProductGetSortProduct();
+      if (that.reqData.id) {
+        that.ProductGetSortProduct();
+      } else {
+        that.ProductGetProductList();
+      }
     },
-    scrollLower(){
+    scrollLower() {
       var that = this;
-      that.ProductGetSortProduct();
+      if (that.reqData.id) {
+        that.ProductGetSortProduct();
+      } else {
+        that.ProductGetProductList();
+      }
     }
   };
 
@@ -153,19 +161,46 @@ export default class info extends wepy.page {
   ProductGetSortProduct() {
     var that = this;
     var result = that.cardProList;
-    if(that.hasNextPage){
+    if (that.hasNextPage) {
       Toast.loading({
-        message: '加载中...',
+        message: '加载中...'
       });
-      Api.ProductGetSortProduct(that.reqData,function(res){
+      Api.ProductGetSortProduct(that.reqData, function(res) {
         that.cardProList = result.concat(res.resultData.productList);
         that.hasNextPage = res.resultData.hasNextPage;
         that.reqData.pageIndex += 1;
         Toast.clear();
         that.$apply();
       });
-    }else{
-      Toast('没有更多数据了~');
+    } else {
+      Toast({
+        position: 'bottom',
+        message: '没有更多数据了',
+        duration: 1000
+      });
+    }
+  }
+
+  ProductGetProductList() {
+    var that = this;
+    var result = that.cardProList;
+    if (that.hasNextPage) {
+      Toast.loading({
+        message: '加载中...'
+      });
+      Api.ProductGetProductList(that.reqData, function(res) {
+        that.cardProList = result.concat(res.resultData.dataList);
+        that.hasNextPage = res.resultData.hasNextPage;
+        that.reqData.pageIndex += 1;
+        Toast.clear();
+        that.$apply();
+      });
+    } else {
+      Toast({
+        position: 'bottom',
+        message: '没有更多数据了',
+        duration: 1000
+      });
     }
   }
 
@@ -180,8 +215,12 @@ export default class info extends wepy.page {
         that.windowHeight = windowHeight - res[0].height;
       });
 
-    that.reqData.id = e.id;
-    that.ProductGetSortProduct();
+    if (e.id) {
+      that.reqData.id = e.id;
+      that.ProductGetSortProduct();
+    } else {
+      that.ProductGetProductList();
+    }
   }
 }
 </script>

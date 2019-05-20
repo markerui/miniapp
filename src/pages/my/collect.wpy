@@ -4,27 +4,27 @@
 </style>
 
 <template>
-<block wx:if="{{cardProList.length>0}}">
-  <scroll-view scroll-y style="height: {{windowHeight}}px;"  bindscrolltolower="scrollLower">
-  <repeat for="{{cardProList}}" key="index" index="index" item="cardProItem">
-    <van-swipe-cell right-width="{{ 65 }}">
-      <prolist :cardProItem="cardProItem"></prolist>
-      <view
-        slot="right"
-        class="collect-right_btn"
-        id="{{cardProItem.productID}}"
-        data-index="{{index}}"
-        bindtap="onClickIsFavor"
-      >
-        <text>删除</text>
-      </view>
-    </van-swipe-cell>
-  </repeat>
-  </scroll-view>
-</block>
-<block wx:else>
+  <block wx:if="{{cardProList.length>0}}">
+    <scroll-view scroll-y style="height: {{windowHeight}}px;" bindscrolltolower="scrollLower">
+      <repeat for="{{cardProList}}" key="index" index="index" item="cardProItem">
+        <van-swipe-cell right-width="{{ 65 }}">
+          <prolist :cardProItem="cardProItem"></prolist>
+          <view
+            slot="right"
+            class="collect-right_btn"
+            id="{{cardProItem.productID}}"
+            data-index="{{index}}"
+            bindtap="onClickIsFavor"
+          >
+            <text>删除</text>
+          </view>
+        </van-swipe-cell>
+      </repeat>
+    </scroll-view>
+  </block>
+  <block wx:else>
     <nodata></nodata>
-</block>
+  </block>
   <van-toast id="van-toast"/>
 </template>
 
@@ -85,45 +85,49 @@ export default class info extends wepy.page {
         }
       });
     },
-    scrollLower(){
+    scrollLower() {
       var that = this;
       that.GetMemberMyFavor();
     }
   };
 
   events = {
-    addcart(e){
+    addcart(e) {
       var that = this;
       var reqData = {
         id: e
       };
-      Api.PostMemberAddCart(reqData,function(res){
-        if(res.result){
+      Api.PostMemberAddCart(reqData, function(res) {
+        if (res.result) {
           Toast.success('加入购物车成功');
           that.cartCount += 1;
-        }else{
-          Toast.fail('操作失败,请重试'); 
+        } else {
+          Toast.fail('操作失败,请重试');
         }
-      })
+      });
     }
   };
 
-  GetMemberMyFavor(){
+  GetMemberMyFavor() {
     var that = this;
     var result = that.cardProList;
-    if(that.hasNextPage){
+    if (that.hasNextPage) {
       Toast.loading({
-        message: '加载中...',
+        message: '加载中...'
       });
-      Api.GetMemberMyFavor(that.reqData,function(res){
+      Api.GetMemberMyFavor(that.reqData, function(res) {
         that.cardProList = result.concat(res.resultData.dataList);
         that.hasNextPage = res.resultData.hasNextPage;
         that.reqData.pageIndex += 1;
         Toast.clear();
         that.$apply();
       });
-    }else{
-      Toast('没有更多数据了~');
+    } else {
+      Toast({
+        position: 'bottom',
+        message: '没有更多数据了',
+        duration: 1000
+      });
     }
   }
 

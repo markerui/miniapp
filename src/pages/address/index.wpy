@@ -45,38 +45,42 @@
       <van-cell title="新增收货地址" border="false" url="add?addType=1" is-link icon="plus"/>
     </van-cell-group>
   </view>
-<block wx:if="{{addressList.length>0}}">
-  <scroll-view scroll-y style="height: {{windowHeight}}px; margin-top:10px;"  bindscrolltolower="scrollLower">
-    <van-cell-group custom-class="address-items">
-      <repeat for="{{addressList}}" key="index" index="index" item="item">
-        <van-cell center>
-          <view slot="title" id="{{item.id}}" bindtap="onCheckAddress">
-            <view class="van-cell-text">
-              <block wx:if="{{item.isDefault}}">
-                <van-tag type="danger" class="address-items_tag">默认</van-tag>
-              </block>
-              {{item.name}}
-              {{item.mobile}}
+  <block wx:if="{{addressList.length>0}}">
+    <scroll-view
+      scroll-y
+      style="height: {{windowHeight}}px; margin-top:10px;"
+      bindscrolltolower="scrollLower"
+    >
+      <van-cell-group custom-class="address-items">
+        <repeat for="{{addressList}}" key="index" index="index" item="item">
+          <van-cell center>
+            <view slot="title" id="{{item.id}}" bindtap="onCheckAddress">
+              <view class="van-cell-text">
+                <block wx:if="{{item.isDefault}}">
+                  <van-tag type="danger" class="address-items_tag">默认</van-tag>
+                </block>
+                {{item.name}}
+                {{item.mobile}}
+              </view>
+              <view class="address-items_label">{{item.address}}</view>
             </view>
-            <view class="address-items_label">{{item.address}}</view>
-          </view>
-          <view
-            slot="right-icon"
-            class="address-items_edit"
-            id="{{item.id}}"
-            bindtap="onClikcToEdit"
-          >
-            <van-icon name="edit" size="24px"/>
-          </view>
-        </van-cell>
-      </repeat>
-    </van-cell-group>
-  </scroll-view>
-</block>
-<block wx:else>
+            <view
+              slot="right-icon"
+              class="address-items_edit"
+              id="{{item.id}}"
+              bindtap="onClikcToEdit"
+            >
+              <van-icon name="edit" size="24px"/>
+            </view>
+          </van-cell>
+        </repeat>
+      </van-cell-group>
+    </scroll-view>
+  </block>
+  <block wx:else>
     <nodata></nodata>
-</block>
-<van-toast id="van-toast" />
+  </block>
+  <van-toast id="van-toast"/>
 </template>
 
 <script>
@@ -98,7 +102,7 @@ export default class info extends wepy.page {
       'van-cell-group': '../../components/vant/cell-group/index',
       'van-tag': '../../components/vant/tag/index',
       'van-icon': '../../components/vant/icon/index',
-       "van-toast": "../../components/vant/toast/index"
+      'van-toast': '../../components/vant/toast/index'
     }
   };
 
@@ -117,7 +121,7 @@ export default class info extends wepy.page {
     cartIn: false,
     hasNextPage: true,
     windowHeight: 0,
-    addressList: [],
+    addressList: []
   };
 
   computed = {};
@@ -138,7 +142,7 @@ export default class info extends wepy.page {
         wx.navigateBack();
       }
     },
-    scrollLower(){
+    scrollLower() {
       var that = this;
       that.PostMemberGetAddressList();
     }
@@ -146,22 +150,26 @@ export default class info extends wepy.page {
 
   events = {};
 
-  PostMemberGetAddressList(){
+  PostMemberGetAddressList() {
     var that = this;
     var result = that.addressList;
-    if(that.hasNextPage){
+    if (that.hasNextPage) {
       Toast.loading({
-        message: '加载中...',
+        message: '加载中...'
       });
-      Api.PostMemberGetAddressList(that.reqData,function(res){
+      Api.PostMemberGetAddressList(that.reqData, function(res) {
         that.addressList = result.concat(res.resultData.dataList);
         that.hasNextPage = res.resultData.hasNextPage;
         that.reqData.pageIndex += 1;
         Toast.clear();
         that.$apply();
       });
-    }else{
-      Toast('没有更多数据了~');
+    } else {
+      Toast({
+        position: 'bottom',
+        message: '没有更多数据了',
+        duration: 1000
+      });
     }
   }
 
@@ -183,7 +191,7 @@ export default class info extends wepy.page {
     that.PostMemberGetAddressList();
   }
 
-  onShow(){
+  onShow() {
     let that = this;
     that.reqData.pageIndex = 1;
     that.hasNextPage = true;

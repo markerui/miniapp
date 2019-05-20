@@ -89,79 +89,80 @@
       <van-tab title="{{item.name}}"></van-tab>
     </repeat>
   </van-tabs>
-  
   <block wx:if="{{orderList.length>0}}">
     <scroll-view scroll-y style="height: {{windowHeight}}px;" bindscrolltolower="scrollLower">
-    
-    <view class="order-list">
-      <repeat for="{{orderList}}" key="index" index="index" item="item">
-        <view class="order-list-items {{item.orderStatus>5? 'order-list-items_end':''}}">
-          <view class="order-list-items_time">
-            <text>{{item.createTime}}</text>
-          </view>
-          <view class="order-list-items_card" id="{{item.orderNum}}" bindtap="onGoOrderDetail">
-            <view class="order-list-items_card_head order-list-items_head_flex">
-              <text>订单号 {{item.orderNum}}</text>
-              <block wx:if="{{item.orderStatus == 1 }}">
+      <view class="order-list">
+        <repeat for="{{orderList}}" key="index" index="index" item="item">
+          <view class="order-list-items {{item.orderStatus>5? 'order-list-items_end':''}}">
+            <view class="order-list-items_time">
+              <text>{{item.createTime}}</text>
+            </view>
+            <view class="order-list-items_card" id="{{item.orderNum}}" bindtap="onGoOrderDetail">
+              <view class="order-list-items_card_head order-list-items_head_flex">
+                <text>订单号 {{item.orderNum}}</text>
+                <block wx:if="{{item.orderStatus == 1 }}">
                   <text>待支付</text>
-              </block>
-              <block wx:elif="{{item.orderStatus == 3 }}">
-                <text>待发货</text>
-              </block>
-              <block wx:elif="{{item.orderStatus == 5 }}">
-                <text>待收货</text>
-              </block>
-              <block wx:elif="{{item.orderStatus == 6 }}">
-                <text>交易成功</text>
-              </block>
-              <block wx:elif="{{item.orderStatus == 7 }}">
-                <text>交易取消</text>
-              </block>
-              <block wx:else>
-                <text>未知订单</text>
-              </block>
+                </block>
+                <block wx:elif="{{item.orderStatus == 3 }}">
+                  <text>待发货</text>
+                </block>
+                <block wx:elif="{{item.orderStatus == 5 }}">
+                  <text>待收货</text>
+                </block>
+                <block wx:elif="{{item.orderStatus == 6 }}">
+                  <text>交易成功</text>
+                </block>
+                <block wx:elif="{{item.orderStatus == 7 }}">
+                  <text>交易取消</text>
+                </block>
+                <block wx:else>
+                  <text>未知订单</text>
+                </block>
+              </view>
+              <view class="order-list-items_card_info">
+                <view class="order-list-items_card_info_text">
+                  <text class="text">订货人</text>
+                  <text>{{item.reveiveName}}</text>
+                </view>
+                <view class="order-list-items_card_info_text">
+                  <text class="text">联系方式</text>
+                  <text>{{item.reveiveMobile}}</text>
+                </view>
+                <view class="order-list-items_card_info_text">
+                  <text class="text">联系地址</text>
+                  <text>{{item.reveiveAddress}}</text>
+                </view>
+                <view class="order-list-items_card_info_text">
+                  <text class="text">订单金额</text>
+                  <text>{{item.actualPayment}}</text>
+                </view>
+              </view>
             </view>
-            <view class="order-list-items_card_info">
-              <view class="order-list-items_card_info_text">
-                <text class="text">订货人</text>
-                <text>{{item.reveiveName}}</text>
-              </view>
-              <view class="order-list-items_card_info_text">
-                <text class="text">联系方式</text>
-                <text>{{item.reveiveMobile}}</text>
-              </view>
-              <view class="order-list-items_card_info_text">
-                <text class="text">联系地址</text>
-                <text>{{item.reveiveAddress}}</text>
-              </view>
-              <view class="order-list-items_card_info_text">
-                <text class="text">订单金额</text>
-                <text>{{item.actualPayment}}</text>
-              </view>
-            </view>
-          </view>
-          <!-- <view class="order-list-items_foot order-list-items_foot_flex">
+            <!-- <view class="order-list-items_foot order-list-items_foot_flex">
             <van-button plain hairline type="default" size="small">取消</van-button>
             <van-button plain hairline type="danger" size="small" bind:click="onShowDialog">发货</van-button>
-          </view> -->
-          <block wx:if="{{item.orderStatus == 1 }}">
+            </view>-->
+            <block wx:if="{{item.orderStatus == 1 }}">
               <view class="order-list-items_foot order-list-items_foot_flex">
-                <van-button plain hairline type="danger" id="{{item.orderNum}}" size="small" bind:click="onPayOrder">支付订单</van-button>
+                <van-button
+                  plain
+                  hairline
+                  type="danger"
+                  id="{{item.orderNum}}"
+                  size="small"
+                  bind:click="onPayOrder"
+                >支付订单</van-button>
               </view>
-          </block>
-        </view>
-      <!-- order-list-items end -->
-      </repeat>
-      
-    </view>
+            </block>
+          </view>
+          <!-- order-list-items end -->
+        </repeat>
+      </view>
     </scroll-view>
   </block>
   <block wx:else>
     <nodata></nodata>
   </block>
-
-
-
   <van-dialog use-slot show="{{ showDialog }}" title="发货" messageAlign="left" show-cancel-button>
     <view class="order-dialog">
       <van-radio-group value="1">
@@ -172,7 +173,7 @@
     </view>
   </van-dialog>
   <van-dialog id="van-dialog"/>
-   <van-toast id="van-toast" />
+  <van-toast id="van-toast"/>
 </template>
 
 <script>
@@ -194,10 +195,10 @@ export default class info extends wepy.page {
       'van-tabs': '../../components/vant/tabs/index',
       'van-button': '../../components/vant/button/index',
       'van-dialog': '../../components/vant/dialog/index',
-      "van-toast": "../../components/vant/toast/index",
+      'van-toast': '../../components/vant/toast/index',
       'van-field': '../../components/vant/field/index',
       'van-radio': '../../components/vant/radio/index',
-      'van-radio-group': '../../components/vant/radio-group/index',
+      'van-radio-group': '../../components/vant/radio-group/index'
     }
   };
 
@@ -208,13 +209,13 @@ export default class info extends wepy.page {
   mixins = [];
 
   data = {
-    reqData:{
+    reqData: {
       pageIndex: 1,
       pageSize: 6,
       type: 0
     },
     hasNextPage: true,
-    orderTabs:[
+    orderTabs: [
       {
         name: '全部订单',
         type: 0
@@ -245,31 +246,28 @@ export default class info extends wepy.page {
     orderList: []
   };
 
-
-
   methods = {
-    onChangeOrderTabs(e){
+    onChangeOrderTabs(e) {
       var that = this;
       var index = e.detail.index;
       var type = that.orderTabs[index].type;
       that.reqData.type = type;
-      that.reqData.pageIndex = 1,
-      that.orderList = [];
+      (that.reqData.pageIndex = 1), (that.orderList = []);
       that.hasNextPage = true;
       that.PostMemberGetOrderList();
     },
     onShowDialog() {
       this.showDialog = true;
     },
-    onPayOrder(e){
-      this.PostOrderWeixinPay(e.currentTarget.id)
+    onPayOrder(e) {
+      this.PostOrderWeixinPay(e.currentTarget.id);
     },
-    onGoOrderDetail(e){
+    onGoOrderDetail(e) {
       wx.navigateTo({
-        url: 'index?id='+ e.currentTarget.id
+        url: 'index?id=' + e.currentTarget.id
       });
     },
-    scrollLower(){
+    scrollLower() {
       var that = this;
       that.PostMemberGetOrderList();
     }
@@ -277,12 +275,12 @@ export default class info extends wepy.page {
 
   events = {};
 
-  PostOrderWeixinPay(orderNum){
+  PostOrderWeixinPay(orderNum) {
     var data = {
       orderNum: orderNum
     };
-    Api.PostOrderWeixinPay(data,function(res){
-      if(res.result){
+    Api.PostOrderWeixinPay(data, function(res) {
+      if (res.result) {
         var prepaidOrder = res.resultData.prepaidOrder;
         wx.requestPayment({
           timeStamp: prepaidOrder.timeStamp,
@@ -298,14 +296,14 @@ export default class info extends wepy.page {
               that.PostMemberGetOrderList();
             });
           },
-          fail(res){
+          fail(res) {
             Dialog.alert({
               title: '支付失败',
               message: res.message
             });
           }
         });
-      }else{
+      } else {
         Dialog.alert({
           title: '支付失败',
           message: res.message
@@ -314,22 +312,26 @@ export default class info extends wepy.page {
     });
   }
 
-  PostMemberGetOrderList(){
+  PostMemberGetOrderList() {
     var that = this;
     var result = that.orderList;
-    if(that.hasNextPage){
+    if (that.hasNextPage) {
       Toast.loading({
-        message: '加载中...',
+        message: '加载中...'
       });
-      Api.PostMemberGetOrderList(that.reqData,function(res){
+      Api.PostMemberGetOrderList(that.reqData, function(res) {
         that.orderList = result.concat(res.resultData.dataList);
         that.hasNextPage = res.resultData.hasNextPage;
         that.reqData.pageIndex += 1;
         Toast.clear();
         that.$apply();
       });
-    }else{
-      Toast('没有更多数据了~');
+    } else {
+      Toast({
+        position: 'bottom',
+        message: '没有更多数据了',
+        duration: 1000
+      });
     }
   }
 
