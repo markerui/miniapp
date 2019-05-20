@@ -145,13 +145,34 @@
             <block wx:if="{{item.orderStatus == 1 }}">
               <view class="order-list-items_foot order-list-items_foot_flex">
                 <van-button
-                  plain
                   hairline
-                  type="danger"
+                  type="primary"
                   id="{{item.orderNum}}"
                   size="small"
                   bind:click="onPayOrder"
                 >支付订单</van-button>
+              </view>
+            </block>
+            <block wx:elif="{{item.orderStatus == 3 }}">
+              <view class="order-list-items_foot order-list-items_foot_flex">
+                <van-button
+                  hairline
+                  type="danger"
+                  id="{{item.orderNum}}"
+                  size="small"
+                  bind:click="onCancelOrder"
+                >取消订单</van-button>
+              </view>
+            </block>
+            <block wx:elif="{{item.orderStatus == 5 }}">
+              <view class="order-list-items_foot order-list-items_foot_flex">
+                <van-button
+                  hairline
+                  type="info"
+                  id="{{item.orderNum}}"
+                  size="small"
+                  bind:click="onConfirmOrder"
+                >确认收货</van-button>
               </view>
             </block>
           </view>
@@ -262,6 +283,12 @@ export default class info extends wepy.page {
     onPayOrder(e) {
       this.PostOrderWeixinPay(e.currentTarget.id);
     },
+    onCancelOrder(e) {
+      this.PostMemberSetOrderStatus(e.currentTarget.id, 'cancel');
+    },
+    onConfirmOrder(e) {
+      this.PostMemberSetOrderStatus(e.currentTarget.id, 'confirm');
+    },
     onGoOrderDetail(e) {
       wx.navigateTo({
         url: 'index?id=' + e.currentTarget.id
@@ -275,23 +302,40 @@ export default class info extends wepy.page {
 
   events = {};
 
+  PostMemberSetOrderStatus(orderNum, action) {
+    var reqData = {
+      orderNum: orderNum,
+      action: action
+    };
+    Api.PostMemberSetOrderStatus(reqData, function(res) {
+      if (res.result) {
+        Dialog.alert({
+          title: '操作成功',
+          message: res.message
+        }).then(() => {
+          that.PostMemberGetOrderList();
+        });
+      }
+    });
+  }
+
   PostOrderWeixinPay(orderNum) {
-    var data = {
+    var reqData = {
       orderNum: orderNum
     };
-    Api.PostOrderWeixinPay(data, function(res) {
+    Api.PostOrderWeixinPay(reqData, function(res) {
       if (res.result) {
         var prepaidOrder = res.resultData.prepaidOrder;
         wx.requestPayment({
-          timeStamp: prepaidOrder.timeStamp,
-          nonceStr: prepaidOrder.nonceStr,
+          timeStamp: prepaidOrder.timestamp,
+          nonceStr: prepaidOrder.nonce,
           package: prepaidOrder.package,
-          signType: prepaidOrder.signType,
-          paySign: prepaidOrder.paySign,
+          signType: 'MD5',
+          paySign: prepaidOrder.sign,
           success(res) {
             Dialog.alert({
               title: '支付成功',
-              message: res.message
+              message: '请耐心等待发货'
             }).then(() => {
               that.PostMemberGetOrderList();
             });
@@ -299,7 +343,7 @@ export default class info extends wepy.page {
           fail(res) {
             Dialog.alert({
               title: '支付失败',
-              message: res.message
+              message: '请重新发起支付'
             });
           }
         });

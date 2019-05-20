@@ -152,6 +152,7 @@
     message="您需要授权登录，才可以继续操作"
     show="{{ isGetUserInfo }}"
     confirm-button-open-type="getUserInfo"
+    lang="zh_CN"
     bind:getuserinfo="getUserInfo"
 
   >

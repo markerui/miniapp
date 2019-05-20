@@ -62,7 +62,7 @@
         <view class="find-list-items_time">
           <text>{{item.createTime}}</text>
         </view>
-        <view class="find-list-items_card" id="{{item.id}}" data-banner="{{item.banner}}" bindtap="toLogin">
+        <view class="find-list-items_card" id="{{item.id}}" data-banner="{{item.banner}}" data-validateType="{{item.validateType}}" bindtap="toLogin">
           <view class="find-list-items_card_head">
             <image src="{{item.banner}}">
           </view>
@@ -129,7 +129,7 @@ export default class info extends wepy.page {
   methods = {
     toLogin(e){
       wx.navigateTo({
-        url: 'login?id=' + e.currentTarget.id + '&img=' +e.currentTarget.dataset.banner
+        url: 'login?id=' + e.currentTarget.id + '&img=' +e.currentTarget.dataset.banner + '&validatetype=' +e.currentTarget.dataset.validatetype
       })
     },
     scrollLower(){
