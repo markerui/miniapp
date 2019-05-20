@@ -8,7 +8,7 @@
   <scroll-view scroll-y style="height: {{windowHeight}}px;"   bindscrolltolower="scrollLower">
     <view class="card-list">
       <repeat for="{{giftList}}" key="index" index="index" item="item">
-        <view class="card-list_items {{item.cardStatus>0 ? 'status' :''}}">
+        <view class="card-list_items {{item.cardStatus>0 || productAmount<item.value ? 'status' :''}}">
           <view class="card-list_items_left">
             <view class="card-list_items_num">
               <text>{{item.value}}</text>
@@ -21,7 +21,12 @@
           </view>
           <view class="card-list-list_items_right">
             <block wx:if="{{item.cardStatus == 0}}">
-              <van-button type="danger" size="small" data-num="{{item.value}}" id="{{item.id}}" bindtap="onCheckGift" round plain>立即使用</van-button>
+              <block wx:if="{{productAmount>item.value}}">
+                <van-button type="danger" size="small" data-num="{{item.value}}" id="{{item.id}}" bindtap="onCheckGift" round plain>立即使用</van-button>
+              </block>
+              <block wx:else>
+                <van-button type="danger" size="small" round plain>超出金额</van-button>
+              </block>
             </block>
             <block wx:elif="{{item.cardStatus == 3}}">
               <van-button type="danger" size="small" round plain>已使用</van-button>
@@ -92,6 +97,7 @@ export default class info extends wepy.page {
     hasNextPage: true,
     windowHeight: 0,
     cartIn: false,
+    productAmount: 1000,
     giftDialogShow: false,
     giftList: [],
     giftInput: {
@@ -183,8 +189,12 @@ export default class info extends wepy.page {
       .exec(function(res) {
         that.windowHeight = windowHeight - res[0].height - 30;
       });
+
     if (e.cart) {
       that.cartIn = true;
+    }
+    if (e.productAmount) {
+      that.productAmount = e.productAmount;
     }
     that.PostMemberMyGiftCard();
   }

@@ -11,14 +11,14 @@
     <scroll-view scroll-y style="height: {{windowHeight}}px;">
       <view class="mk-swiper-container">
         <swiper circular autoplay="{{swiper.autoplay}}" bindchange="swiperChange" class="mk-swiper">
-          <repeat for="{{swiper.imgUrls}}" key="index">
+          <repeat for="{{swiper.imgUrls}}" key="index"  index="index" item="item">
             <swiper-item>
-              <image src="{{swiper.imgUrls}}" class="mk-slide-image">
+              <image src="{{item}}" class="mk-slide-image">
             </swiper-item>
           </repeat>
         </swiper>
         <view class="mk-dots">
-          <repeat for="{{swiper.imgUrls}}" key="index" index="index">
+          <repeat for="{{swiper.imgUrls}}" key="index" index="index" >
             <view class="mk-dot{{index == swiper.swiperCurrent ? ' active' : ''}}"></view>
           </repeat>
         </view>

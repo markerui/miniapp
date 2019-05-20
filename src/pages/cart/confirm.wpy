@@ -181,7 +181,7 @@
     <van-cell title="优惠券" value="¥{{couponNum}}" is-link url="../card/couponList?cart=1&productAmount={{productAmount}}"/>
   </view>
   <view class="cart-confirm-margin_bottom10 cart-confirm-cll_title cart-confirm-card">
-    <van-cell title="礼品卡" value="¥{{giftCardNum}}" is-link url="../card/giftList?cart=1"/>
+    <van-cell title="礼品卡" value="¥{{giftCardNum}}" is-link url="../card/giftList?cart=1&productAmount={{productAmount}}"/>
   </view>
   <view class="cart-confirm-margin_bottom10">
     <van-field type="textarea" value="{{confirmData.Message}}" name="Message" bind:change="onInput" placeholder="添加留言或备注信息" autosize border="{{ false }}"/>
@@ -276,11 +276,6 @@ export default class info extends wepy.page {
     checkPay() {
       return this.payList[this.checkPayIndex];
     },
-    onInput(e){
-      var value = e.detail;
-      var name = e.currentTarget.dataset.name;
-      this.confirmData[name] = value;
-    },
     AllproductAmount(){
       var AllproductAmount = 0;
       var AllproductAmount = this.productAmount + this.shippingFee - this.couponNum - this.giftCardNum;
@@ -307,6 +302,11 @@ export default class info extends wepy.page {
   watch = {};
 
   methods = {
+    onInput(e){
+      var value = e.detail;
+      var name = e.currentTarget.dataset.name;
+      this.confirmData[name] = value;
+    },
     onChangeAddStepper(e) {
       var that = this;
       var index = e.currentTarget.dataset.index;
@@ -441,15 +441,15 @@ export default class info extends wepy.page {
       if(res.result){
         var prepaidOrder = res.resultData.prepaidOrder;
         wx.requestPayment({
-          timeStamp: prepaidOrder.timeStamp,
-          nonceStr: prepaidOrder.nonceStr,
+          timeStamp: prepaidOrder.timestamp,
+          nonceStr: prepaidOrder.nonce,
           package: prepaidOrder.package,
-          signType: prepaidOrder.signType,
-          paySign: prepaidOrder.paySign,
+          signType: 'MD5',
+          paySign: prepaidOrder.sign,
           success(res) {
             Dialog.alert({
               title: '支付成功',
-              message: res.message
+              message: '请耐心等待发货'
             }).then(() => {
               wx.redirectTo({
                 url: '../order/list'
@@ -459,7 +459,7 @@ export default class info extends wepy.page {
           fail(res){
             Dialog.alert({
               title: '支付失败',
-              message: res.message
+              message: '请在我的订单重新发起支付'
             }).then(() => {
               wx.redirectTo({
                 url: '../order/list'
@@ -569,8 +569,8 @@ export default class info extends wepy.page {
     wx.getStorage({
       key: 'GiftCardID',
       success(res) {
-        if(res.data.giftCardId){
-          that.confirmData.giftCardID = res.data.giftCardId;
+        if(res.data.giftCardID){
+          that.confirmData.giftCardID = res.data.giftCardID;
         }else{
           that.confirmData.giftCardID = 0;
         }

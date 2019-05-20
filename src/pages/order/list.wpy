@@ -26,6 +26,7 @@
   .order-list-items_card {
     background-color: #fff;
     border-radius: 5px;
+    padding-bottom: 20px;
 
     .order-list-items_card_head {
       background-color: @rootColor;
@@ -84,7 +85,12 @@
 </style>
 
 <template>
-  <van-tabs active="0" class="OrderNav-tabs" color="#e26431" bind:change="onChangeOrderTabs">
+  <van-tabs
+    active="{{orderTabActive}}"
+    class="OrderNav-tabs"
+    color="#e26431"
+    bind:change="onChangeOrderTabs"
+  >
     <repeat for="{{orderTabs}}" key="index" index="index" item="item">
       <van-tab title="{{item.name}}"></van-tab>
     </repeat>
@@ -146,22 +152,18 @@
               <view class="order-list-items_foot order-list-items_foot_flex">
                 <van-button
                   hairline
-                  type="primary"
-                  id="{{item.orderNum}}"
-                  size="small"
-                  bind:click="onPayOrder"
-                >支付订单</van-button>
-              </view>
-            </block>
-            <block wx:elif="{{item.orderStatus == 3 }}">
-              <view class="order-list-items_foot order-list-items_foot_flex">
-                <van-button
-                  hairline
                   type="danger"
                   id="{{item.orderNum}}"
                   size="small"
                   bind:click="onCancelOrder"
                 >取消订单</van-button>
+                <van-button
+                  hairline
+                  type="primary"
+                  id="{{item.orderNum}}"
+                  size="small"
+                  bind:click="onPayOrder"
+                >支付订单</van-button>
               </view>
             </block>
             <block wx:elif="{{item.orderStatus == 5 }}">
@@ -236,6 +238,7 @@ export default class info extends wepy.page {
       type: 0
     },
     hasNextPage: true,
+    orderTabActive: 0,
     orderTabs: [
       {
         name: '全部订单',
@@ -267,14 +270,31 @@ export default class info extends wepy.page {
     orderList: []
   };
 
+  watch = {
+    orderTabActive(newValue, oldValue) {
+      if (newValue == '5') {
+        this.reqData.type = 7;
+        this.reqData.pageIndex = 1;
+      }
+      if (newValue == '4') {
+        this.reqData.type = 6;
+        this.reqData.pageIndex = 1;
+      }
+      this.orderList = [];
+      this.hasNextPage = true;
+    }
+  };
+
   methods = {
     onChangeOrderTabs(e) {
       var that = this;
       var index = e.detail.index;
       var type = that.orderTabs[index].type;
       that.reqData.type = type;
-      (that.reqData.pageIndex = 1), (that.orderList = []);
+      that.reqData.pageIndex = 1;
+      that.orderList = [];
       that.hasNextPage = true;
+      that.orderTabActive = index;
       that.PostMemberGetOrderList();
     },
     onShowDialog() {
@@ -285,9 +305,11 @@ export default class info extends wepy.page {
     },
     onCancelOrder(e) {
       this.PostMemberSetOrderStatus(e.currentTarget.id, 'cancel');
+      this.orderTabActive = 5;
     },
     onConfirmOrder(e) {
       this.PostMemberSetOrderStatus(e.currentTarget.id, 'confirm');
+      this.orderTabActive = 4;
     },
     onGoOrderDetail(e) {
       wx.navigateTo({
@@ -303,6 +325,7 @@ export default class info extends wepy.page {
   events = {};
 
   PostMemberSetOrderStatus(orderNum, action) {
+    var that = this;
     var reqData = {
       orderNum: orderNum,
       action: action
@@ -320,6 +343,7 @@ export default class info extends wepy.page {
   }
 
   PostOrderWeixinPay(orderNum) {
+    var that = this;
     var reqData = {
       orderNum: orderNum
     };
@@ -350,7 +374,7 @@ export default class info extends wepy.page {
       } else {
         Dialog.alert({
           title: '支付失败',
-          message: res.message
+          message: '请重新发起支付'
         });
       }
     });

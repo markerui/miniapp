@@ -39,7 +39,7 @@
                   >立即使用</van-button>
                 </block>
                 <block wx:else>
-                  <van-button type="danger" size="small" round plain>无法使用</van-button>
+                  <van-button type="danger" size="small" round plain>超出金额</van-button>
                 </block>
               </block>
               <block wx:elif="{{item.cardStatus == 3}}">
