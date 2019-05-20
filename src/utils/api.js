@@ -300,6 +300,24 @@ function GetCampaignList(data, cb) {
   });
 }
 
+//验证发现-卡密
+function PostCampaignVerifyCode(data, cb) {
+  PostData('Campaign/VerifyCode', data, function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
+
+//验证发现-Sns
+function PostCampaignSendSMS(data, cb) {
+  PostData('Campaign/SendSMS', data, function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
+
 
 //商品分类
 function GetProductSortList(cb) {
@@ -460,6 +478,8 @@ module.exports = {
   PostMemberAddFavor: PostMemberAddFavor,
   PostMemberDeleteFavor: PostMemberDeleteFavor,
   GetCampaignList: GetCampaignList,
+  PostCampaignVerifyCode: PostCampaignVerifyCode,
+  PostCampaignSendSMS: PostCampaignSendSMS,
   GetProductSortList: GetProductSortList,
   GetProductDetail: GetProductDetail,
   ProductGetProductList: ProductGetProductList,

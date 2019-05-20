@@ -1,5 +1,8 @@
 <style lang="less">
 @import '../../less/color.less';
+.find-list{
+  padding-bottom: 15px;
+}
 .find-list-items {
   margin: 15px;
   font-size: 14px;

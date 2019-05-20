@@ -58,6 +58,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    font-size: 14px;
   }
   .cart-confirm-delivery_checkbox {
     padding: 0 15px 15px;
@@ -78,157 +79,147 @@
   }
 }
 
-.cart-submit-bar .cart-submit-bar_right {
-  justify-content: flex-end;
-}
-
-.fiex-bottom {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  .van-submit-bar {
-    position: relative;
+.save-confirm {
+  padding: 30px;
+  .save-confirm_btn {
+    background-color: @rootColor;
   }
 }
 </style>
 
 <template>
-  <scroll-view scroll-y style="height: {{windowHeight}}px;">
-    <!-- <view class="cart-confirm-margin_bottom10 cart-confirm-address cart-confirm-address_no">
-        <van-cell title="新增收货地址" border="{{ false }}" is-link center url="../address/index"/>
-    </view>-->
+  <block wx:if="{{confirmData.addressID}}">
     <view class="cart-confirm-margin_bottom10 cart-confirm-address">
-      <van-cell is-link border="{{ false }}" center url="../address/index">
+      <van-cell is-link border="{{ false }}" center url="../address/index?cart=1">
         <view slot="title">
           <view class="van-cell-info">
-            <view class="van-cell-name">收货人 13651828033</view>
-            <text>上海市普陀区</text>
-            <text>真北路999弄</text>
+            <view class="van-cell-name">{{addressInfo.name}} {{addressInfo.mobile}}</view>
+            <text>{{addressInfo.provinceName}}-{{addressInfo.cityName}}-{{addressInfo.countyName}}</text>
+            <text>{{addressInfo.address}}</text>
           </view>
         </view>
       </van-cell>
     </view>
-    <view class="cart-confirm-margin_bottom10 cart-confirm-cll_title cart-confirm-list">
-      <view class="cart-confirm-list_head">
-        <van-cell title="商品"/>
+  </block>
+  <block wx:else>
+    <view class="cart-confirm-margin_bottom10 cart-confirm-address cart-confirm-address_no">
+      <van-cell title="新增收货地址" border="{{ false }}" is-link center url="../address/index"/>
+    </view>
+  </block>
+  <view class="cart-confirm-margin_bottom10 cart-confirm-cll_title cart-confirm-list">
+    <view class="cart-confirm-list_head">
+      <van-cell title="商品" value="¥{{ProAllPrice}}"/>
+    </view>
+    <van-cell-group>
+      <repeat for="{{cardProList}}" key="index" index="index" item="cardProItem">
+        <van-cell>
+          <view slot="title">
+            <view class="mk-cart-card_list">
+              <van-card
+                centered
+                custom-class="mk-card_item"
+                thumb-class="mk-card_img"
+                title-class="mk-card_title"
+                price="{{cardProItem.realPrice}}"
+                title="{{cardProItem.productName}}"
+                thumb="{{cardProItem.defaultImage}}"
+                thumb-mode="aspectFill"
+              >
+                <view slot="desc" class="mk-card_desc">
+                  <text>单位:{{cardProItem.unit}}</text>
+                  <text>规格:{{cardProItem.size}}</text>
+                </view>
+                <view slot="footer" class="mk-card_item_stepper">
+                  <text>剩余{{cardProItem.stock}}份</text>
+                  <van-stepper
+                    id="{{cardProItem.productID}}"
+                    data-index="{{index}}"
+                    disabled = "{{cartIn}}"
+                    disable-input
+                    integer
+                    min="1"
+                    max="{{cardProItem.stock}}"
+                    value="{{ cardProItem.productCount }}"
+                    step="1"
+                    bind:plus="onChangeAddStepper"
+                    bind:minus="onChangeMinusStepper"
+                  />
+                </view>
+              </van-card>
+            </view>
+          </view>
+        </van-cell>
+      </repeat>
+    </van-cell-group>
+  </view>
+  <view class="cart-confirm-margin_bottom10 cart-confirm-cll_title cart-confirm-delivery">
+    <van-cell value="¥{{confirmData.shippingFee}}">
+      <view slot="title">
+        配送方式
+        <!-- <van-icon name="info-o" color="#999"/> -->
       </view>
-      <van-cell-group>
-        <repeat for="{{cardProList}}" key="index" index="index" item="cardProItem">
-          <van-cell>
-            <view slot="title">
-              <view class="mk-cart-card_list">
-                <view class="mk-cart-card_check">
-                  <van-checkbox
-                    checked-color="#e26431"
-                    value="{{ cardProItem.checked }}"
-                    bind:change="onChangeCartChecke(event,{{index}})"
-                  ></van-checkbox>
-                </view>
-                <van-card
-                  centered
-                  custom-class="mk-card_item"
-                  thumb-class="mk-card_img"
-                  title-class="mk-card_title"
-                  price="{{cardProItem.price}}"
-                  title="{{cardProItem.title}}"
-                  thumb="{{cardProItem.thumb}}"
-                  thumb-mode="aspectFill"
-                >
-                  <view slot="desc" class="mk-card_desc">
-                    <text>单位:{{cardProItem.unit}}</text>
-                    <text>规格:{{cardProItem.specs}}</text>
-                  </view>
-                  <view slot="footer" class="mk-card_item_stepper">
-                    <text>剩余2330份</text>
-                    <van-stepper integer min="1" max="40" step="1" bind:change="onChange"/>
-                  </view>
-                </van-card>
-              </view>
-            </view>
-          </van-cell>
-          <van-cell>
-            <view slot="title">
-              <view class="mk-cart-card_list">
-                <view class="mk-cart-card_check">
-                  <van-checkbox
-                    checked-color="#e26431"
-                    value="{{ cardProItem.checked }}"
-                    bind:change="onChangeCartChecke(event,{{index}})"
-                  ></van-checkbox>
-                </view>
-                <van-card
-                  centered
-                  custom-class="mk-card_item"
-                  thumb-class="mk-card_img"
-                  title-class="mk-card_title"
-                  price="{{cardProItem.price}}"
-                  title="{{cardProItem.title}}"
-                  thumb="{{cardProItem.thumb}}"
-                  thumb-mode="aspectFill"
-                >
-                  <view slot="desc" class="mk-card_desc">
-                    <text>单位:{{cardProItem.unit}}</text>
-                    <text>规格:{{cardProItem.specs}}</text>
-                  </view>
-                  <view slot="footer" class="mk-card_item_stepper">
-                    <text>剩余2330份</text>
-                    <van-stepper integer min="1" max="40" step="1" bind:change="onChange"/>
-                  </view>
-                </van-card>
-              </view>
-            </view>
-          </van-cell>
+    </van-cell>
+    <van-checkbox-group class="cart-confirm-delivery_radio" value="{{checkType1Result}}" bind:change="onChangeCheckType1Result">
+      <repeat for="{{checkType1}}" key="index" index="index" item="item">
+        <van-checkbox name="{{item}}" checked-color="#e26431">{{item}}</van-checkbox>
+       </repeat>
+    </van-checkbox-group>
+    <block wx:if="{{checkType2Show}}">
+      <van-checkbox-group class="cart-confirm-delivery_checkbox" value="{{checkType2Result}}" bind:change="onChangeCheckType2Result">
+        <repeat for="{{checkType2}}" key="index" index="index" item="item">
+          <van-checkbox name="{{item}}" use-icon-slot>
+            <van-button type="{{checkType2checked[index].check?'warning':'default'}}" plain size="small">{{item}}</van-button>
+          </van-checkbox>
         </repeat>
+      </van-checkbox-group>
+    </block>
+  </view>
+  <view class="cart-confirm-margin_bottom10 cart-confirm-cll_title cart-confirm-pay">
+    <van-cell title="支付方式" value="{{checkPay}}" bind:click="onCheckPay" is-link/>
+  </view>
+  <view class="cart-confirm-cll_title cart-confirm-coupon">
+    <van-cell title="优惠券" value="¥{{couponNum}}" is-link url="../card/couponList?cart=1&productAmount={{productAmount}}"/>
+  </view>
+  <view class="cart-confirm-margin_bottom10 cart-confirm-cll_title cart-confirm-card">
+    <van-cell title="礼品卡" value="¥{{giftCardNum}}" is-link url="../card/giftList?cart=1&productAmount={{productAmount}}"/>
+  </view>
+  <view class="cart-confirm-margin_bottom10">
+    <van-field type="textarea" value="{{confirmData.Message}}" name="Message" bind:change="onInput" placeholder="添加留言或备注信息" autosize border="{{ false }}"/>
+  </view>
+  <view class="cart-confirm-margin_bottom10">
+    <view class="cart-confirm-order">
+      <van-cell-group border="{{ false }}">
+        <van-cell title="商品金额" value="¥{{ProAllPrice}}" border="{{ false }}"/>
+        <van-cell title="配送费" value="+¥{{confirmData.shippingFee}}" border="{{ false }}"/>
+        <van-cell title="优惠券" value="-¥{{couponNum}}" border="{{ false }}"/>
+        <van-cell title="礼品卡" value="-¥{{giftCardNum}}" border="{{ false }}"/>
       </van-cell-group>
     </view>
-    <view class="cart-confirm-margin_bottom10 cart-confirm-cll_title cart-confirm-delivery">
-      <van-cell value="¥20">
-        <view slot="title">配送方式
-          <van-icon name="info-o" color="#999"/>
-        </view>
-      </van-cell>
-      <van-radio-group class="cart-confirm-delivery_radio" value="3">
-        <van-radio name="1" checked-color="#e26431">自提</van-radio>
-        <van-radio name="2" checked-color="#e26431">快递</van-radio>
-        <van-radio name="3" checked-color="#e26431">物流</van-radio>
-        <van-radio name="3" checked-color="#e26431">到付</van-radio>
-      </van-radio-group>
-      <van-checkbox-group class="cart-confirm-delivery_checkbox">
-        <van-checkbox name="1" use-icon-slot>
-          <van-button type="default" size="small">货栈自提</van-button>
-        </van-checkbox>
-        <van-checkbox name="2" use-icon-slot>
-          <van-button type="warning" plain size="small">送货上门</van-button>
-        </van-checkbox>
-      </van-checkbox-group>
+    <view class="cart-confirm-cll_title">
+      <van-cell-group>
+        <van-cell title="订单金额" value="¥{{AllproductAmount}}" border="{{ false }}"/>
+      </van-cell-group>
     </view>
-    <view class="cart-confirm-margin_bottom10">
-      <van-field type="textarea" placeholder="添加留言或备注信息" autosize border="{{ false }}"/>
-    </view>
-  </scroll-view>
-  <van-submit-bar
-    class="fiex-bottom"
-    custom-class="cart-submit-bar"
-    button-text="确认订单"
-    tip="您的收货地址不支持同城送, 我们已为您推荐快递"
-    bind:submit="onSubmitOrder"
-  >
-    <view class="cart-submit-bar_right">
-      <view>
-        <view class="text">商品金额:
-          <text class="van-submit-bar__price">¥1920.20</text>
-        </view>
-        <view class="text text2">2种商品,共计1000件</view>
-      </view>
-    </view>
-  </van-submit-bar>
+  </view>
+  <view class="save-confirm">
+    <van-button
+      type="warning"
+      custom-class="save-confirm_btn"
+      size="large"
+      block
+      round
+      bind:tap="confirmOrder"
+    >确认订单</van-button>
+  </view>
   <van-dialog id="van-dialog"/>
+  <van-toast id="van-toast"/>
 </template>
 
 <script>
 import wepy from 'wepy';
+import Api from '../../utils/api';
 import Dialog from '../../components/vant/dialog/dialog';
+import Toast from '../../components/vant/toast/toast';
 import noData from '../../components/nodata';
 
 export default class info extends wepy.page {
@@ -250,7 +241,7 @@ export default class info extends wepy.page {
       'van-checkbox': '../../components/vant/checkbox/index',
       'van-checkbox-group': '../../components/vant/checkbox-group/index',
       'van-dialog': '../../components/vant/dialog/index',
-      'van-submit-bar': '../../components/vant/submit-bar/index'
+      'van-toast': '../../components/vant/toast/index'
     }
   };
 
@@ -261,44 +252,329 @@ export default class info extends wepy.page {
   mixins = [];
 
   data = {
-    windowHeight: 0,
-    cardProList: []
+    payList: ['微信支付', '银联支付'],
+    checkPayIndex: 0,
+    cartIn: true,
+    checkType1:['自提','快递','物流','到付'],
+    checkType1Result: [],
+    checkType2Show: false,
+    checkType2: ['货栈自提','送货上门'],
+    checkType2checked: [
+      {check: true},
+      {check: false}
+    ],
+    productAmount: 0,
+    shippingFee: 0,
+    addressInfo: [],
+    cardProList: [],
+    confirmData: [],
+    couponNum: 0,
+    giftCardNum: 0
   };
 
-  computed = {};
+  computed = {
+    checkPay() {
+      return this.payList[this.checkPayIndex];
+    },
+    AllproductAmount(){
+      var AllproductAmount = 0;
+      var AllproductAmount = this.productAmount + this.shippingFee - this.couponNum - this.giftCardNum;
+      if(AllproductAmount<=0){
+        AllproductAmount = 0;
+      }
+      return AllproductAmount;
+    },
+    ProAllPrice() {
+      var that = this;
+      var AllPrice = 0;
+      if(that.cartIn){
+        return that.productAmount;
+      }else{
+        that.cardProList.forEach(function(e) {
+          AllPrice += e.productCount * e.realPrice;
+        });
+        that.productAmount = AllPrice;
+        return AllPrice;
+      }
+    }
+  };
 
   watch = {};
 
   methods = {
+    onInput(e){
+      var value = e.detail;
+      var name = e.currentTarget.dataset.name;
+      this.confirmData[name] = value;
+    },
+    onChangeAddStepper(e) {
+      var that = this;
+      var index = e.currentTarget.dataset.index;
+      that.cardProList[index].productCount += 1;
+      that.cardProList[index].stock -= 1;
+      that.confirmData.productInfo.productCount = that.cardProList[index].productCount;
+    },
+    onChangeMinusStepper(e) {
+      var that = this;
+      var index = e.currentTarget.dataset.index;
+      that.cardProList[index].productCount -= 1;
+      that.cardProList[index].stock += 1;
+      that.confirmData.productInfo.productCount = that.cardProList[index].productCount;
+    },
+    onChangeCheckType1Result(e){
+      var that = this;
+      var detail = e.detail;
+      var detailLast = detail[detail.length-1];
+      that.checkType1Result.length = 0;
+      that.checkType2Show = false;
+      that.checkType1Result.push(detailLast);
+      switch (detailLast) {
+        case '自提':
+          that.confirmData.ShippingModel = 1;
+          break;
+        case '快递':
+          that.confirmData.ShippingModel = 2;
+          break;
+        case '物流':
+          that.checkType2Show = true;
+          that.confirmData.ShippingModel = 3;
+          that.checkType2checked[0].check = true;
+          that.checkType2checked[1].check = false;
+          break;
+        case '到付':
+          that.checkType2Show = true;
+          that.checkType2checked[0].check = true;
+          that.checkType2checked[1].check = false;
+          if(detail.length >1){
+            that.checkType1Result = ['物流','到付'];
+            that.confirmData.ShippingModel = 5;
+          }else{
+            that.checkType1Result = ['物流'];
+            if(that.checkType2checked[0].check){
+              that.confirmData.ShippingModel = 3;
+            }else{
+              that.confirmData.ShippingModel = 4;
+            }
+          }
+          break;
+        default:
+          break;
+      }
+      that.PostOrderGetShippingFee();
+      that.$apply();
+    },
+    onChangeCheckType2Result(e){
+      var that = this;
+      var detail = e.detail;
+      var detailLast = detail[detail.length-1];
+      if(detailLast == '货栈自提'){
+          that.checkType2checked[0].check = true;
+          that.checkType2checked[1].check = false;
+          if(that.checkType1Result.length>1){
+            that.confirmData.ShippingModel = 5;
+          }else{
+            that.confirmData.ShippingModel = 3;
+          }
+      }else{
+          that.checkType2checked[0].check = false;
+          that.checkType2checked[1].check = true;
+          if(that.checkType1Result.length>1){
+            that.confirmData.ShippingModel = 6;
+          }else{
+            that.confirmData.ShippingModel = 4;
+          }
+      }
+      that.PostOrderGetShippingFee();
+      that.$apply();
+    },
+    onCheckPay() {
+      let that = this;
+      wx.showActionSheet({
+        itemList: this.payList,
+        success(res) {
+          that.checkPayIndex = res.tapIndex;
+          that.$apply();
+        }
+      });
+    },
     confirmOrder() {
-      Dialog.confirm({
-        title: '订单已生成',
-        message: '订单已经生成了，但是没有支付哦，可以这样也可以这样哦',
-        showCancelButton: true,
-        confirmButtonText: '继续微信支付',
-        cancelButtonText: '订单中心'
-      })
-        .then(() => {
-          // on confirm
-        })
-        .catch(() => {
-          // on cancel
-        });
+      var that = this;
+      that.confirmData.actualTotalPrice = that.$data.AllproductAmount;
+      that.PostOrderCreateOrder();
     }
   };
 
   events = {};
-
-  onLoad() {
-    let that = this;
-    let windowHeight = wx.getSystemInfoSync().windowHeight;
-    let query = wx.createSelectorQuery();
-    query
-      .select('.fiex-bottom')
-      .boundingClientRect()
-      .exec(function(res) {
-        that.windowHeight = windowHeight - res[0].height - 30;
+  
+  PostOrderCreateOrder(){
+    var that = this;
+    Api.PostOrderCreateOrder(that.confirmData,function(res){
+      wx.removeStorage({
+        key: 'findCartConfirm'
       });
+      var orderNum = res.resultData.orderNum;
+      if(that.checkPayIndex){
+        Dialog.confirm({
+          title: '订单已生成',
+          message: '订单已经生成了，但是没有支付哦，可以这样也可以这样哦',
+          showCancelButton: true,
+          confirmButtonText: '继续微信支付',
+          cancelButtonText: '订单中心'
+        }).then(() => {
+          that.PostOrderWeixinPay(orderNum);
+        }).catch(() => {
+          wx.redirectTo({
+            url: '../order/list'
+          });
+        });
+      }else{
+        that.PostOrderWeixinPay(orderNum);
+      }
+    });
+  }
+
+  PostOrderWeixinPay(orderNum){
+    var data = {
+      orderNum: orderNum
+    };
+    Api.PostOrderWeixinPay(data,function(res){
+      if(res.result){
+        var prepaidOrder = res.resultData.prepaidOrder;
+        wx.requestPayment({
+          timeStamp: prepaidOrder.timestamp,
+          nonceStr: prepaidOrder.nonce,
+          package: prepaidOrder.package,
+          signType: 'MD5',
+          paySign: prepaidOrder.sign,
+          success(res) {
+            Dialog.alert({
+              title: '支付成功',
+              message: '请耐心等待发货'
+            }).then(() => {
+              wx.redirectTo({
+                url: '../order/list'
+              });
+            });
+          },
+          fail(res){
+            Dialog.alert({
+              title: '支付失败',
+              message: '请在我的订单重新发起支付'
+            }).then(() => {
+              wx.redirectTo({
+                url: '../order/list'
+              });
+            });
+          }
+        });
+      }else{
+        Dialog.alert({
+          title: '支付失败',
+          message: res.message
+        }).then(() => {
+          wx.redirectTo({
+            url: '../order/list'
+          });
+        });
+      }
+    });
+  }
+  PostMemberGetAddress(){
+    var that = this;
+    var reqData = {
+      id : that.confirmData.addressID
+    };
+    Api.PostMemberGetAddress(reqData,function(res){
+      if(res.result){
+        that.addressInfo = res.resultData.adressInfo;
+        that.PostOrderGetShippingFee();
+        that.$apply();
+      }else{
+        Toast.fail(res.message);
+      }
+    });
+  }
+
+  PostOrderGetShippingFee(){
+    var that = this;
+    Api.PostOrderGetShippingFee(that.confirmData,function(res){
+      that.confirmData.shippingFee = res.resultData.shippingFee;
+    });
+  }
+  
+  onLoad(e) {
+    var that = this;
+    if(e.cart==1){
+      that.cartIn = true;
+    }else{
+      that.cartIn = false;
+    }
+    wx.removeStorage({
+      key: 'addressId'
+    });
+    wx.removeStorage({
+      key: 'CouponID'
+    });
+    wx.removeStorage({
+      key: 'GiftCardID'
+    });
+    wx.getStorage({
+      key: 'findCartConfirm',
+      success(res) {
+        console.log(res.data)
+        that.cardProList = res.data.productList;
+        that.confirmData = res.data.orderData;
+        that.productAmount = res.data.productAmount;
+        if(that.confirmData.addressID){
+          that.PostMemberGetAddress();
+        }
+        switch(res.data.orderData.shippingModel){
+          case 1:
+            that.checkType1Result.push('自提');
+            break;
+          case 2:
+            that.checkType1Result.push('快递');
+            break;
+          default:
+            break;
+        }
+      }
+    });
+  };
+
+  onShow(e){
+    var that = this;
+    wx.getStorage({
+      key: 'addressId',
+      success(res) {
+        that.confirmData.addressID = res.data;
+        that.PostMemberGetAddress();
+      }
+    });
+    wx.getStorage({
+      key: 'CouponID',
+      success(res) {
+        if(res.data.couponID){
+          that.confirmData.couponID = res.data.couponID;
+        }else{
+          that.confirmData.couponID = 0;
+        }
+        that.couponNum = res.data.couponNum;
+        that.$apply();
+      }
+    });
+    wx.getStorage({
+      key: 'GiftCardID',
+      success(res) {
+        if(res.data.giftCardID){
+          that.confirmData.giftCardID = res.data.giftCardID;
+        }else{
+          that.confirmData.giftCardID = 0;
+        }
+        that.giftCardNum = res.data.giftCardNum;
+        that.$apply();
+      }
+    });
   }
 }
 </script>

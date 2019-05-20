@@ -2,8 +2,15 @@
 @import '../../less/color.less';
 @import '../../less/swiper.less';
 @import '../../less/product.less';
-.fiex-bottom .van-goods-action{
-  position: relative;
+
+.fiex-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  .van-goods-action {
+    position: relative;
+  }
 }
 </style>
 
