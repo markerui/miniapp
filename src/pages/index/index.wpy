@@ -67,12 +67,12 @@
     </view>
   </view>
   <!-- mk-search-box end -->
-  <scroll-view scroll-y style="height: {{windowHeight}}px;"  bindscrolltolower="scrollLower">
+  <scroll-view scroll-y style="height: {{windowHeight}}px;" scroll-top="{{scrollTop}}" bindscrolltolower="scrollLower">
     <view class="mk-swiper-container">
-      <swiper circular autoplay="{{autoplay}}" bindchange="swiperChange" class="mk-swiper">
+      <swiper circular autoplay="{{autoplay}}"  style="height:{{swiperHieght}}" bindchange="swiperChange" class="mk-swiper">
         <repeat for="{{swiper.imgUrls}}" key="index" item="item">
           <swiper-item>
-            <image src="{{item.imagePath}}" class="mk-slide-image">
+            <image src="{{item.imagePath}}" class="mk-slide-image" mode="widthFix"  bindload="swiperImgHight"/>
           </swiper-item>
         </repeat>
       </swiper>
@@ -158,6 +158,8 @@ export default class Index extends wepy.page {
 
   data = {
     windowHeight: 0,
+    scrollTop: 0,
+    swiperHieght: 0,
     swiper: {
       imgUrls: [],
       swiperCurrent: 0,
@@ -184,6 +186,13 @@ export default class Index extends wepy.page {
   };
 
   methods = {
+    swiperImgHight(e){
+      var winWid = wx.getSystemInfoSync().windowWidth; 
+      var imgh = e.detail.height;　　　　　　　　　　　　　　
+      var imgw = e.detail.width;
+      var swiperH = winWid*imgh/imgw + "px";
+      this.swiperHieght = swiperH;
+    },
     swiperChange(e) {
       this.swiper.swiperCurrent = e.detail.current;
     },
@@ -200,6 +209,7 @@ export default class Index extends wepy.page {
     onClickTabs(e){
       let that = this;
       var index = e.detail.index;
+      // that.scrollTop = 0;
       that.cardProList.currentIndex = index;
       that.cardProList.reqData.pageIndex = 1;
       that.cardProList.reqData.id = that.sectionList[index].id;
@@ -239,15 +249,17 @@ export default class Index extends wepy.page {
   HomeGetShopIndex(){
     var that = this;
     Api.HomeGetShopIndex(function(res){
-      that.swiper.imgUrls = res.resultData.bannerList;
-      that.suitableList = res.resultData.suitableList;
-      that.sectionList = res.resultData.sectionList;
-      wx.setNavigationBarTitle({
-        title: res.resultData.title
-      });
-      that.cardProList.reqData.pageIndex = 1;
-      that.cardProList.reqData.id = that.sectionList[0].id;
-      that.HomeGetSectionList();
+      if(res.result){
+        that.swiper.imgUrls = res.resultData.bannerList;
+        that.suitableList = res.resultData.suitableList;
+        that.sectionList = res.resultData.sectionList;
+        wx.setNavigationBarTitle({
+          title: res.resultData.title
+        });
+        that.cardProList.reqData.pageIndex = 1;
+        that.cardProList.reqData.id = that.sectionList[0].id;
+        that.HomeGetSectionList();
+      }
     });
   }
 
@@ -259,11 +271,14 @@ export default class Index extends wepy.page {
         message: '加载中...',
       });
       Api.HomeGetSectionList(that.cardProList.reqData,function(res){
-        that.cardProList.dataList = result.concat(res.resultData.dataList);
-        that.cardProList.hasNextPage = res.resultData.hasNextPage;
-        that.cardProList.reqData.pageIndex += 1;
-        Toast.clear();
-        that.$apply();
+        if(res.result){
+          that.cardProList.dataList = result.concat(res.resultData.dataList);
+          that.cardProList.hasNextPage = res.resultData.hasNextPage;
+          that.cardProList.reqData.pageIndex += 1;
+          // that.scrollTop = 500;
+          Toast.clear();
+          that.$apply();
+        }
       });
     }else{
       Toast({

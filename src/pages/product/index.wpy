@@ -2,7 +2,6 @@
 @import '../../less/color.less';
 @import '../../less/swiper.less';
 @import '../../less/product.less';
-
 .fiex-bottom {
   position: absolute;
   bottom: 0;
@@ -17,10 +16,10 @@
 <template>
     <scroll-view scroll-y style="height: {{windowHeight}}px;">
       <view class="mk-swiper-container">
-        <swiper circular autoplay="{{swiper.autoplay}}" bindchange="swiperChange" class="mk-swiper">
+        <swiper circular autoplay="{{swiper.autoplay}}"  style="height:{{swiperHieght}}" bindchange="swiperChange" class="mk-swiper">
           <repeat for="{{swiper.imgUrls}}" key="index"  index="index" item="item">
             <swiper-item>
-              <image src="{{item}}" class="mk-slide-image">
+              <image src="{{item}}" class="mk-slide-image" mode="widthFix"  bindload="swiperImgHight"/>
             </swiper-item>
           </repeat>
         </swiper>
@@ -145,6 +144,7 @@ export default class info extends wepy.page {
     productInfo: [],
     cartCount: 0,
     isFavor: false,
+    swiperHieght: 0,
     swiper: {
       imgUrls: [],
       swiperCurrent: 0,
@@ -155,6 +155,13 @@ export default class info extends wepy.page {
   computed = {};
 
   methods = {
+    swiperImgHight(e){
+      var winWid = wx.getSystemInfoSync().windowWidth; 
+      var imgh = e.detail.height;　　　　　　　　　　　　　　
+      var imgw = e.detail.width;
+      var swiperH = winWid*imgh/imgw + "px";
+      this.swiperHieght = swiperH;
+    },
     swiperChange(e) {
       this.swiper.swiperCurrent = e.detail.current;
     },
@@ -164,7 +171,7 @@ export default class info extends wepy.page {
         id: that.productInfo.id
       };
       that.isFavor = !that.isFavor;
-      if(this.isFavor){
+      if(that.isFavor){
         Api.PostMemberAddFavor(reqData,function(res){
           if(res.result){
             Toast.success('收藏成功');
@@ -183,7 +190,7 @@ export default class info extends wepy.page {
             Toast.fail('取消收藏失败,请重试');
           }
         });
-      } 
+      }     
     },
     onClickAddCart(){
       var that = this;
@@ -251,12 +258,14 @@ export default class info extends wepy.page {
       id: e.id
     };
     Api.GetProductDetail(reqData,function(res){
-      that.productInfo = res.resultData.productInfo;
-      that.isFavor = res.resultData.isFavor;
-      that.cartCount = res.resultData.cartCount;
-      that.swiper.imgUrls = res.resultData.productInfo.productImage;
-      that.detailsNodes = weRich.parse(res.resultData.productInfo.details.replace(/\<img/gi, '<img style="max-width:100%;height:auto"'));
-      that.$apply();
+      if(res.result){
+        that.productInfo = res.resultData.productInfo;
+        that.isFavor = res.resultData.isFavor;
+        that.cartCount = res.resultData.cartCount;
+        that.swiper.imgUrls = res.resultData.productInfo.productImage;
+        that.detailsNodes = weRich.parse(res.resultData.productInfo.details.replace(/\<img/gi, '<img style="max-width:100%;height:auto"'));
+        that.$apply();
+      }
     })
     
   }

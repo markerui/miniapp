@@ -289,12 +289,14 @@ export default class info extends wepy.page {
   GetMemberMyCart(){
     let that = this;
     Api.GetMemberMyCart(function(res) {
-      var DataList = res.resultData.dataList;
-      DataList.forEach(function(e) {
-        e.checked = false;
-      });
-      that.cardProList = DataList;
-      that.$apply();
+      if(res.result){
+        var DataList = res.resultData.dataList;
+        DataList.forEach(function(e) {
+          e.checked = false;
+        });
+        that.cardProList = DataList;
+        that.$apply();
+      }
     });
   }
 

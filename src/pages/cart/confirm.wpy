@@ -252,7 +252,7 @@ export default class info extends wepy.page {
   mixins = [];
 
   data = {
-    payList: ['微信支付', '银联支付'],
+    payList: ['微信支付', '其它支付'],
     checkPayIndex: 0,
     cartIn: true,
     checkType1:['自提','快递','物流','到付'],

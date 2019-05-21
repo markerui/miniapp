@@ -176,8 +176,10 @@ export default class Class extends wepy.page {
       });
 
     Api.GetProductSortList(function(res){
-      that.dataList = res.resultData.dataList;
-      that.$apply();
+      if(res.result){
+        that.dataList = res.resultData.dataList;
+        that.$apply();
+      }
     });
       
   }

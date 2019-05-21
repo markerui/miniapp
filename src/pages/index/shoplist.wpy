@@ -132,8 +132,10 @@ export default class search extends wepy.page {
 			county: that.area_county
 		};
 		Api.HomeGetStoreList(reqData,function(res){
-			that.storeList = res.resultData.dataList;
-			that.$apply();
+			if(res.result){
+				that.storeList = res.resultData.dataList;
+				that.$apply();
+			}
 		});
 	}
   };
@@ -157,8 +159,10 @@ export default class search extends wepy.page {
 		county: that.area_county
 	};
 	Api.HomeGetStoreList(reqData,function(res){
-		that.storeList = res.resultData.dataList;
-		that.$apply();
+		if(res.result){
+			that.storeList = res.resultData.dataList;
+			that.$apply();
+		}
 	});
 
   };

@@ -52,16 +52,16 @@ function PostData(url, options, fn) {
 }
 
 function PostTokenIdData(url, options, fn) {
-  if (!isTokenId()) {
-    wx.navigateTo({
-      url: '../error/notoken'
-    });
-    return false;
-  }
   Post({
     url: url,
     data: options,
     success: res => {
+      if(res.errCode == 1001){
+        wx.navigateTo({
+          url: '../error/notoken'
+        });
+        return false;
+      }
       fn(res);
     },
     fail: res => {
@@ -83,13 +83,6 @@ function GetData(url, options, fn) {
   });
 }
 
-function isTokenId() {
-  if (tokenId) {
-    return true;
-  } else {
-    return false;
-  }
-}
 
 //登录
 function Login(data, cb) {
@@ -173,6 +166,15 @@ function ProductGetProductList(data, cb) {
 //商品分类
 function GetProductSortList(cb) {
   GetData('Product/GetSortList', '', function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
+
+//商品分类
+function GetProductSuitableOccasion(data,cb) {
+  GetData('Product/SuitableOccasion', data, function (res) {
     if (cb) {
       cb(res)
     }
@@ -508,6 +510,7 @@ module.exports = {
   PostCampaignSendSMS: PostCampaignSendSMS,
   GetProductSortList: GetProductSortList,
   GetProductDetail: GetProductDetail,
+  GetProductSuitableOccasion: GetProductSuitableOccasion,
   ProductGetProductList: ProductGetProductList,
   PostOrderConfirmOrder: PostOrderConfirmOrder,
   PostOrderCreateOrder: PostOrderCreateOrder,

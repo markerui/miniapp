@@ -192,12 +192,14 @@ export default class My extends wepy.page {
   GetMemberCenter(){
     var that = this;
     Api.GetMemberCenter(function(res){
-      that.memberInfo = res.resultData.memberInfo;
-      that.$apply();
+      if(res.result){
+        that.memberInfo = res.resultData.memberInfo;
+        that.$apply();
+      }
     });
   };
 
-  onShow() {
+  onLoad() {
     var that = this;
     that.GetMemberCenter();
   }

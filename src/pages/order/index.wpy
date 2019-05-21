@@ -276,16 +276,16 @@ export default class info extends wepy.page {
 
   events = {};
 
-  
-
   onLoad(e) {
     var that = this;
     var reqData = {
       orderNum: e.id
     };
     Api.PostMemberOrderDetail(reqData,function(res){
-      that.orderDetailInfo = res.resultData;
-      that.$apply();
+      if(res.result){
+        that.orderDetailInfo = res.resultData;
+        that.$apply();
+      }
     })
   }
 }

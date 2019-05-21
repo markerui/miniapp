@@ -116,11 +116,13 @@ export default class info extends wepy.page {
   GetMemberInfo() {
     var that = this;
     Api.GetMemberInfo(function(res){
-      that.MemberInfo = res.resultData.memberInfo;
-      that.area_province_name = res.resultData.memberInfo.provinceName;
-      that.area_city_name = res.resultData.memberInfo.cityName;
-      that.area_county_name = res.resultData.memberInfo.countyName;
-      that.$apply();
+      if(res.result){
+        that.MemberInfo = res.resultData.memberInfo;
+        that.area_province_name = res.resultData.memberInfo.provinceName;
+        that.area_city_name = res.resultData.memberInfo.cityName;
+        that.area_county_name = res.resultData.memberInfo.countyName;
+        that.$apply();
+      }
     });
   };
 
