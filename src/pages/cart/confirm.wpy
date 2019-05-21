@@ -103,7 +103,7 @@
   </block>
   <block wx:else>
     <view class="cart-confirm-margin_bottom10 cart-confirm-address cart-confirm-address_no">
-      <van-cell title="新增收货地址" border="{{ false }}" is-link center url="../address/index"/>
+      <van-cell title="新增收货地址" border="{{ false }}" is-link center url="../address/index?cart=1"/>
     </view>
   </block>
   <view class="cart-confirm-margin_bottom10 cart-confirm-cll_title cart-confirm-list">
@@ -184,7 +184,7 @@
     <van-cell title="礼品卡" value="¥{{giftCardNum}}" is-link url="../card/giftList?cart=1&productAmount={{productAmount}}"/>
   </view>
   <view class="cart-confirm-margin_bottom10">
-    <van-field type="textarea" value="{{confirmData.Message}}" name="Message" bind:change="onInput" placeholder="添加留言或备注信息" autosize border="{{ false }}"/>
+    <van-field type="textarea" value="{{confirmData.message}}" data-name="message" bind:change="onInput" placeholder="添加留言或备注信息" autosize border="{{ false }}"/>
   </view>
   <view class="cart-confirm-margin_bottom10">
     <view class="cart-confirm-order">
@@ -409,26 +409,33 @@ export default class info extends wepy.page {
   PostOrderCreateOrder(){
     var that = this;
     Api.PostOrderCreateOrder(that.confirmData,function(res){
-      wx.removeStorage({
-        key: 'cartConfirm'
-      });
-      var orderNum = res.resultData.orderNum;
-      if(that.checkPayIndex){
-        Dialog.confirm({
-          title: '订单已生成',
-          message: '订单已经生成了，但是没有支付哦，可以这样也可以这样哦',
-          showCancelButton: true,
-          confirmButtonText: '继续微信支付',
-          cancelButtonText: '订单中心'
-        }).then(() => {
-          that.PostOrderWeixinPay(orderNum);
-        }).catch(() => {
-          wx.redirectTo({
-            url: '../order/list'
-          });
+      if(res.result){
+        wx.removeStorage({
+          key: 'cartConfirm'
         });
+        var orderNum = res.resultData.orderNum;
+        if(that.checkPayIndex){
+          Dialog.confirm({
+            title: '订单已生成',
+            message: '订单已经生成了，但是没有支付哦，可以这样也可以这样哦',
+            showCancelButton: true,
+            confirmButtonText: '继续微信支付',
+            cancelButtonText: '订单中心'
+          }).then(() => {
+            that.PostOrderWeixinPay(orderNum);
+          }).catch(() => {
+            wx.redirectTo({
+              url: '../order/list'
+            });
+          });
+        }else{
+          that.PostOrderWeixinPay(orderNum);
+        }
       }else{
-        that.PostOrderWeixinPay(orderNum);
+        Dialog.alert({
+          title: '确认失败',
+          message: res.message
+        });
       }
     });
   }

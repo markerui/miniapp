@@ -187,7 +187,6 @@ export default class info extends wepy.page {
     if (e.cart) {
       that.cartIn = true;
     }
-
     that.PostMemberGetAddressList();
   }
 

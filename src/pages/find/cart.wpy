@@ -103,18 +103,26 @@
   </block>
   <block wx:else>
     <view class="cart-confirm-margin_bottom10 cart-confirm-address cart-confirm-address_no">
-      <van-cell title="新增收货地址" border="{{ false }}" is-link center url="../address/index"/>
+      <van-cell title="新增收货地址" border="{{ false }}" is-link center url="../address/index?cart=1"/>
     </view>
   </block>
   <view class="cart-confirm-margin_bottom10 cart-confirm-cll_title cart-confirm-list">
     <view class="cart-confirm-list_head">
-      <van-cell title="商品" value="¥{{ProAllPrice}}"/>
+      <van-cell title="商品" value="¥{{confirmData.productAmount}}"/>
     </view>
     <van-cell-group>
       <repeat for="{{cardProList}}" key="index" index="index" item="cardProItem">
         <van-cell>
           <view slot="title">
             <view class="mk-cart-card_list">
+                <view class="mk-cart-card_check">
+                  <van-checkbox
+                    checked-color="#e26431"
+                    data-index="{{index}}"
+                    value="{{ cardProItem.checked }}"
+                    bind:change="onChangeCartChecke"
+                  ></van-checkbox>
+                </view>
               <van-card
                 centered
                 custom-class="mk-card_item"
@@ -134,11 +142,10 @@
                   <van-stepper
                     id="{{cardProItem.productID}}"
                     data-index="{{index}}"
-                    disabled = "{{cartIn}}"
                     disable-input
                     integer
                     min="1"
-                    max="{{cardProItem.stock}}"
+                    max="{{confirmData.optionalCount}}"
                     value="{{ cardProItem.productCount }}"
                     step="1"
                     bind:plus="onChangeAddStepper"
@@ -153,51 +160,22 @@
     </van-cell-group>
   </view>
   <view class="cart-confirm-margin_bottom10 cart-confirm-cll_title cart-confirm-delivery">
-    <van-cell value="¥{{confirmData.shippingFee}}">
-      <view slot="title">
-        配送方式
-        <!-- <van-icon name="info-o" color="#999"/> -->
-      </view>
+    <van-cell>
+      <view slot="title">配送方式</view>
     </van-cell>
     <van-checkbox-group class="cart-confirm-delivery_radio" value="{{checkType1Result}}" bind:change="onChangeCheckType1Result">
       <repeat for="{{checkType1}}" key="index" index="index" item="item">
         <van-checkbox name="{{item}}" checked-color="#e26431">{{item}}</van-checkbox>
        </repeat>
     </van-checkbox-group>
-    <block wx:if="{{checkType2Show}}">
-      <van-checkbox-group class="cart-confirm-delivery_checkbox" value="{{checkType2Result}}" bind:change="onChangeCheckType2Result">
-        <repeat for="{{checkType2}}" key="index" index="index" item="item">
-          <van-checkbox name="{{item}}" use-icon-slot>
-            <van-button type="{{checkType2checked[index].check?'warning':'default'}}" plain size="small">{{item}}</van-button>
-          </van-checkbox>
-        </repeat>
-      </van-checkbox-group>
-    </block>
-  </view>
-  <view class="cart-confirm-margin_bottom10 cart-confirm-cll_title cart-confirm-pay">
-    <van-cell title="支付方式" value="{{checkPay}}" bind:click="onCheckPay" is-link/>
-  </view>
-  <view class="cart-confirm-cll_title cart-confirm-coupon">
-    <van-cell title="优惠券" value="¥{{couponNum}}" is-link url="../card/couponList?cart=1&productAmount={{productAmount}}"/>
-  </view>
-  <view class="cart-confirm-margin_bottom10 cart-confirm-cll_title cart-confirm-card">
-    <van-cell title="礼品卡" value="¥{{giftCardNum}}" is-link url="../card/giftList?cart=1&productAmount={{productAmount}}"/>
   </view>
   <view class="cart-confirm-margin_bottom10">
-    <van-field type="textarea" value="{{confirmData.Message}}" name="Message" bind:change="onInput" placeholder="添加留言或备注信息" autosize border="{{ false }}"/>
+    <van-field type="textarea" value="{{confirmData.message}}" data-name="message" bind:change="onInput" placeholder="添加留言或备注信息" autosize border="{{ false }}"/>
   </view>
   <view class="cart-confirm-margin_bottom10">
-    <view class="cart-confirm-order">
-      <van-cell-group border="{{ false }}">
-        <van-cell title="商品金额" value="¥{{ProAllPrice}}" border="{{ false }}"/>
-        <van-cell title="配送费" value="+¥{{confirmData.shippingFee}}" border="{{ false }}"/>
-        <van-cell title="优惠券" value="-¥{{couponNum}}" border="{{ false }}"/>
-        <van-cell title="礼品卡" value="-¥{{giftCardNum}}" border="{{ false }}"/>
-      </van-cell-group>
-    </view>
     <view class="cart-confirm-cll_title">
       <van-cell-group>
-        <van-cell title="订单金额" value="¥{{AllproductAmount}}" border="{{ false }}"/>
+        <van-cell title="订单金额" value="¥{{confirmData.productAmount}}" border="{{ false }}"/>
       </van-cell-group>
     </view>
   </view>
@@ -252,52 +230,16 @@ export default class info extends wepy.page {
   mixins = [];
 
   data = {
-    payList: ['微信支付', '银联支付'],
-    checkPayIndex: 0,
-    cartIn: true,
-    checkType1:['自提','快递','物流','到付'],
+    checkPayIndex: 1,
+    checkType1:['自提','快递'],
     checkType1Result: [],
-    checkType2Show: false,
-    checkType2: ['货栈自提','送货上门'],
-    checkType2checked: [
-      {check: true},
-      {check: false}
-    ],
-    productAmount: 0,
-    shippingFee: 0,
     addressInfo: [],
     cardProList: [],
     confirmData: [],
-    couponNum: 0,
-    giftCardNum: 0
+    checkCount: 0,
   };
 
-  computed = {
-    checkPay() {
-      return this.payList[this.checkPayIndex];
-    },
-    AllproductAmount(){
-      var AllproductAmount = 0;
-      var AllproductAmount = this.productAmount + this.shippingFee - this.couponNum - this.giftCardNum;
-      if(AllproductAmount<=0){
-        AllproductAmount = 0;
-      }
-      return AllproductAmount;
-    },
-    ProAllPrice() {
-      var that = this;
-      var AllPrice = 0;
-      if(that.cartIn){
-        return that.productAmount;
-      }else{
-        that.cardProList.forEach(function(e) {
-          AllPrice += e.productCount * e.realPrice;
-        });
-        that.productAmount = AllPrice;
-        return AllPrice;
-      }
-    }
-  };
+  computed = {};
 
   watch = {};
 
@@ -307,26 +249,57 @@ export default class info extends wepy.page {
       var name = e.currentTarget.dataset.name;
       this.confirmData[name] = value;
     },
+    onChangeCartChecke(e) {
+      var that = this;
+      var index = e.currentTarget.dataset.index;
+      var maxCount = that.confirmData.optionalCount;
+      var cartIdsLenght = that.confirmData.cartList.length;
+      if(cartIdsLenght >= maxCount || that.checkCount >= maxCount){
+        if(e.detail){
+          Dialog.alert({
+            title: '选择失败',
+            message: '最多只可以选择'+ maxCount + '件商品'
+          });
+        }
+        that.cardProList[index].checked = false;
+      }else{
+        if(cartIdsLenght == 1 && e.detail){
+          that.cardProList[index].productCount = 1;
+        }
+        that.cardProList[index].checked = e.detail;
+      }
+      that.setCartIds();
+    },
     onChangeAddStepper(e) {
       var that = this;
       var index = e.currentTarget.dataset.index;
-      that.cardProList[index].productCount += 1;
-      that.cardProList[index].stock -= 1;
-      that.confirmData.productInfo.productCount = that.cardProList[index].productCount;
+      var maxCount = that.confirmData.optionalCount;
+      var cartIdsLenght = that.confirmData.cartList.length;
+      if(cartIdsLenght >= maxCount || that.checkCount >= maxCount){
+          Dialog.alert({
+            title: '选择失败',
+            message: '最多只可以选择'+ maxCount + '件商品'
+          });
+          that.cardProList[index].productCount -= 1;
+          that.cardProList[index].stock += 1;
+      }else{
+        that.cardProList[index].productCount += 1;
+        that.cardProList[index].stock -= 1;
+      }
+      that.setCartIds();
     },
     onChangeMinusStepper(e) {
       var that = this;
       var index = e.currentTarget.dataset.index;
       that.cardProList[index].productCount -= 1;
       that.cardProList[index].stock += 1;
-      that.confirmData.productInfo.productCount = that.cardProList[index].productCount;
+      that.setCartIds();
     },
     onChangeCheckType1Result(e){
       var that = this;
       var detail = e.detail;
       var detailLast = detail[detail.length-1];
       that.checkType1Result.length = 0;
-      that.checkType2Show = false;
       that.checkType1Result.push(detailLast);
       switch (detailLast) {
         case '自提':
@@ -335,100 +308,69 @@ export default class info extends wepy.page {
         case '快递':
           that.confirmData.ShippingModel = 2;
           break;
-        case '物流':
-          that.checkType2Show = true;
-          that.confirmData.ShippingModel = 3;
-          that.checkType2checked[0].check = true;
-          that.checkType2checked[1].check = false;
-          break;
-        case '到付':
-          that.checkType2Show = true;
-          that.checkType2checked[0].check = true;
-          that.checkType2checked[1].check = false;
-          if(detail.length >1){
-            that.checkType1Result = ['物流','到付'];
-            that.confirmData.ShippingModel = 5;
-          }else{
-            that.checkType1Result = ['物流'];
-            if(that.checkType2checked[0].check){
-              that.confirmData.ShippingModel = 3;
-            }else{
-              that.confirmData.ShippingModel = 4;
-            }
-          }
-          break;
         default:
           break;
       }
-      that.PostOrderGetShippingFee();
       that.$apply();
-    },
-    onChangeCheckType2Result(e){
-      var that = this;
-      var detail = e.detail;
-      var detailLast = detail[detail.length-1];
-      if(detailLast == '货栈自提'){
-          that.checkType2checked[0].check = true;
-          that.checkType2checked[1].check = false;
-          if(that.checkType1Result.length>1){
-            that.confirmData.ShippingModel = 5;
-          }else{
-            that.confirmData.ShippingModel = 3;
-          }
-      }else{
-          that.checkType2checked[0].check = false;
-          that.checkType2checked[1].check = true;
-          if(that.checkType1Result.length>1){
-            that.confirmData.ShippingModel = 6;
-          }else{
-            that.confirmData.ShippingModel = 4;
-          }
-      }
-      that.PostOrderGetShippingFee();
-      that.$apply();
-    },
-    onCheckPay() {
-      let that = this;
-      wx.showActionSheet({
-        itemList: this.payList,
-        success(res) {
-          that.checkPayIndex = res.tapIndex;
-          that.$apply();
-        }
-      });
     },
     confirmOrder() {
       var that = this;
-      that.confirmData.actualTotalPrice = that.$data.AllproductAmount;
-      that.PostOrderCreateOrder();
+      var cartIdsLenght = that.confirmData.cartList.length;
+      var maxCount = that.confirmData.optionalCount;
+      if(cartIdsLenght == maxCount || that.checkCount == maxCount){
+        that.PostOrderCreateCampaignOrder();
+      }else{
+        Dialog.alert({
+          title: '确认失败',
+          message: '请先选择'+ this.confirmData.optionalCount + '件商品'
+        });
+      }
     }
   };
 
   events = {};
   
-  PostOrderCreateOrder(){
+  setCartIds(){
     var that = this;
-    Api.PostOrderCreateOrder(that.confirmData,function(res){
-      wx.removeStorage({
-        key: 'findCartConfirm'
-      });
-      var orderNum = res.resultData.orderNum;
-      if(that.checkPayIndex){
-        Dialog.confirm({
-          title: '订单已生成',
-          message: '订单已经生成了，但是没有支付哦，可以这样也可以这样哦',
-          showCancelButton: true,
-          confirmButtonText: '继续微信支付',
-          cancelButtonText: '订单中心'
-        }).then(() => {
-          that.PostOrderWeixinPay(orderNum);
-        }).catch(() => {
-          wx.redirectTo({
-            url: '../order/list'
-          });
+    that.confirmData.cartList = [];
+    that.checkCount = 0;
+    that.cardProList.forEach(function(e,i) {
+      if (e.checked) {
+        var pushData = {
+          ProductID: e.productID,
+          ProductCount: e.productCount
+        }
+        that.checkCount += e.productCount;
+        that.confirmData.cartList.push(pushData);
+      }
+    });
+  }
+
+  PostOrderCreateCampaignOrder(){
+    var that = this;
+    Api.PostOrderCreateCampaignOrder(that.confirmData,function(res){
+      if(res.result){
+        wx.removeStorage({
+          key: 'findCartConfirm'
         });
+        var orderNum = res.resultData.orderNum;
+        if(that.confirmData.productAmount>0){
+          that.PostOrderWeixinPay(orderNum);
+        }else{
+          Dialog.alert({
+            title: '订单已生成',
+            message: '订单已经生成了,请耐心等待发货'
+          }).then(() => {
+            wx.redirectTo({
+              url: '../order/list'
+            });
+          });
+        }
       }else{
-        that.PostOrderWeixinPay(orderNum);
+        Dialog.alert({
+          title: '确认失败',
+          message: res.message
+        });
       }
     });
   }
@@ -479,6 +421,7 @@ export default class info extends wepy.page {
       }
     });
   }
+
   PostMemberGetAddress(){
     var that = this;
     var reqData = {
@@ -487,7 +430,6 @@ export default class info extends wepy.page {
     Api.PostMemberGetAddress(reqData,function(res){
       if(res.result){
         that.addressInfo = res.resultData.adressInfo;
-        that.PostOrderGetShippingFee();
         that.$apply();
       }else{
         Toast.fail(res.message);
@@ -495,36 +437,21 @@ export default class info extends wepy.page {
     });
   }
 
-  PostOrderGetShippingFee(){
-    var that = this;
-    Api.PostOrderGetShippingFee(that.confirmData,function(res){
-      that.confirmData.shippingFee = res.resultData.shippingFee;
-    });
-  }
-  
   onLoad(e) {
     var that = this;
-    if(e.cart==1){
-      that.cartIn = true;
-    }else{
-      that.cartIn = false;
-    }
     wx.removeStorage({
       key: 'addressId'
-    });
-    wx.removeStorage({
-      key: 'CouponID'
-    });
-    wx.removeStorage({
-      key: 'GiftCardID'
     });
     wx.getStorage({
       key: 'findCartConfirm',
       success(res) {
         console.log(res.data)
-        that.cardProList = res.data.productList;
+        var ProDataList = res.data.productList;
+        ProDataList.forEach(function(e) {
+          e.checked = false;
+        });
+        that.cardProList = ProDataList;
         that.confirmData = res.data.orderData;
-        that.productAmount = res.data.productAmount;
         if(that.confirmData.addressID){
           that.PostMemberGetAddress();
         }
@@ -549,30 +476,6 @@ export default class info extends wepy.page {
       success(res) {
         that.confirmData.addressID = res.data;
         that.PostMemberGetAddress();
-      }
-    });
-    wx.getStorage({
-      key: 'CouponID',
-      success(res) {
-        if(res.data.couponID){
-          that.confirmData.couponID = res.data.couponID;
-        }else{
-          that.confirmData.couponID = 0;
-        }
-        that.couponNum = res.data.couponNum;
-        that.$apply();
-      }
-    });
-    wx.getStorage({
-      key: 'GiftCardID',
-      success(res) {
-        if(res.data.giftCardID){
-          that.confirmData.giftCardID = res.data.giftCardID;
-        }else{
-          that.confirmData.giftCardID = 0;
-        }
-        that.giftCardNum = res.data.giftCardNum;
-        that.$apply();
       }
     });
   }

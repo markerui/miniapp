@@ -1,0 +1,98 @@
+<style lang="less">
+@import '../../less/color.less';
+</style>
+
+<template>
+    <view style="padding:30px;">
+        <van-button
+            type="danger"
+            size="large"
+            open-type="getUserInfo"
+            bind:getuserinfo="getUserInfo"
+        >马上授权接着操作</van-button>
+    </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+import Api from '../../utils/api';
+
+export default class info extends wepy.page {
+  config = {
+    navigationBarTitleText: '授权提示',
+    usingComponents: {
+      'van-icon': '../../components/vant/icon/index',
+      'van-button': '../../components/vant/button/index'
+    }
+  };
+
+  components = {};
+
+  mixins = [];
+
+  data = {
+    reqData: {}
+  };
+
+  computed = {};
+
+  methods = {
+    getUserInfo(e) {
+      var that = this;
+      var reqData = {
+        openId: that.$parent.globalData.weChatInfo.openId,
+        encryptedData: e.detail.encryptedData,
+        iv: e.detail.iv,
+        unionid: that.$parent.globalData.weChatInfo.unionid
+      };
+      that.reqData = reqData;
+      that.getUserInfo(reqData);
+    }
+  };
+
+  getUserInfo(data) {
+    var that = this;
+    Api.getUserInfo(data, function(res) {
+      if (res.result) {
+        wx.setStorageSync('tokenId', res.resultData.tokenId);
+        wx.navigateBack();
+      } else {
+        if (res.errCode == 1002) {
+          that.wxLogin();
+        } else {
+          wx.showModal({
+            title: '提示',
+            content: res.message,
+            showCancel: false
+          });
+        }
+      }
+    });
+  }
+
+  wxLogin() {
+    Api.wxLogin(function(res) {
+      var tokenId = '';
+      try {
+        tokenId = wx.getStorageSync('tokenId');
+      } catch (e) {}
+      if (tokenId) {
+        wx.navigateBack();
+      }
+    });
+  }
+
+  events = {};
+
+  onLoad() {
+    var that = this;
+    wx.getSetting({
+      success(res) {
+        if (res.authSetting['scope.userInfo']) {
+          that.wxLogin();
+        }
+      }
+    });
+  }
+}
+</script>

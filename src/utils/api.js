@@ -2,9 +2,9 @@ import wepy from 'wepy';
 
 const HOST_URI = 'https://t1.yxbest.com.cn';
 const API_URL = HOST_URI + '/api/';
+var tokenId = '';
 
 function Request(options) {
-  var tokenId = '';
   try {
     tokenId = wx.getStorageSync("tokenId");
   } catch (e) {}
@@ -51,6 +51,25 @@ function PostData(url, options, fn) {
   });
 }
 
+function PostTokenIdData(url, options, fn) {
+  if (!isTokenId()) {
+    wx.navigateTo({
+      url: '../error/notoken'
+    });
+    return false;
+  }
+  Post({
+    url: url,
+    data: options,
+    success: res => {
+      fn(res);
+    },
+    fail: res => {
+      return 0;
+    },
+  });
+}
+
 function GetData(url, options, fn) {
   Get({
     url: url,
@@ -64,6 +83,14 @@ function GetData(url, options, fn) {
   });
 }
 
+function isTokenId() {
+  if (tokenId) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 //登录
 function Login(data, cb) {
   PostData('auth/GetSessionKey', data, function (res) {
@@ -73,6 +100,7 @@ function Login(data, cb) {
   });
 }
 
+//微信code登录
 function wxLogin(cb) {
   wx.login({
     success(res) {
@@ -142,6 +170,24 @@ function ProductGetProductList(data, cb) {
   });
 }
 
+//商品分类
+function GetProductSortList(cb) {
+  GetData('Product/GetSortList', '', function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
+
+//产品详情
+function GetProductDetail(data, cb) {
+  GetData('Product/Detail', data, function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
+
 //获取实体店接口
 function HomeGetStoreList(data, cb) {
   GetData('Home/GetStoreList', data, function (res) {
@@ -153,7 +199,7 @@ function HomeGetStoreList(data, cb) {
 
 //进入用户中心
 function GetMemberCenter(cb) {
-  PostData('Member/MemberCenter', '', function (res) {
+  PostTokenIdData('Member/MemberCenter', '', function (res) {
     if (cb) {
       cb(res)
     }
@@ -162,7 +208,7 @@ function GetMemberCenter(cb) {
 
 //获取用户信息
 function GetMemberInfo(cb) {
-  PostData('Member/GetMemberInfo', '', function (res) {
+  PostTokenIdData('Member/GetMemberInfo', '', function (res) {
     if (cb) {
       cb(res)
     }
@@ -171,7 +217,7 @@ function GetMemberInfo(cb) {
 
 //获取我的收藏
 function GetMemberMyFavor(data, cb) {
-  PostData('Member/MyFavor', data, function (res) {
+  PostTokenIdData('Member/MyFavor', data, function (res) {
     if (cb) {
       cb(res)
     }
@@ -180,27 +226,25 @@ function GetMemberMyFavor(data, cb) {
 
 //获取我的购物车
 function GetMemberMyCart(data, cb) {
-  PostData('Member/MyCart', data, function (res) {
+  PostTokenIdData('Member/MyCart', data, function (res) {
     if (cb) {
       cb(res)
     }
   });
 }
-
 
 //更新用户信息
 function SaveMemberInfo(data, cb) {
-  PostData('Member/SaveMemberInfo', data, function (res) {
+  PostTokenIdData('Member/SaveMemberInfo', data, function (res) {
     if (cb) {
       cb(res)
     }
   });
 }
 
-
 //添加收藏
 function PostMemberAddFavor(data, cb) {
-  PostData('Member/AddFavor', data, function (res) {
+  PostTokenIdData('Member/AddFavor', data, function (res) {
     if (cb) {
       cb(res)
     }
@@ -209,7 +253,7 @@ function PostMemberAddFavor(data, cb) {
 
 //删除收藏
 function PostMemberDeleteFavor(data, cb) {
-  PostData('Member/DeleteFavor', data, function (res) {
+  PostTokenIdData('Member/DeleteFavor', data, function (res) {
     if (cb) {
       cb(res)
     }
@@ -218,7 +262,7 @@ function PostMemberDeleteFavor(data, cb) {
 
 //我的优惠券
 function PostMemberMyCoupon(data, cb) {
-  PostData('Member/MyCoupon', data, function (res) {
+  PostTokenIdData('Member/MyCoupon', data, function (res) {
     if (cb) {
       cb(res)
     }
@@ -227,17 +271,16 @@ function PostMemberMyCoupon(data, cb) {
 
 //我的礼品卡
 function PostMemberMyGiftCard(data, cb) {
-  PostData('Member/MyGiftCard', data, function (res) {
+  PostTokenIdData('Member/MyGiftCard', data, function (res) {
     if (cb) {
       cb(res)
     }
   });
 }
 
-
 //激活礼品卡
 function PostMemberActivateGiftCard(data, cb) {
-  PostData('Member/ActivateGiftCard', data, function (res) {
+  PostTokenIdData('Member/ActivateGiftCard', data, function (res) {
     if (cb) {
       cb(res)
     }
@@ -246,17 +289,16 @@ function PostMemberActivateGiftCard(data, cb) {
 
 //获取收货地址
 function PostMemberGetAddressList(data, cb) {
-  PostData('Member/GetAddressList', data, function (res) {
+  PostTokenIdData('Member/GetAddressList', data, function (res) {
     if (cb) {
       cb(res)
     }
   });
 }
 
-
 //添加收货地址
 function PostMemberAddAddress(data, cb) {
-  PostData('Member/AddAddress', data, function (res) {
+  PostTokenIdData('Member/AddAddress', data, function (res) {
     if (cb) {
       cb(res)
     }
@@ -265,7 +307,7 @@ function PostMemberAddAddress(data, cb) {
 
 //获取收货地址
 function PostMemberGetAddress(data, cb) {
-  PostData('Member/GetAddress', data, function (res) {
+  PostTokenIdData('Member/GetAddress', data, function (res) {
     if (cb) {
       cb(res)
     }
@@ -274,7 +316,7 @@ function PostMemberGetAddress(data, cb) {
 
 //编辑地址
 function PostMemberEditAddress(data, cb) {
-  PostData('Member/EditAddress', data, function (res) {
+  PostTokenIdData('Member/EditAddress', data, function (res) {
     if (cb) {
       cb(res)
     }
@@ -283,13 +325,12 @@ function PostMemberEditAddress(data, cb) {
 
 //删除地址
 function PostMemberDeleteAddress(data, cb) {
-  PostData('Member/DeleteAddress', data, function (res) {
+  PostTokenIdData('Member/DeleteAddress', data, function (res) {
     if (cb) {
       cb(res)
     }
   });
 }
-
 
 //获取发现列表
 function GetCampaignList(data, cb) {
@@ -318,29 +359,9 @@ function PostCampaignSendSMS(data, cb) {
   });
 }
 
-
-//商品分类
-function GetProductSortList(cb) {
-  GetData('Product/GetSortList', '', function (res) {
-    if (cb) {
-      cb(res)
-    }
-  });
-}
-
-
-//产品详情
-function GetProductDetail(data, cb) {
-  GetData('Product/Detail', data, function (res) {
-    if (cb) {
-      cb(res)
-    }
-  });
-}
-
 //我的购物车
 function GetMemberMyCart(cb) {
-  PostData('Member/MyCart', '', function (res) {
+  PostTokenIdData('Member/MyCart', '', function (res) {
     if (cb) {
       cb(res)
     }
@@ -349,7 +370,7 @@ function GetMemberMyCart(cb) {
 
 //添加到购物车
 function PostMemberAddCart(data, cb) {
-  PostData('Member/AddCart', data, function (res) {
+  PostTokenIdData('Member/AddCart', data, function (res) {
     if (cb) {
       cb(res)
     }
@@ -358,7 +379,7 @@ function PostMemberAddCart(data, cb) {
 
 //修改购物车
 function PostMemberModifyCart(data, cb) {
-  PostData('Member/ModifyCart', data, function (res) {
+  PostTokenIdData('Member/ModifyCart', data, function (res) {
     if (cb) {
       cb(res)
     }
@@ -368,7 +389,7 @@ function PostMemberModifyCart(data, cb) {
 
 //删除购物车
 function PostMemberDeleteCart(data, cb) {
-  PostData('Member/DeleteCart', data, function (res) {
+  PostTokenIdData('Member/DeleteCart', data, function (res) {
     if (cb) {
       cb(res)
     }
@@ -377,7 +398,7 @@ function PostMemberDeleteCart(data, cb) {
 
 //确认订单or直接购买
 function PostOrderConfirmOrder(data, cb) {
-  PostData('Order/ConfirmOrder', data, function (res) {
+  PostTokenIdData('Order/ConfirmOrder', data, function (res) {
     if (cb) {
       cb(res)
     }
@@ -386,7 +407,16 @@ function PostOrderConfirmOrder(data, cb) {
 
 //创建订单页
 function PostOrderCreateOrder(data, cb) {
-  PostData('Order/CreateOrder', data, function (res) {
+  PostTokenIdData('Order/CreateOrder', data, function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
+
+//创建FAXIAN订单页
+function PostOrderCreateCampaignOrder(data, cb) {
+  PostTokenIdData('Order/CreateCampaignOrder', data, function (res) {
     if (cb) {
       cb(res)
     }
@@ -395,7 +425,7 @@ function PostOrderCreateOrder(data, cb) {
 
 //支付订单
 function PostOrderWeixinPay(data, cb) {
-  PostData('Order/WeixinPay', data, function (res) {
+  PostTokenIdData('Order/WeixinPay', data, function (res) {
     if (cb) {
       cb(res)
     }
@@ -404,17 +434,16 @@ function PostOrderWeixinPay(data, cb) {
 
 //获取运费
 function PostOrderGetShippingFee(data, cb) {
-  PostData('Order/GetShippingFee', data, function (res) {
+  PostTokenIdData('Order/GetShippingFee', data, function (res) {
     if (cb) {
       cb(res)
     }
   });
 }
 
-
 //我的订单列表
 function PostMemberGetOrderList(data, cb) {
-  PostData('Member/GetOrderList', data, function (res) {
+  PostTokenIdData('Member/GetOrderList', data, function (res) {
     if (cb) {
       cb(res)
     }
@@ -423,17 +452,16 @@ function PostMemberGetOrderList(data, cb) {
 
 //我的订单详情
 function PostMemberOrderDetail(data, cb) {
-  PostData('Member/OrderDetail', data, function (res) {
+  PostTokenIdData('Member/OrderDetail', data, function (res) {
     if (cb) {
       cb(res)
     }
   });
 }
 
-
 //我的订单详情物流
 function PostMemberOrderLogistics(data, cb) {
-  PostData('Member/OrderLogistics', data, function (res) {
+  PostTokenIdData('Member/OrderLogistics', data, function (res) {
     if (cb) {
       cb(res)
     }
@@ -442,14 +470,12 @@ function PostMemberOrderLogistics(data, cb) {
 
 //设置订单状态
 function PostMemberSetOrderStatus(data, cb) {
-  PostData('Member/SetOrderStatus', data, function (res) {
+  PostTokenIdData('Member/SetOrderStatus', data, function (res) {
     if (cb) {
       cb(res)
     }
   });
 }
-
-
 
 module.exports = {
   HOST_URI: HOST_URI,
@@ -485,6 +511,7 @@ module.exports = {
   ProductGetProductList: ProductGetProductList,
   PostOrderConfirmOrder: PostOrderConfirmOrder,
   PostOrderCreateOrder: PostOrderCreateOrder,
+  PostOrderCreateCampaignOrder: PostOrderCreateCampaignOrder,
   PostOrderWeixinPay: PostOrderWeixinPay,
   PostOrderGetShippingFee: PostOrderGetShippingFee,
   PostMemberGetOrderList: PostMemberGetOrderList,
