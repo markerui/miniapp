@@ -39,6 +39,7 @@
 .my-cell_list{
   .van-cell-group_view{
     margin-top: 10px;
+    position: relative;
   }
 }
 
@@ -61,32 +62,50 @@
 
 <template>
   
-  <view class="user-head">
-    <view class="user-head_title" bind:tap="goUserInfo">
-      <view>
-        <image src="{{memberInfo.headImg}}"></image>
+  <block wx:if="{{isLogin}}">
+    <view class="user-head">
+      <view class="user-head_title" bind:tap="goUserInfo">
+        <view>
+          <image src="{{memberInfo.headImg}}"></image>
+        </view>
+        <text class="user-head_name">{{memberInfo.nickName}} </text>
       </view>
-      <text class="user-head_name">{{memberInfo.nickName}} </text>
+      <van-row class="user-head_info">
+        <van-col span="12">
+          <view class="user-head_info_item" bindtap="goYhq">
+            <text class="user-head_info_text">优惠券</text>
+            <text class="user-head_info_num">{{memberInfo.couponCount}}</text>
+          </view>
+        </van-col>
+        <van-col span="12">
+          <view class="user-head_info_item" bindtap="goLpk" style="border:none;">
+            <text class="user-head_info_text">礼品卡</text>
+            <text class="user-head_info_num">{{memberInfo.giftCardCount}}</text>
+          </view>
+        </van-col>
+      </van-row>
     </view>
-    <van-row class="user-head_info">
-      <van-col span="12">
-        <view class="user-head_info_item" bindtap="goYhq">
-          <text class="user-head_info_text">优惠券</text>
-          <text class="user-head_info_num">{{memberInfo.couponCount}}</text>
-        </view>
-      </van-col>
-      <van-col span="12">
-        <view class="user-head_info_item" bindtap="goLpk" style="border:none;">
-          <text class="user-head_info_text">礼品卡</text>
-          <text class="user-head_info_num">{{memberInfo.giftCardCount}}</text>
-        </view>
-      </van-col>
-    </van-row>
-  </view>
+  </block>
+  <block wx:else>
+     <view class="user-head">
+      <van-button type="primary">授权登录</van-button>
+    </view>
+  </block>
   <!-- user-head end -->
 
   <view class="my-cell_list">
+    
     <view class="van-cell-group_view">
+      <block wx:if="{{!isLogin}}">
+        <van-button
+            class="hideLoginBtn"
+            type="danger"
+            size="large"
+            lang="zh_CN"
+            open-type="getUserInfo"
+            bind:getuserinfo="getUserInfo"
+        >授权</van-button>
+      </block>
       <van-cell-group>
         <van-cell
           title="全部订单"
@@ -104,6 +123,16 @@
     </view>
 
     <view class="van-cell-group_view">
+      <block wx:if="{{!isLogin}}">
+        <van-button
+            class="hideLoginBtn"
+            type="danger"
+            size="large"
+            lang="zh_CN"
+            open-type="getUserInfo"
+            bind:getuserinfo="getUserInfo"
+        >授权</van-button>
+      </block>
       <van-cell-group >
         <van-cell
           title="我的收藏"
@@ -164,12 +193,26 @@ export default class My extends wepy.page {
   mixins = [];
 
   data = {
-    memberInfo: []
+    memberInfo: [],
+    isLogin: false,
   };
 
   computed = {};
 
   methods = {
+    getUserInfo(e) {
+      var that = this;
+      var reqData = {
+        openId: that.$parent.globalData.weChatInfo.openId,
+        encryptedData: e.detail.encryptedData,
+        iv: e.detail.iv,
+        unionid: that.$parent.globalData.weChatInfo.unionid
+      };
+      that.$parent.getUserInfo(reqData,function(res){
+        that.isLogin = that.$parent.globalData.isLogin;
+        that.$apply();
+      });
+    },
     goUserInfo(){
       wx.navigateTo({
         url: 'info'
@@ -201,6 +244,7 @@ export default class My extends wepy.page {
 
   onLoad() {
     var that = this;
+    that.isLogin = that.$parent.globalData.isLogin;
     that.GetMemberCenter();
   }
 }

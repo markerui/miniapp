@@ -41,14 +41,26 @@
             <text>市场价:¥ {{productInfo.marketPrice}}</text>
           </view>
         </view>
-        <view class="product-head_collect" bind:tap="onClickIsFavor">
-          <view  wx:if="{{isFavor}}">
-            <van-icon name="star" size="32px" color="#e26431" />
-            <text>已收藏</text>
-          </view>
-          <view wx:else >
-            <van-icon name="star-o" size="32px"/>
-            <text>收藏</text>
+        <view class="product-head_collect">
+          <block wx:if="{{!isLogin}}">
+              <van-button
+                  class="hideLoginBtn"
+                  type="danger"
+                  size="large"
+                  lang="zh_CN"
+                  open-type="getUserInfo"
+                  bind:getuserinfo="getUserInfo"
+              >授权</van-button>
+          </block>
+          <view bind:tap="onClickIsFavor">
+            <view  wx:if="{{isFavor}}">
+              <van-icon name="star" size="32px" color="#e26431" />
+              <text>已收藏</text>
+            </view>
+            <view wx:else >
+              <van-icon name="star-o" size="32px"/>
+              <text>收藏</text>
+            </view>
           </view>
         </view>
       </view>
@@ -77,35 +89,46 @@
       <!-- product-content end -->
     </scroll-view>
 
-
-    <van-goods-action class="fiex-bottom">
-        <van-goods-action-icon
-            bindtap="onGoIndex"
-            icon="home-o"
-            text="首页"
-            bind:click="onClickIcon"
-        />
-        <van-goods-action-icon
-            icon="chat-o"
-            text="客服"
-            bind:click="onClickIcon"
-        />
-        <van-goods-action-icon
-            icon="cart-o"
-            text="购物车"
-            info="{{cartCount}}"
-            bind:click="onClickCart"
-        />
-        <van-goods-action-button
-            text="加入购物车"
-            type="warning"
-            bind:click="onClickAddCart"
-        />
-        <van-goods-action-button
-            text="立即购买"
-            bind:click="onGoCart"
-        />
-    </van-goods-action>
+    <view class="fiex-bottom">
+      <block wx:if="{{!isLogin}}">
+          <van-button
+          style="left:50px"
+              class="hideLoginBtn"
+              type="danger"
+              size="large"
+              lang="zh_CN"
+              open-type="getUserInfo"
+              bind:getuserinfo="getUserInfo"
+          >授权</van-button>
+      </block>
+      <van-goods-action>
+          <van-goods-action-icon
+              icon="home-o"
+              text="首页"
+              bind:click="onGoIndex"
+          />
+          <van-goods-action-icon
+              icon="chat-o"
+              text="客服"
+              open-type="contact"
+          />
+          <van-goods-action-icon
+              icon="cart-o"
+              text="购物车"
+              info="{{cartCount}}"
+              bind:click="onClickCart"
+          />
+          <van-goods-action-button
+              text="加入购物车"
+              type="warning"
+              bind:click="onClickAddCart"
+          />
+          <van-goods-action-button
+              text="立即购买"
+              bind:click="onGoCart"
+          />
+      </van-goods-action>
+    </view>
 
     <van-toast id="van-toast" />
    
@@ -128,7 +151,8 @@ export default class info extends wepy.page {
       "van-goods-action": "../../components/vant/goods-action/index",
       "van-goods-action-icon": "../../components/vant/goods-action-icon/index",
       "van-goods-action-button": "../../components/vant/goods-action-button/index",
-      "van-toast": "../../components/vant/toast/index"
+      "van-toast": "../../components/vant/toast/index",
+      "van-button": "../../components/vant/button/index"
     }
   };
 
@@ -140,6 +164,7 @@ export default class info extends wepy.page {
 
   data = {
     windowHeight:0,
+    isLogin: false,
     detailsNodes: [],
     productInfo: [],
     cartCount: 0,
@@ -155,6 +180,19 @@ export default class info extends wepy.page {
   computed = {};
 
   methods = {
+    getUserInfo(e) {
+      var that = this;
+      var reqData = {
+        openId: that.$parent.globalData.weChatInfo.openId,
+        encryptedData: e.detail.encryptedData,
+        iv: e.detail.iv,
+        unionid: that.$parent.globalData.weChatInfo.unionid
+      };
+      that.$parent.getUserInfo(reqData,function(res){
+        that.isLogin = that.$parent.globalData.isLogin;
+        that.$apply();
+      });
+    },
     swiperImgHight(e){
       var winWid = wx.getSystemInfoSync().windowWidth; 
       var imgh = e.detail.height;　　　　　　　　　　　　　　
@@ -243,7 +281,25 @@ export default class info extends wepy.page {
 
   events = {};
 
+  GetProductDetail(data){
+    let that = this;
+    Api.GetProductDetail(data,function(res){
+      if(res.result){
+        that.productInfo = res.resultData.productInfo;
+        that.isFavor = res.resultData.isFavor;
+        that.cartCount = res.resultData.cartCount;
+        that.swiper.imgUrls = res.resultData.productInfo.productImage;
+        that.detailsNodes = weRich.parse(res.resultData.productInfo.details.replace(/\<img/gi, '<img style="max-width:100%;height:auto"'));
+        that.$apply();
+      }
+    })
+  };
+
   onLoad(e) {
+    wx.showShareMenu({
+      withShareTicket: true
+    });
+
     let that = this;
     let windowHeight = wx.getSystemInfoSync().windowHeight;
     let query = wx.createSelectorQuery();
@@ -254,20 +310,13 @@ export default class info extends wepy.page {
         that.windowHeight = windowHeight - res[0].height;
       });
 
+    that.isLogin = that.$parent.globalData.isLogin;
+
     var reqData = {
       id: e.id
     };
-    Api.GetProductDetail(reqData,function(res){
-      if(res.result){
-        that.productInfo = res.resultData.productInfo;
-        that.isFavor = res.resultData.isFavor;
-        that.cartCount = res.resultData.cartCount;
-        that.swiper.imgUrls = res.resultData.productInfo.productImage;
-        that.detailsNodes = weRich.parse(res.resultData.productInfo.details.replace(/\<img/gi, '<img style="max-width:100%;height:auto"'));
-        that.$apply();
-      }
-    })
-    
+    that.GetProductDetail(reqData);
+
   }
 }
 </script>

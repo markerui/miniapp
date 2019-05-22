@@ -119,26 +119,45 @@
 </style>
 
 <template>
-  <view class="order-confirm-margin_bottom10 order-info order-end">
+  <view
+    class="order-confirm-margin_bottom10 order-info {{orderDetailInfo.orderStatus>5? 'order-end':''}}"
+  >
     <view class="order-info_text">
-      <text class="text">订货人</text>
-      <text>订货人订货人订货人</text>
+      <text class="text">订单号</text>
+      <text>{{orderDetailInfo.orderNum}}</text>
     </view>
     <view class="order-info_text">
-      <text class="text">订货人</text>
-      <text>订货人订货人</text>
+      <text class="text">订单时间</text>
+      <text>{{orderDetailInfo.createTime}}</text>
     </view>
     <view class="order-info_text">
       <text class="text">订单金额</text>
-      <text>2666</text>
+      <text>{{orderDetailInfo.orderStatus}}</text>
     </view>
     <view class="order-info_foot order-info_foot_flex">
-      <text>已取消</text>
+      <block wx:if="{{orderDetailInfo.orderStatus == 1 }}">
+        <text>待支付</text>
+      </block>
+      <block wx:elif="{{orderDetailInfo.orderStatus == 3 }}">
+        <text>待发货</text>
+      </block>
+      <block wx:elif="{{orderDetailInfo.orderStatus == 5 }}">
+        <text>待收货</text>
+      </block>
+      <block wx:elif="{{orderDetailInfo.orderStatus == 6 }}">
+        <text>交易成功</text>
+      </block>
+      <block wx:elif="{{orderDetailInfo.orderStatus == 7 }}">
+        <text>交易取消</text>
+      </block>
+      <block wx:else>
+        <text>未知订单</text>
+      </block>
       <!-- <van-button plain hairline type="default" size="small">取消</van-button>
       <van-button plain hairline type="danger" size="small" bind:click="onShowDialog">发货</van-button>-->
     </view>
   </view>
-  <view class="order-confirm-margin_bottom10">
+  <!-- <view class="order-confirm-margin_bottom10">
     <view class="order-confirm-list_head">
       <van-cell title="配送信息"/>
     </view>
@@ -147,7 +166,7 @@
         <view class="order-delivery-info">
           <view class="order-delivery-info_text">
             <text class="text">订货人</text>
-            <text>订货人订货人订货人</text>
+            <text>{{orderDetailInfo.reveiveName}}</text>
           </view>
           <view class="order-delivery-info_text">
             <text class="text">订货人</text>
@@ -155,23 +174,25 @@
           </view>
           <view class="order-delivery-info_text">
             <text class="text">订单金额</text>
-            <text>2666</text>
+            <text>{{orderDetailInfo.actualPrice}}</text>
           </view>
         </view>
       </view>
     </van-cell>
-  </view>
+  </view>-->
   <view class="order-confirm-margin_bottom10 order-confirm-address">
-    <text class="order-confirm-address_name">刘航海 131231244</text>
-    <text>刘航海刘航海刘航海</text>
-    <text>刘航海刘航海刘航海刘航海</text>
+    <text class="order-confirm-address_name">
+      {{orderDetailInfo.reveiveName}}
+      {{orderDetailInfo.reveiveMobile}}
+    </text>
+    <text>{{orderDetailInfo.reveiveAddress}}</text>
   </view>
   <view class="order-confirm-margin_bottom10 order-confirm-cll_title order-confirm-list">
     <view class="order-confirm-list_head">
       <van-cell title="商品"/>
     </view>
     <van-cell-group>
-      <repeat for="{{orderDetailInfo.orderDetail}}" key="index" index="index" item="cardProItem">
+      <repeat for="{{orderDetailList}}" key="index" index="index" item="cardProItem">
         <van-cell>
           <view slot="title">
             <view class="mk-cart-card_list">
@@ -196,16 +217,20 @@
       </repeat>
     </van-cell-group>
   </view>
-  
   <view class="order-confirm-margin_bottom10">
     <view class="order-confirm-cll_title">
-      <van-cell title="订单金额" value="¥20"/>
+      <van-cell title="订单金额" value="¥{{orderDetailInfo.actualPrice}}"/>
     </view>
     <view class="order-confirm-order">
       <van-cell-group border="{{ false }}">
-        <van-cell title="商品金额" value="¥200" border="{{ false }}"/>
-        <van-cell title="配送费" value="+¥20" border="{{ false }}"/>
-        <van-cell title="礼品卡" value="-¥20" border="{{ false }}"/>
+        <van-cell title="商品金额" value="¥{{orderDetailInfo.productPrice}}" border="{{ false }}"/>
+        <van-cell
+          title="配送费"
+          value="+¥{{orderDetailInfo.shippingModelValue}}"
+          border="{{ false }}"
+        />
+        <van-cell title="优惠券" value="-¥{{orderDetailInfo.couponValue}}" border="{{ false }}"/>
+        <van-cell title="礼品卡" value="-¥{{orderDetailInfo.giftCardValue}}" border="{{ false }}"/>
       </van-cell-group>
     </view>
   </view>
@@ -214,7 +239,7 @@
       <van-cell title="备注留言"/>
     </view>
     <view class="order-confirm-remarks">
-      <text>备注留言备注留言备注留言备注留言备注留言</text>
+      <text>{{orderDetailInfo.remark}}</text>
     </view>
   </view>
   <van-dialog use-slot show="{{ showDialog }}" title="发货" messageAlign="left" show-cancel-button>
@@ -261,7 +286,8 @@ export default class info extends wepy.page {
 
   data = {
     showDialog: false,
-    orderDetailInfo:[] 
+    orderDetailInfo: [],
+    orderDetailList: []
   };
 
   computed = {};
@@ -276,17 +302,23 @@ export default class info extends wepy.page {
 
   events = {};
 
+  PostMemberOrderDetail(data) {
+    var that = this;
+    Api.PostMemberOrderDetail(data, function(res) {
+      if (res.result) {
+        that.orderDetailList = res.resultData.orderDetail;
+        that.orderDetailInfo = res.resultData.orderInfo;
+        that.$apply();
+      }
+    });
+  }
+
   onLoad(e) {
     var that = this;
     var reqData = {
       orderNum: e.id
     };
-    Api.PostMemberOrderDetail(reqData,function(res){
-      if(res.result){
-        that.orderDetailInfo = res.resultData;
-        that.$apply();
-      }
-    })
+    that.PostMemberOrderDetail(reqData);
   }
 }
 </script>

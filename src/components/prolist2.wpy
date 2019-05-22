@@ -27,6 +27,16 @@
                             color="#fff"
                             catchtap="onClickAddCart"
                             />
+                            <block wx:if="{{!isLogin}}">
+                                <van-button
+                                    class="hideLoginBtn"
+                                    type="danger"
+                                    catchtap
+                                    lang="zh_CN"
+                                    open-type="getUserInfo"
+                                    bind:getuserinfo="getUserInfo"
+                                >授权</van-button>
+                            </block>
                         </view>
                     </van-card>
                 </view>
@@ -50,6 +60,9 @@ export default class prolist extends wepy.component {
   methods = {
     onClickAddCart() {
       this.$emit('addcart', this.cardProItem.productID);
+    },
+    getUserInfo(e) {
+      this.$emit('getuserinfo', e);
     }
   };
 

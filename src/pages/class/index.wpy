@@ -55,13 +55,13 @@
 </style>
 <template>
   <view class="mk-search-box">
-    <view class="mk-search">
-      <van-search placeholder="请输入搜索关键词" background="transparent" shape="round"/>
+    <view class="mk-search" bind:tap="searchFocus">
+      <van-search disabled placeholder="输入产品/品牌关键词搜索" background="transparent" shape="round"/>
     </view>
     <view class="mk-view">
       <view class="all" bindtap="toList">
         <text>全部</text>
-        <van-icon name="arrow" color="#fff"/>
+        <van-icon name="arrow" color="#fff" style=" position: relative; top: 3px;"/>
       </view>
     </view>
   </view>
@@ -90,7 +90,7 @@
               <view class="class-item_content">
                 <van-row gutter="10">
                   <repeat for="{{item3.list}}" key="index4" index="index4" item="item4">
-                    <van-col span="8" id="{{item4.sortId}}" data-hasbanner="{{item4.hasBanner}}"  bindtap="toList">
+                    <van-col span="8" id="{{item4.sortId}}" data-hasbanner="{{item4.hasBanner}}" bindtap="toList">
                       <view class="class-item_content_item">
                         <image class="class-item_content_img" src="{{item4.logo}}">
                         <text class="class-item_content_text">{{item4.name}}</text>
@@ -144,6 +144,11 @@ export default class Class extends wepy.page {
   computed = {};
 
   methods = {
+    searchFocus() {
+      wx.navigateTo({
+        url: '../index/search'
+      });
+    },
     toList(e){
       var hasbanner = e.currentTarget.dataset.hasbanner;
       if(hasbanner){
@@ -152,10 +157,9 @@ export default class Class extends wepy.page {
         })
       }else{
         wx.navigateTo({
-          url: '../product/list2?id='+e.currentTarget.id
+          url: '../product/list?id='+e.currentTarget.id
         })
       }
-      
     },
     onBadgeChange(e){
       this.dataListActive = e.detail;
@@ -165,6 +169,10 @@ export default class Class extends wepy.page {
   events = {};
 
   onLoad() {
+    wx.showShareMenu({
+      withShareTicket: true
+    });
+    
     let that = this;
     let windowHeight = wx.getSystemInfoSync().windowHeight;
     let query = wx.createSelectorQuery();

@@ -39,7 +39,7 @@ export default class extends wepy.app {
       'pages/class/index',
       'pages/myshop/index',
       'pages/product/list',
-      'pages/product/list2',
+      'pages/product/listSuitable',
       'pages/product/listBanner',
       'pages/product/index',
       'pages/order/list',
@@ -86,7 +86,8 @@ export default class extends wepy.app {
 
   globalData = {
     userInfo: null,
-    weChatInfo: null
+    weChatInfo: null,
+    isLogin: false
   };
 
   constructor() {
@@ -94,11 +95,43 @@ export default class extends wepy.app {
     this.use('requestfix');
   }
 
-  onLaunch() {
+  getUserInfo(data, cb) {
+    var that = this;
+    Api.getUserInfo(data, function(res) {
+      if (res.result) {
+        wx.setStorageSync('tokenId', res.resultData.tokenId);
+        that.isLogin = true;
+      } else {
+        if (res.errCode == 1002) {
+          that.wxLogin();
+        }
+      }
+      cb && cb(res);
+    });
+  }
+
+  wxLogin() {
     var that = this;
     Api.wxLogin(function(res) {
       that.globalData.weChatInfo = res.resultData;
+      if (res.resultData.tokenId) {
+        that.globalData.isLogin = true;
+      }
     });
+  }
+
+  onLaunch() {
+    var that = this;
+    wx.getSetting({
+      success(res) {
+        if (res.authSetting['scope.userInfo']) {
+          that.globalData.isLogin = true;
+        } else {
+          that.globalData.isLogin = false;
+        }
+      }
+    });
+    that.wxLogin();
   }
 }
 </script>

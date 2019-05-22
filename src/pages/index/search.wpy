@@ -13,8 +13,9 @@ page {
   }
   .search-hot_tag {
     padding: 15px 0;
+    line-height: 2;
     van-tag {
-      margin-right: 10px;
+      margin: 0 10px 0 0;
     }
   }
 }
@@ -39,10 +40,9 @@ page {
     <view class="search-hot">
       <text class="search-hot_title">热门搜索</text>
       <view class="search-hot_tag">
-        <van-tag plain round size="large">标签</van-tag>
-        <van-tag plain round size="large">标签</van-tag>
-        <van-tag plain round size="large">标签</van-tag>
-        <van-tag plain round size="large">标签</van-tag>
+        <repeat for="{{searchList}}" key="index" index="index" item="item">
+          <van-tag plain round size="large" data-name="{{item}}" bindtap="goKeyword">{{item}}</van-tag>
+        </repeat>
       </view>
     </view>
   </scroll-view>
@@ -50,6 +50,7 @@ page {
 
 <script>
 import wepy from 'wepy';
+import Api from '../../utils/api';
 import noData from '../../components/nodata';
 
 export default class search extends wepy.page {
@@ -72,7 +73,8 @@ export default class search extends wepy.page {
   mixins = [];
 
   data = {
-    windowHeight: 0
+    windowHeight: 0,
+    searchList: []
   };
 
   computed = {};
@@ -82,10 +84,28 @@ export default class search extends wepy.page {
       wx.navigateBack({
         delta: 1
       });
+    },
+    onSearch(e) {
+      wx.navigateTo({
+        url: '../product/list?keyword=' + e.detail
+      });
+    },
+    goKeyword(e) {
+      wx.navigateTo({
+        url: '../product/list?keyword=' + e.currentTarget.dataset.name
+      });
     }
   };
 
   events = {};
+
+  HomeGetHotKeywords() {
+    let that = this;
+    Api.HomeGetHotKeywords(function(res) {
+      that.searchList = res.resultData.hotList;
+      that.$apply();
+    });
+  }
 
   onLoad() {
     let that = this;
@@ -97,6 +117,8 @@ export default class search extends wepy.page {
       .exec(function(res) {
         that.windowHeight = windowHeight - res[0].height;
       });
+
+    that.HomeGetHotKeywords();
   }
 }
 </script>

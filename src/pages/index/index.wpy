@@ -113,7 +113,7 @@
       <block wx:if="{{cardProList.dataList.length>0}}">
         <van-cell-group>
           <repeat for="{{cardProList.dataList}}" key="index" index="index" item="cardProItem">
-              <prolist :cardProItem="cardProItem"></prolist>
+              <prolist :cardProItem="cardProItem" :isLogin="isLogin"></prolist>
           </repeat>
         </van-cell-group>
       </block>
@@ -158,6 +158,7 @@ export default class Index extends wepy.page {
 
   data = {
     windowHeight: 0,
+    isLogin: false,
     scrollTop: 0,
     swiperHieght: 0,
     swiper: {
@@ -219,7 +220,7 @@ export default class Index extends wepy.page {
     },
     onSuiTableClick(e){
       wx.navigateTo({
-        url: '../product/list?id='+e.currentTarget.id
+        url: '../product/listSuitable?id='+e.currentTarget.id
       });
     },
     scrollLower(){
@@ -243,6 +244,19 @@ export default class Index extends wepy.page {
           Toast.fail('操作失败,请重试'); 
         }
       })
+    },
+    getuserinfo(e) {
+      var that = this;
+      var reqData = {
+        openId: that.$parent.globalData.weChatInfo.openId,
+        encryptedData: e.detail.encryptedData,
+        iv: e.detail.iv,
+        unionid: that.$parent.globalData.weChatInfo.unionid
+      };
+      that.$parent.getUserInfo(reqData,function(){
+        that.isLogin = that.$parent.globalData.isLogin;
+        that.$apply();
+      });
     }
   };
 
@@ -300,7 +314,12 @@ export default class Index extends wepy.page {
       .exec(function(res) {
         that.windowHeight = windowHeight - res[0].height;
       });
+
+    wx.showShareMenu({
+      withShareTicket: true
+    });
     
+    that.isLogin = that.$parent.globalData.isLogin;
     that.HomeGetShopIndex();
     
   }

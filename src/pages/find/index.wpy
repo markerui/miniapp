@@ -1,10 +1,10 @@
 <style lang="less">
 @import '../../less/color.less';
 .find-list{
-  padding-bottom: 15px;
+  padding: 15px;
 }
+
 .find-list-items {
-  margin: 15px;
   font-size: 14px;
   .find-list-items_time {
     text-align: center;
@@ -13,7 +13,7 @@
       background-color: #999;
       color: #fff;
       border-radius: 5px;
-      padding: 5px 10px;
+      padding: 5px;
       font-size: 10px;
     }
   }
@@ -21,6 +21,8 @@
   .find-list-items_card {
     background-color: #fff;
     border-radius: 5px;
+    margin-bottom: 10px;
+    position: relative;
 
     .find-list-items_card_head {
       background-color: @rootColor;
@@ -33,16 +35,16 @@
       }
     }
     .find-list-items_card_info {
-      padding: 10px 10px 0 10px;
+      padding: 10px;
       font-size: 12px;
       .find-list-items_card_info_text {
         color: #333;
         display: flex;
         flex-direction: row;
         align-items: flex-start;
+        padding-bottom: 10px;
         text {
           flex: 1;
-          padding-bottom: 10px;
         }
         .text {
           color: #999;
@@ -58,29 +60,41 @@
 
 <template>
 <block wx:if="{{findList.length>0}}">
-  <scroll-view scroll-y style="height: {{windowHeight}}px; margin-top:10px;"  bindscrolltolower="scrollLower">
+  <scroll-view scroll-y style="height: {{windowHeight}}px;"  bindscrolltolower="scrollLower">
   <view class="find-list">
     <view wx:for="{{findList}}" wx:key="item">
       <view class="find-list-items">
         <view class="find-list-items_time">
           <text>{{item.createTime}}</text>
         </view>
-        <view class="find-list-items_card" id="{{item.id}}" data-banner="{{item.banner}}" data-validateType="{{item.validateType}}" bindtap="toLogin">
-          <view class="find-list-items_card_head">
-            <image src="{{item.banner}}">
-          </view>
-          <view class="find-list-items_card_info">
-            <view class="find-list-items_card_info_text">
-              <text class="text">活动名称</text>
-              <text>{{item.name}}</text>
+        <view class="find-list-items_card">
+          <block wx:if="{{!isLogin}}">
+              <van-button
+                  class="hideLoginBtn"
+                  type="danger"
+                  size="large"
+                  lang="zh_CN"
+                  open-type="getUserInfo"
+                  bind:getuserinfo="getUserInfo"
+              >授权</van-button>
+          </block>
+          <view id="{{item.id}}" data-banner="{{item.banner}}" data-validateType="{{item.validateType}}" bindtap="toLogin">
+            <view class="find-list-items_card_head">
+              <image src="{{item.banner}}">
             </view>
-            <view class="find-list-items_card_info_text">
-              <text class="text">起止时间</text>
-              <text>{{item.startDate}}</text>
-            </view>
-            <view class="find-list-items_card_info_text">
-              <text class="text">活动时间</text>
-              <text>{{item.endDate}}</text>
+            <view class="find-list-items_card_info">
+              <view class="find-list-items_card_info_text">
+                <text class="text">活动名称</text>
+                <text>{{item.name}}</text>
+              </view>
+              <view class="find-list-items_card_info_text">
+                <text class="text">起止时间</text>
+                <text>{{item.startDate}}</text>
+              </view>
+              <view class="find-list-items_card_info_text">
+                <text class="text">活动时间</text>
+                <text>{{item.endDate}}</text>
+              </view>
             </view>
           </view>
         </view>
@@ -107,7 +121,8 @@ export default class info extends wepy.page {
     navigationBarTitleText: '发现',
     usingComponents: {
       'van-icon': '../../components/vant/icon/index',
-      "van-toast": "../../components/vant/toast/index"
+      "van-toast": "../../components/vant/toast/index",
+      "van-button": "../../components/vant/button/index"
     }
   };
 
@@ -123,6 +138,7 @@ export default class info extends wepy.page {
       pageSize: 3,
     },
     windowHeight: 0,
+    isLogin: false,
     hasNextPage: true,
     findList: []
   };
@@ -130,6 +146,19 @@ export default class info extends wepy.page {
   computed = {};
 
   methods = {
+    getUserInfo(e) {
+      var that = this;
+      var reqData = {
+        openId: that.$parent.globalData.weChatInfo.openId,
+        encryptedData: e.detail.encryptedData,
+        iv: e.detail.iv,
+        unionid: that.$parent.globalData.weChatInfo.unionid
+      };
+      that.$parent.getUserInfo(reqData,function(res){
+        that.isLogin = that.$parent.globalData.isLogin;
+        that.$apply();
+      });
+    },
     toLogin(e){
       wx.navigateTo({
         url: 'login?id=' + e.currentTarget.id + '&img=' +e.currentTarget.dataset.banner + '&validatetype=' +e.currentTarget.dataset.validatetype
@@ -172,6 +201,7 @@ export default class info extends wepy.page {
     var that = this;
     let windowHeight = wx.getSystemInfoSync().windowHeight;
     that.windowHeight = windowHeight;
+    that.isLogin = that.$parent.globalData.isLogin;
     that.GetCampaignList();
   }
 }

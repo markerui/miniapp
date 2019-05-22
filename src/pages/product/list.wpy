@@ -18,11 +18,11 @@
   </view>
   <block wx:if="{{cardProList.length>0}}">
     <scroll-view scroll-y style="height: {{windowHeight}}px;" bindscrolltolower="scrollLower">
-      <van-cell-group class="card_item-list">
+      <van-cell-group class="mk-card_item-list">
         <van-row>
           <repeat for="{{cardProList}}" key="index" index="index" item="cardProItem">
             <van-col span="12">
-              <prolist :cardProItem="cardProItem"></prolist>
+              <prolist :cardProItem="cardProItem" :isLogin="isLogin"></prolist>
             </van-col>
           </repeat>
         </van-row>
@@ -66,12 +66,14 @@ export default class info extends wepy.page {
 
   data = {
     windowHeight: 0,
+    isLogin: false,
     reqData: {
       id: 0,
       pageIndex: 1,
       pageSize: 6,
       sortField: 'sort',
-      isDesc: true
+      isDesc: true,
+      keyword: ''
     },
     hasNextPage: true,
     sortFieldIndex: 3,
@@ -126,17 +128,17 @@ export default class info extends wepy.page {
           break;
       }
       if (that.reqData.id) {
-        that.GetProductSuitableOccasion();
+        that.ProductGetSortProduct();
       } else {
-        that.GetProductSuitableOccasion();
+        that.ProductGetProductList();
       }
     },
     scrollLower() {
       var that = this;
       if (that.reqData.id) {
-        that.GetProductSuitableOccasion();
+        that.ProductGetSortProduct();
       } else {
-        that.GetProductSuitableOccasion();
+        that.ProductGetProductList();
       }
     }
   };
@@ -155,18 +157,56 @@ export default class info extends wepy.page {
           Toast.fail('操作失败,请重试');
         }
       });
+    },
+    getuserinfo(e) {
+      var that = this;
+      var reqData = {
+        openId: that.$parent.globalData.weChatInfo.openId,
+        encryptedData: e.detail.encryptedData,
+        iv: e.detail.iv,
+        unionid: that.$parent.globalData.weChatInfo.unionid
+      };
+      that.$parent.getUserInfo(reqData, function() {
+        that.isLogin = that.$parent.globalData.isLogin;
+        that.$apply();
+      });
     }
   };
 
-  GetProductSuitableOccasion() {
+  ProductGetSortProduct() {
     var that = this;
     var result = that.cardProList;
     if (that.hasNextPage) {
       Toast.loading({
         message: '加载中...'
       });
-      Api.GetProductSuitableOccasion(that.reqData, function(res) {
-        if(res.result){
+      Api.ProductGetSortProduct(that.reqData, function(res) {
+        if (res.result) {
+          that.cardProList = result.concat(res.resultData.productList);
+          that.hasNextPage = res.resultData.hasNextPage;
+          that.reqData.pageIndex += 1;
+          Toast.clear();
+          that.$apply();
+        }
+      });
+    } else {
+      Toast({
+        position: 'bottom',
+        message: '没有更多数据了',
+        duration: 1000
+      });
+    }
+  }
+
+  ProductGetProductList() {
+    var that = this;
+    var result = that.cardProList;
+    if (that.hasNextPage) {
+      Toast.loading({
+        message: '加载中...'
+      });
+      Api.ProductGetProductList(that.reqData, function(res) {
+        if (res.result) {
           that.cardProList = result.concat(res.resultData.dataList);
           that.hasNextPage = res.resultData.hasNextPage;
           that.reqData.pageIndex += 1;
@@ -194,11 +234,16 @@ export default class info extends wepy.page {
         that.windowHeight = windowHeight - res[0].height;
       });
 
+    // that.isLogin = that.$parent.globalData.isLogin;
+    if (e.keyword) {
+      that.reqData.keyword = e.keyword;
+    }
     if (e.id) {
       that.reqData.id = e.id;
-      that.GetProductSuitableOccasion();
-    } 
-    
+      that.ProductGetSortProduct();
+    } else {
+      that.ProductGetProductList();
+    }
   }
 }
 </script>

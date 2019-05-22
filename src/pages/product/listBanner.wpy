@@ -10,18 +10,19 @@
 <template>
   <block wx:if="{{cardProList.length>0}}">
     <scroll-view scroll-y style="height: {{windowHeight}}px;" bindscrolltolower="scrollLower">
-      <image src="{{sortInfo.banner}}" mode="widthFix"  bindload="swiperImgHight"/>
+      <image src="{{sortInfo.banner}}" mode="widthFix" style="width: 100%;"/>
       <van-tabs active="{{ tabActive }}">
         <van-tab title="商品">
            <van-cell-group>
             <repeat for="{{cardProList}}" key="index" index="index" item="cardProItem">
-              <prolist :cardProItem="cardProItem"></prolist>
+              <prolist :cardProItem="cardProItem"  :isLogin="isLogin"></prolist>
             </repeat>
           </van-cell-group>
         </van-tab>
         <van-tab title="介绍">
-          <rich-text class="detailsNodes" nodes="{{detailsNodes}}" >
-          </rich-text>
+          <view class="detailsNodes">
+            <rich-text nodes="{{detailsNodes}}"></rich-text>
+          </view>
         </van-tab>
       </van-tabs>
     </scroll-view>
@@ -64,6 +65,7 @@ export default class info extends wepy.page {
 
   data = {
     windowHeight: 0,
+    isLogin: false,
     tabActive: 0,
     detailsNodes: [],
     reqData: {
@@ -83,7 +85,7 @@ export default class info extends wepy.page {
   methods = {
     scrollLower() {
       var that = this;
-      that.PostMemberGetOrderList();
+      that.ProductGetSortProduct();
     }
   };
 
@@ -100,6 +102,19 @@ export default class info extends wepy.page {
         } else {
           Toast.fail('操作失败,请重试');
         }
+      });
+    },
+    getuserinfo(e) {
+      var that = this;
+      var reqData = {
+        openId: that.$parent.globalData.weChatInfo.openId,
+        encryptedData: e.detail.encryptedData,
+        iv: e.detail.iv,
+        unionid: that.$parent.globalData.weChatInfo.unionid
+      };
+      that.$parent.getUserInfo(reqData,function(){
+        that.isLogin = that.$parent.globalData.isLogin;
+        that.$apply();
       });
     }
   };
@@ -135,6 +150,7 @@ export default class info extends wepy.page {
     var that = this;
     let windowHeight = wx.getSystemInfoSync().windowHeight;
     that.windowHeight = windowHeight;
+    that.isLogin = that.$parent.globalData.isLogin;
     that.reqData.id = e.id;
     that.ProductGetSortProduct();
   }
