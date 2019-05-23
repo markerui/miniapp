@@ -33,6 +33,7 @@
     <nodata></nodata>
   </block>
   <van-toast id="van-toast"/>
+  <van-dialog id="van-dialog"/>
 </template>
 
 <script>
@@ -40,6 +41,7 @@ import wepy from 'wepy';
 import Api from '../../utils/api';
 import proList from '../../components/prolist2';
 import Toast from '../../components/vant/toast/toast';
+import Dialog from '../../components/vant/dialog/dialog';
 import noData from '../../components/nodata';
 
 export default class info extends wepy.page {
@@ -52,6 +54,7 @@ export default class info extends wepy.page {
       'van-cell-group': '../../components/vant/cell-group/index',
       'van-card': '../../components/vant/card/index',
       'van-toast': '../../components/vant/toast/index',
+      'van-dialog': '../../components/vant/dialog/index',
       'van-row': '../../components/vant/row/index',
       'van-col': '../../components/vant/col/index'
     }
@@ -212,6 +215,8 @@ export default class info extends wepy.page {
           that.reqData.pageIndex += 1;
           Toast.clear();
           that.$apply();
+        } else {
+          Toast.fail(res.message);
         }
       });
     } else {

@@ -61,12 +61,15 @@
 	<van-popup show="{{ areaPopupShow }}" position="bottom" bind:close="areaPopupClose">
 		<van-area area-list="{{ areaList }}" bind:confirm="confirmAreaList" bind:cancel="cancelAreaList" bind:change="changeAreaList" />
 	</van-popup>
+	<van-toast id="van-toast"/>
+
 </template>
 
 <script>
 import wepy from 'wepy';
 import area from "../../utils/area";
 import Api from "../../utils/api";
+import Toast from '../../components/vant/toast/toast';
 import noData from '../../components/nodata';
 
 export default class search extends wepy.page {
@@ -77,7 +80,8 @@ export default class search extends wepy.page {
 		'van-cell': '../../components/vant/cell/index',
 		'van-cell-group': '../../components/vant/cell-group/index',
 		"van-area": "../../components/vant/area/index",
-		"van-popup": "../../components/vant/popup/index"
+		"van-popup": "../../components/vant/popup/index",
+		'van-toast': '../../components/vant/toast/index'
     }
   };
 
@@ -151,7 +155,10 @@ export default class search extends wepy.page {
 		.exec(function(res) {
 			that.windowHeight = windowHeight - res[0].height ;
 		});
-	
+
+	Toast.loading({
+      message: '加载中...'
+    });
 	that.areaList = area.areaList;
 	var reqData = {
 		province : that.area_province,
@@ -159,10 +166,13 @@ export default class search extends wepy.page {
 		county: that.area_county
 	};
 	Api.HomeGetStoreList(reqData,function(res){
+		Toast.clear();
 		if(res.result){
-			that.storeList = res.resultData.dataList;
-			that.$apply();
-		}
+		  that.storeList = res.resultData.dataList;
+		  that.$apply();
+		} else {
+          Toast.fail(res.message);
+        }
 	});
 
   };

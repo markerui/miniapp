@@ -44,8 +44,7 @@ export default class extends wepy.app {
       'pages/product/listBanner',
       'pages/product/index',
       'pages/order/list',
-      'pages/order/index',
-      'pages/error/notoken'
+      'pages/order/index'
     ],
     window: {
       backgroundTextStyle: 'light',

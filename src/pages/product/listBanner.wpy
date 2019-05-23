@@ -127,14 +127,16 @@ export default class info extends wepy.page {
         message: '加载中...'
       });
       Api.ProductGetSortProduct(that.reqData, function(res) {
+        Toast.clear();
         if(res.result){
           that.cardProList = result.concat(res.resultData.productList);
           that.hasNextPage = res.resultData.hasNextPage;
           that.sortInfo = res.resultData.sortInfo;
           that.detailsNodes = weRich.parse(res.resultData.sortInfo.details.replace(/\<img/gi, '<img style="max-width:100%;height:auto"'));
           that.reqData.pageIndex += 1;
-          Toast.clear();
           that.$apply();
+        } else {
+          Toast.fail(res.message);
         }
       });
     } else {

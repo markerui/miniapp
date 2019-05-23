@@ -251,11 +251,14 @@
       <van-field type="textarea" autosize border="{{ false }}" placeholder="添加备注"/>
     </view>
   </van-dialog>
+  <van-dialog id="van-dialog"/>
+  <van-toast id="van-toast"/>
 </template>
 
 <script>
 import wepy from 'wepy';
 import Dialog from '../../components/vant/dialog/dialog';
+import Toast from '../../components/vant/toast/toast';
 import Api from '../../utils/api';
 import noData from '../../components/nodata';
 
@@ -272,6 +275,7 @@ export default class info extends wepy.page {
       'van-cell-group': '../../components/vant/cell-group/index',
       'van-card': '../../components/vant/card/index',
       'van-dialog': '../../components/vant/dialog/index',
+      'van-toast': '../../components/vant/toast/index',
       'van-field': '../../components/vant/field/index',
       'van-radio': '../../components/vant/radio/index',
       'van-radio-group': '../../components/vant/radio-group/index'
@@ -304,11 +308,17 @@ export default class info extends wepy.page {
 
   PostMemberOrderDetail(data) {
     var that = this;
+    Toast.loading({
+      message: '加载中...'
+    });
     Api.PostMemberOrderDetail(data, function(res) {
+      Toast.clear();
       if (res.result) {
         that.orderDetailList = res.resultData.orderDetail;
         that.orderDetailInfo = res.resultData.orderInfo;
         that.$apply();
+      } else {
+        Toast.fail(res.message);
       }
     });
   }

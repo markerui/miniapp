@@ -486,6 +486,7 @@ export default class info extends wepy.page {
       }
     });
   }
+
   PostMemberGetAddress(){
     var that = this;
     var reqData = {
@@ -505,7 +506,11 @@ export default class info extends wepy.page {
   PostOrderGetShippingFee(){
     var that = this;
     Api.PostOrderGetShippingFee(that.confirmData,function(res){
-      that.confirmData.shippingFee = res.resultData.shippingFee;
+      if(res.result){
+        that.confirmData.shippingFee = res.resultData.shippingFee;
+      }else{
+        Toast.fail(res.message);
+      }
     });
   }
   

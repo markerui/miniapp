@@ -71,7 +71,7 @@ export default class info extends wepy.page {
       'van-cell': '../../components/vant/cell/index',
       'van-cell-group': '../../components/vant/cell-group/index',
       'van-switch-cell': '../../components/vant/switch-cell/index',
-       "van-toast": "../../components/vant/toast/index"
+      "van-toast": "../../components/vant/toast/index"
     }
   };
 
@@ -182,6 +182,25 @@ export default class info extends wepy.page {
 
   events = {};
 
+  PostMemberGetAddress(data){
+    var that = this;
+    Toast.loading({
+      message: '加载中...'
+    });
+    Api.PostMemberGetAddress(data,function(res){
+      Toast.clear();
+      if(res.result){
+        that.AddAddressData = res.resultData.adressInfo;
+        that.area_province_name = res.resultData.adressInfo.provinceName;
+        that.area_city_name = res.resultData.adressInfo.cityName;
+        that.area_county_name = res.resultData.adressInfo.countyName;
+        that.$apply();
+      }else{
+        Toast.fail(res.message);
+      }
+    });
+  };
+
   onLoad(e) {
     var that = this;
     that.areaList = area.areaList;
@@ -190,17 +209,7 @@ export default class info extends wepy.page {
       var reqData = {
         id : e.id
       };
-      Api.PostMemberGetAddress(reqData,function(res){
-        if(res.result){
-          that.AddAddressData = res.resultData.adressInfo;
-          that.area_province_name = res.resultData.adressInfo.provinceName;
-          that.area_city_name = res.resultData.adressInfo.cityName;
-          that.area_county_name = res.resultData.adressInfo.countyName;
-          that.$apply();
-        }else{
-          Toast.fail(res.message);
-        }
-      });
+      that.PostMemberGetAddress(reqData)
     }
   }
 }

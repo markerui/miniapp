@@ -6,20 +6,24 @@
 </style>
 
 <template>
-    <view class="detailsNodes">
-        <rich-text nodes="{{detailsNodes}}"></rich-text>
-    </view>
+  <view class="detailsNodes">
+    <rich-text nodes="{{detailsNodes}}"></rich-text>
+  </view>
+  <van-toast id="van-toast"/>
 </template>
 
 <script>
 import wepy from 'wepy';
 var weRich = require('we-rich');
 import Api from '../../utils/api';
+import Toast from '../../components/vant/toast/toast';
 
 export default class My extends wepy.page {
   config = {
     navigationBarTitleText: '关于我们',
-    usingComponents: {}
+    usingComponents: {
+      'van-toast': '../../components/vant/toast/index'
+    }
   };
 
   components = {};
@@ -38,7 +42,11 @@ export default class My extends wepy.page {
 
   HomeAbout() {
     var that = this;
+    Toast.loading({
+      message: '加载中...'
+    });
     Api.HomeAbout(function(res) {
+      Toast.clear();
       if (res.result) {
         that.detailsNodes = weRich.parse(
           res.resultData.content.replace(
@@ -47,6 +55,8 @@ export default class My extends wepy.page {
           )
         );
         that.$apply();
+      } else {
+        Toast.fail(res.message);
       }
     });
   }

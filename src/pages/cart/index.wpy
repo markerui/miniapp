@@ -284,7 +284,11 @@ export default class info extends wepy.page {
 
   GetMemberMyCart() {
     let that = this;
+    Toast.loading({
+      message: '加载中...'
+    });
     Api.GetMemberMyCart(function(res) {
+      Toast.clear();
       if (res.result) {
         var DataList = res.resultData.dataList;
         DataList.forEach(function(e) {
@@ -292,11 +296,13 @@ export default class info extends wepy.page {
         });
         that.cardProList = DataList;
         that.$apply();
+      } else {
+        Toast.fail(res.message);
       }
     });
   }
 
-  onLoad() {
+  onLoad(e) {
     let that = this;
     let windowHeight = wx.getSystemInfoSync().windowHeight;
     let query = wx.createSelectorQuery();

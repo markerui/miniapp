@@ -131,13 +131,14 @@
     </view>
 
     <van-toast id="van-toast" />
-   
+    <van-dialog id="van-dialog"/>
 </template>
 
 <script>
 import wepy from 'wepy';
 var weRich = require('we-rich');
 import Api from '../../utils/api';
+import Dialog from '../../components/vant/dialog/dialog';
 import Toast from '../../components/vant/toast/toast';
 import noData from '../../components/nodata';
 
@@ -152,6 +153,7 @@ export default class info extends wepy.page {
       "van-goods-action-icon": "../../components/vant/goods-action-icon/index",
       "van-goods-action-button": "../../components/vant/goods-action-button/index",
       "van-toast": "../../components/vant/toast/index",
+      'van-dialog': '../../components/vant/dialog/index',
       "van-button": "../../components/vant/button/index"
     }
   };
@@ -283,7 +285,11 @@ export default class info extends wepy.page {
 
   GetProductDetail(data){
     let that = this;
+    Toast.loading({
+      message: '加载中...'
+    });
     Api.GetProductDetail(data,function(res){
+      Toast.clear();
       if(res.result){
         that.productInfo = res.resultData.productInfo;
         that.isFavor = res.resultData.isFavor;
@@ -291,6 +297,8 @@ export default class info extends wepy.page {
         that.swiper.imgUrls = res.resultData.productInfo.productImage;
         that.detailsNodes = weRich.parse(res.resultData.productInfo.details.replace(/\<img/gi, '<img style="max-width:100%;height:auto"'));
         that.$apply();
+      } else {
+        Toast.fail(res.message);
       }
     })
   };

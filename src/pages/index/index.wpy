@@ -278,6 +278,8 @@ export default class Index extends wepy.page {
         that.cardProList.reqData.pageIndex = 1;
         that.cardProList.reqData.id = that.sectionList[0].id;
         that.HomeGetSectionList();
+      } else {
+        Toast.fail(res.message);
       }
     });
   }
@@ -290,13 +292,15 @@ export default class Index extends wepy.page {
         message: '加载中...',
       });
       Api.HomeGetSectionList(that.cardProList.reqData,function(res){
+        Toast.clear();
         if(res.result){
           that.cardProList.dataList = result.concat(res.resultData.dataList);
           that.cardProList.hasNextPage = res.resultData.hasNextPage;
           that.cardProList.reqData.pageIndex += 1;
           // that.scrollTop = 500;
-          Toast.clear();
           that.$apply();
+        } else {
+          Toast.fail(res.message);
         }
       });
     }else{

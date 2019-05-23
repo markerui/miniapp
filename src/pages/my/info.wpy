@@ -115,13 +115,19 @@ export default class info extends wepy.page {
 
   GetMemberInfo() {
     var that = this;
+    Toast.loading({
+      message: '加载中...'
+    });
     Api.GetMemberInfo(function(res){
+      Toast.clear();
       if(res.result){
         that.MemberInfo = res.resultData.memberInfo;
         that.area_province_name = res.resultData.memberInfo.provinceName;
         that.area_city_name = res.resultData.memberInfo.cityName;
         that.area_county_name = res.resultData.memberInfo.countyName;
         that.$apply();
+      } else {
+        Toast.fail(res.message);
       }
     });
   };

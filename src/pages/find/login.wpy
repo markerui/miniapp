@@ -85,8 +85,12 @@ export default class info extends wepy.page {
 
   PostCampaignVerifyCode(){
     var that = this;
+    Toast.loading({
+      message: '验证中...',
+    });
     if(that.formData.mobile){
       Api.PostCampaignSendSMS(that.formData,function(res){
+        Toast.clear();
         if(res.result){
           wx.redirectTo({
             url: 'cart'
@@ -104,6 +108,7 @@ export default class info extends wepy.page {
       });
     }else{
       Api.PostCampaignVerifyCode(that.formData,function(res){
+        Toast.clear();
         if(res.result){
           wx.redirectTo({
             url: 'cart'

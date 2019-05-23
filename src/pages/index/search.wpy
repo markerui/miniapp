@@ -46,11 +46,13 @@ page {
       </view>
     </view>
   </scroll-view>
+  <van-toast id="van-toast"/>
 </template>
 
 <script>
 import wepy from 'wepy';
 import Api from '../../utils/api';
+import Toast from '../../components/vant/toast/toast';
 import noData from '../../components/nodata';
 
 export default class search extends wepy.page {
@@ -62,7 +64,8 @@ export default class search extends wepy.page {
     usingComponents: {
       'van-icon': '../../components/vant/icon/index',
       'van-search': '../../components/vant/search/index',
-      'van-tag': '../../components/vant/tag/index'
+      'van-tag': '../../components/vant/tag/index',
+      'van-toast': '../../components/vant/toast/index'
     }
   };
 
@@ -101,9 +104,17 @@ export default class search extends wepy.page {
 
   HomeGetHotKeywords() {
     let that = this;
+    Toast.loading({
+      message: '加载中...'
+    });
     Api.HomeGetHotKeywords(function(res) {
-      that.searchList = res.resultData.hotList;
-      that.$apply();
+      Toast.clear();
+      if (res.result) {
+        that.searchList = res.resultData.hotList;
+        that.$apply();
+      } else {
+        Toast.fail(res.message);
+      }
     });
   }
 

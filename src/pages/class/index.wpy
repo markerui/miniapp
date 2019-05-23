@@ -108,11 +108,13 @@
     </view>
     <!-- class-scroll_right end -->
   </view>
+  <van-toast id="van-toast"/>
 </template>
 
 <script>
 import wepy from 'wepy';
 import Api from "../../utils/api";
+import Toast from '../../components/vant/toast/toast';
 import noData from '../../components/nodata';
 
 export default class Class extends wepy.page {
@@ -125,7 +127,8 @@ export default class Class extends wepy.page {
       'van-icon': '../../components/vant/icon/index',
       'van-panel': '../../components/vant/panel/index',
       'van-row': '../../components/vant/row/index',
-      'van-col': '../../components/vant/col/index'
+      'van-col': '../../components/vant/col/index',
+      'van-toast': '../../components/vant/toast/index'
     }
   };
 
@@ -168,6 +171,22 @@ export default class Class extends wepy.page {
 
   events = {};
 
+  GetProductSortList(){
+    let that = this;
+    Toast.loading({
+      message: '加载中...',
+    });
+    Api.GetProductSortList(function(res){
+      Toast.clear();
+      if(res.result){
+        that.dataList = res.resultData.dataList;
+        that.$apply();
+      } else {
+        Toast.fail(res.message);
+      }
+    });
+  };
+
   onLoad() {
     wx.showShareMenu({
       withShareTicket: true
@@ -183,13 +202,7 @@ export default class Class extends wepy.page {
         that.windowHeight = windowHeight - res[0].height;
       });
 
-    Api.GetProductSortList(function(res){
-      if(res.result){
-        that.dataList = res.resultData.dataList;
-        that.$apply();
-      }
-    });
-      
+    that.GetProductSortList();   
   }
 }
 </script>
