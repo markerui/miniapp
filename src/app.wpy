@@ -100,7 +100,7 @@ export default class extends wepy.app {
     Api.getUserInfo(data, function(res) {
       if (res.result) {
         wx.setStorageSync('tokenId', res.resultData.tokenId);
-        that.isLogin = true;
+        that.globalData.isLogin = true;
       } else {
         if (res.errCode == 1002) {
           that.wxLogin();

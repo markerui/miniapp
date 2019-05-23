@@ -83,15 +83,15 @@ export default class info extends wepy.page {
     sortField: [
       {
         name: '最新',
-        desc: true
+        desc: false
       },
       {
         name: '销量',
-        desc: true
+        desc: false
       },
       {
         name: '价格',
-        desc: true
+        desc: false
       },
       {
         name: '综合',
