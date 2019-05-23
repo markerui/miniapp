@@ -330,6 +330,25 @@ export default class info extends wepy.page {
       orderNum: orderNum,
       action: action
     };
+    if (action == 'cancel') {
+      Dialog.confirm({
+        title: '提示',
+        message: '确认取消订单吗'
+      }).then(() => {
+        that.SetPostMemberSetOrderStatus(reqData);
+      });
+    }
+    if (action == 'confirm') {
+      Dialog.confirm({
+        title: '提示',
+        message: '确认完成订单吗'
+      }).then(() => {
+        that.SetPostMemberSetOrderStatus(reqData);
+      });
+    }
+  }
+
+  SetPostMemberSetOrderStatus(data) {
     Api.PostMemberSetOrderStatus(reqData, function(res) {
       if (res.result) {
         Dialog.alert({

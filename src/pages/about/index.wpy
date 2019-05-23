@@ -1,0 +1,59 @@
+<style lang="less">
+.detailsNodes {
+  padding: 15px;
+  background-color: #fff;
+}
+</style>
+
+<template>
+    <view class="detailsNodes">
+        <rich-text nodes="{{detailsNodes}}"></rich-text>
+    </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+var weRich = require('we-rich');
+import Api from '../../utils/api';
+
+export default class My extends wepy.page {
+  config = {
+    navigationBarTitleText: '关于我们',
+    usingComponents: {}
+  };
+
+  components = {};
+
+  mixins = [];
+
+  data = {
+    detailsNodes: []
+  };
+
+  computed = {};
+
+  methods = {};
+
+  events = {};
+
+  HomeAbout() {
+    var that = this;
+    Api.HomeAbout(function(res) {
+      if (res.result) {
+        that.detailsNodes = weRich.parse(
+          res.resultData.content.replace(
+            /\<img/gi,
+            '<img style="max-width:100%;height:auto"'
+          )
+        );
+        that.$apply();
+      }
+    });
+  }
+
+  onLoad() {
+    var that = this;
+    that.HomeAbout();
+  }
+}
+</script>

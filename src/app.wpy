@@ -24,6 +24,7 @@ export default class extends wepy.app {
       'pages/index/index',
       'pages/index/search',
       'pages/index/shoplist',
+      'pages/about/index',
       'pages/my/index',
       'pages/my/collect',
       'pages/my/info',

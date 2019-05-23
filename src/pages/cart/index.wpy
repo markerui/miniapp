@@ -74,12 +74,10 @@
         </van-swipe-cell>
       </repeat>
     </scroll-view>
-
   </block>
   <block wx:else>
     <nodata></nodata>
   </block>
-
   <van-submit-bar
     class="fiex-bottom"
     custom-class="cart-submit-bar"
@@ -100,8 +98,6 @@
       </view>
     </view>
   </van-submit-bar>
-
-  
   <van-dialog id="van-dialog"/>
   <van-toast id="van-toast"/>
 </template>
@@ -286,10 +282,10 @@ export default class info extends wepy.page {
     });
   }
 
-  GetMemberMyCart(){
+  GetMemberMyCart() {
     let that = this;
     Api.GetMemberMyCart(function(res) {
-      if(res.result){
+      if (res.result) {
         var DataList = res.resultData.dataList;
         DataList.forEach(function(e) {
           e.checked = false;
@@ -310,10 +306,12 @@ export default class info extends wepy.page {
       .exec(function(res) {
         that.windowHeight = windowHeight - res[0].height;
       });
-    that.GetMemberMyCart();
+    if (!e.f) {
+      that.GetMemberMyCart();
+    }
   }
 
-  onShow(){
+  onShow() {
     let that = this;
     that.GetMemberMyCart();
   }

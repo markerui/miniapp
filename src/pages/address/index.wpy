@@ -158,7 +158,7 @@ export default class info extends wepy.page {
         message: '加载中...'
       });
       Api.PostMemberGetAddressList(that.reqData, function(res) {
-        if(res.result){
+        if (res.result) {
           that.addressList = result.concat(res.resultData.dataList);
           that.hasNextPage = res.resultData.hasNextPage;
           that.reqData.pageIndex += 1;
@@ -189,7 +189,9 @@ export default class info extends wepy.page {
     if (e.cart) {
       that.cartIn = true;
     }
-    that.PostMemberGetAddressList();
+    if (!e.f) {
+      that.PostMemberGetAddressList();
+    }
   }
 
   onShow() {

@@ -11,7 +11,7 @@
           span="6"
           id="{{index}}"
           bindtap="onClickSortField"
-          class="van-col-item {{index==sortFieldIndex?'van-col-item_active':''}} {{item.desc?'van-col-item_active_desc1':'van-col-item_active_desc0'}}"
+          class="van-col-item {{index==sortFieldIndex?'van-col-item_active':''}} {{item.desc?'van-col-item_active_desc0':'van-col-item_active_desc1'}}"
         >{{item.name}}</van-col>
       </repeat>
     </van-row>
@@ -234,7 +234,7 @@ export default class info extends wepy.page {
         that.windowHeight = windowHeight - res[0].height;
       });
 
-    // that.isLogin = that.$parent.globalData.isLogin;
+    that.isLogin = that.$parent.globalData.isLogin;
     if (e.keyword) {
       that.reqData.keyword = e.keyword;
     }

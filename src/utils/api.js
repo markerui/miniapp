@@ -110,6 +110,15 @@ function getUserInfo(data, cb) {
   });
 }
 
+//关于我们
+function HomeAbout(cb) {
+  GetData('Home/About', '', function (res) {
+    if (cb) {
+      cb(res)
+    }
+  });
+}
+
 //获取热门搜索关键词
 function HomeGetHotKeywords(cb) {
   GetData('Home/GetHotKeywords', '', function (res) {
@@ -476,6 +485,7 @@ module.exports = {
   API_URL: API_URL,
   wxLogin: wxLogin,
   getUserInfo: getUserInfo,
+  HomeAbout: HomeAbout,
   HomeGetShopIndex: HomeGetShopIndex,
   HomeGetSectionList: HomeGetSectionList,
   HomeGetStoreList: HomeGetStoreList,
