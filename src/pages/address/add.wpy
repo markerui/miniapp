@@ -52,7 +52,7 @@
 <script>
 import wepy from 'wepy';
 import Api from '../../utils/api';
-import area from '../../utils/area';
+import area from '../../utils/areafull';
 import Toast from '../../components/vant/toast/toast';
 import noData from '../../components/nodata';
 
