@@ -47,6 +47,48 @@ export default class extends wepy.app {
       'pages/order/index',
       'pages/order/delivery'
     ],
+    "subpackages": [
+      {
+        "root": "pages/indexModule",
+        "pages": [
+          "pages/index/index", 
+          "pages/index/search",
+          "pages/index/shoplist",
+          "pages/about/index"
+        ]
+      },
+      {
+        "root": "pages/myModule",
+        "pages": [
+          "pages/my/index", 
+          "pages/my/collect",
+          "pages/my/info",
+          "pages/order/list",
+          "pages/order/index",
+          "pages/order/delivery",
+          "pages/address/index",
+          "pages/address/add",
+          "pages/card/giftList",
+          "pages/card/couponList"
+        ]
+      },
+      {
+        "root": "pages/otherModule",
+        "pages": [
+          "pages/cart/index", 
+          "pages/cart/confirm",
+          "pages/find/login",
+          "pages/find/index",
+          "pages/find/cart",
+          "pages/class/index",
+          "pages/myshop/index",
+          "pages/product/list",
+          "pages/product/listSuitable",
+          "pages/product/listBanner",
+          "pages/product/index",
+        ]
+      },
+    ],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#e26431',
