@@ -362,15 +362,17 @@ export default class info extends wepy.page {
       }else{
         if (res.result) {
           Dialog.alert({
-            title: '操作成功',
-            message: res.message
+            title: '提示',
+            message: '操作成功'
           }).then(() => {
             that.PostMemberGetOrderList();
             if (action == 'cancel') {
+              that.orderList = [];
               that.orderTabActive = 5;
               that.PostMemberGetOrderList();
             }
             if (action == 'confirm') {
+              that.orderList = [];
               that.orderTabActive = 4;
               that.PostMemberGetOrderList();
             }
