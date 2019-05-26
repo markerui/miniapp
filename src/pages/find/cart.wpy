@@ -306,10 +306,10 @@ export default class info extends wepy.page {
       that.checkType1Result.push(detailLast);
       switch (detailLast) {
         case '自提':
-          that.confirmData.ShippingModel = 1;
+          that.confirmData.shippingModel = 1;
           break;
         case '快递':
-          that.confirmData.ShippingModel = 2;
+          that.confirmData.shippingModel = 2;
           break;
         default:
           break;

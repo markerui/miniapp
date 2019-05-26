@@ -264,7 +264,6 @@ export default class info extends wepy.page {
       {check: false}
     ],
     productAmount: 0,
-    shippingFee: 0,
     addressInfo: [],
     cardProList: [],
     confirmData: [],
@@ -278,7 +277,7 @@ export default class info extends wepy.page {
     },
     AllproductAmount(){
       var AllproductAmount = 0;
-      var AllproductAmount = this.productAmount + this.shippingFee - this.couponNum - this.giftCardNum;
+      var AllproductAmount = this.productAmount + this.confirmData.shippingFee - this.couponNum - this.giftCardNum;
       if(AllproductAmount<=0){
         AllproductAmount = 0;
       }
@@ -328,16 +327,17 @@ export default class info extends wepy.page {
       that.checkType1Result.length = 0;
       that.checkType2Show = false;
       that.checkType1Result.push(detailLast);
+      that.confirmData.shippingFee = 0;
       switch (detailLast) {
         case '自提':
-          that.confirmData.ShippingModel = 1;
+          that.confirmData.shippingModel = 1;
           break;
         case '快递':
-          that.confirmData.ShippingModel = 2;
+          that.confirmData.shippingModel = 2;
           break;
         case '物流':
           that.checkType2Show = true;
-          that.confirmData.ShippingModel = 3;
+          that.confirmData.shippingModel = 3;
           that.checkType2checked[0].check = true;
           that.checkType2checked[1].check = false;
           break;
@@ -347,49 +347,48 @@ export default class info extends wepy.page {
           that.checkType2checked[1].check = false;
           if(detail.length >1){
             that.checkType1Result = ['物流','到付'];
-            that.confirmData.ShippingModel = 5;
+            that.confirmData.shippingModel = 5;
           }else{
             that.checkType1Result = ['物流'];
             if(that.checkType2checked[0].check){
-              that.confirmData.ShippingModel = 3;
+              that.confirmData.shippingModel = 3;
             }else{
-              that.confirmData.ShippingModel = 4;
+              that.confirmData.shippingModel = 4;
             }
           }
           break;
         default:
           break;
       }
-      if(that.confirmData.ShippingModel != 1 && that.confirmData.ShippingModel != 5 || that.confirmData.ShippingModel != 6){
+      if(that.confirmData.shippingModel != 1 || that.confirmData.shippingModel != 5 || that.confirmData.shippingModel != 6){
         that.PostOrderGetShippingFee();
       }
-      that.$apply();
     },
     onChangeCheckType2Result(e){
       var that = this;
       var detail = e.detail;
       var detailLast = detail[detail.length-1];
+      that.confirmData.shippingFee = 0;
       if(detailLast == '货栈自提'){
           that.checkType2checked[0].check = true;
           that.checkType2checked[1].check = false;
           if(that.checkType1Result.length>1){
-            that.confirmData.ShippingModel = 5;
+            that.confirmData.shippingModel = 5;
           }else{
-            that.confirmData.ShippingModel = 3;
+            that.confirmData.shippingModel = 3;
           }
       }else{
           that.checkType2checked[0].check = false;
           that.checkType2checked[1].check = true;
           if(that.checkType1Result.length>1){
-            that.confirmData.ShippingModel = 6;
+            that.confirmData.shippingModel = 6;
           }else{
             that.confirmData.ShippingModel = 4;
           }
       }
-      if(that.confirmData.ShippingModel != 1 && that.confirmData.ShippingModel != 5 || that.confirmData.ShippingModel != 6){
+      if(that.confirmData.ShippingModel != 1 || that.confirmData.ShippingModel != 5 || that.confirmData.ShippingModel != 6){
         that.PostOrderGetShippingFee();
       }
-      that.$apply();
     },
     onCheckPay() {
       let that = this;
@@ -552,6 +551,7 @@ export default class info extends wepy.page {
       }else{
         if(res.result){
           that.confirmData.shippingFee = res.resultData.shippingFee;
+          that.$apply();
         }else{
           Toast.fail(res.message);
         }

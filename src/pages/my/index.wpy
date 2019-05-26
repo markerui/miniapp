@@ -88,7 +88,7 @@
   </block>
   <block wx:else>
      <view class="user-head">
-        <van-button type="danger" size="large" lang="zh_CN" open-type="getUserInfo" bind:getuserinfo="getUserInfo">授权登录</van-button>
+        <van-button type="warning" size="large" lang="zh_CN" open-type="getUserInfo" bind:getuserinfo="getUserInfo">授权登录</van-button>
       </view>
   </block>
   <!-- user-head end -->
