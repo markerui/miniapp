@@ -243,11 +243,27 @@ export default class info extends wepy.page {
       var reqData = {
         ids: ids
       };
-      Api.PostOrderConfirmOrder(reqData, function(res) {
-        wx.setStorage({
-          key: 'cartConfirm',
-          data: res.resultData
+      that.PostOrderConfirmOrder(reqData);
+    }
+  };
+
+  events = {};
+
+  PostOrderConfirmOrder(reqData){
+    Api.PostOrderConfirmOrder(reqData, function(res) {
+      wx.setStorage({
+        key: 'cartConfirm',
+        data: res.resultData
+      });
+      if(res.errCode >= 1000){
+        Api.wxLogin(function(res) {
+          if (res.resultData.tokenId) {
+            that.PostOrderConfirmOrder(reqData);
+          } else {
+            Toast.fail(res.message);
+          }
         });
+      }else{
         if (res.result) {
           wx.navigateTo({
             url: 'confirm?cart=1'
@@ -259,25 +275,33 @@ export default class info extends wepy.page {
             messageAlign: 'left'
           });
         }
-      });
-    }
-  };
-
-  events = {};
+      }
+    });
+  }
 
   PostMemberModifyCart(data, index, type) {
     var that = this;
     Api.PostMemberModifyCart(data, function(res) {
-      if (res.result) {
-        if (type) {
-          that.cardProList[index].stock -= 1;
-          Toast.success('增加成功');
+      if(res.errCode >= 1000){
+        Api.wxLogin(function(res) {
+          if (res.resultData.tokenId) {
+            that.PostMemberModifyCart(data, index, type);
+          } else {
+            Toast.fail(res.message);
+          }
+        });
+      }else{
+        if (res.result) {
+          if (type) {
+            that.cardProList[index].stock -= 1;
+            Toast.success('增加成功');
+          } else {
+            that.cardProList[index].stock += 1;
+            Toast.success('减少成功');
+          }
         } else {
-          that.cardProList[index].stock += 1;
-          Toast.success('减少成功');
+          Toast.fail('操作失败,请重试');
         }
-      } else {
-        Toast.fail('操作失败,请重试');
       }
     });
   }
@@ -289,15 +313,25 @@ export default class info extends wepy.page {
     });
     Api.GetMemberMyCart(function(res) {
       Toast.clear();
-      if (res.result) {
-        var DataList = res.resultData.dataList;
-        DataList.forEach(function(e) {
-          e.checked = false;
+      if(res.errCode >= 1000){
+        Api.wxLogin(function(res) {
+          if (res.resultData.tokenId) {
+            that.GetMemberMyCart();
+          } else {
+            Toast.fail(res.message);
+          }
         });
-        that.cardProList = DataList;
-        that.$apply();
-      } else {
-        Toast.fail(res.message);
+      }else{
+        if (res.result) {
+          var DataList = res.resultData.dataList;
+          DataList.forEach(function(e) {
+            e.checked = false;
+          });
+          that.cardProList = DataList;
+          that.$apply();
+        } else {
+          Toast.fail(res.message);
+        }
       }
     });
   }

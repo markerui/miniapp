@@ -44,7 +44,8 @@ export default class extends wepy.app {
       'pages/product/listBanner',
       'pages/product/index',
       'pages/order/list',
-      'pages/order/index'
+      'pages/order/index',
+      'pages/order/delivery'
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -116,6 +117,8 @@ export default class extends wepy.app {
       that.globalData.weChatInfo = res.resultData;
       if (res.resultData.tokenId) {
         that.globalData.isLogin = true;
+      } else{
+        that.globalData.isLogin = false;
       }
     });
   }

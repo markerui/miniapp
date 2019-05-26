@@ -240,11 +240,21 @@ export default class My extends wepy.page {
   GetMemberCenter(){
     var that = this;
     Api.GetMemberCenter(function(res){
-      if(res.result){
-        that.memberInfo = res.resultData.memberInfo;
-        that.$apply();
-      } else {
-        Toast.fail(res.message);
+      if(res.errCode >= 1000){
+        Api.wxLogin(function(res) {
+          if (res.resultData.tokenId) {
+            that.GetMemberCenter();
+          } else {
+            Toast.fail(res.message);
+          }
+        });
+      }else{
+        if(res.result){
+          that.memberInfo = res.resultData.memberInfo;
+          that.$apply();
+        } else {
+          Toast.fail(res.message);
+        }
       }
     });
   };

@@ -78,7 +78,7 @@
                   bind:getuserinfo="getUserInfo"
               >授权</van-button>
           </block>
-          <view id="{{item.id}}" data-banner="{{item.banner}}" data-validateType="{{item.validateType}}" bindtap="toLogin">
+          <view id="{{item.id}}" data-poster="{{item.poster}}" data-title="{{item.name}}" data-validateType="{{item.validateType}}" bindtap="toLogin">
             <view class="find-list-items_card_head">
               <image src="{{item.banner}}">
             </view>
@@ -89,11 +89,11 @@
               </view>
               <view class="find-list-items_card_info_text">
                 <text class="text">起止时间</text>
-                <text>{{item.startDate}}</text>
+                <text>{{item.startDate}}-{{item.endDate}}</text>
               </view>
               <view class="find-list-items_card_info_text">
-                <text class="text">活动时间</text>
-                <text>{{item.endDate}}</text>
+                <text class="text">活动介绍</text>
+                <text>{{item.intro}}</text>
               </view>
             </view>
           </view>
@@ -161,7 +161,7 @@ export default class info extends wepy.page {
     },
     toLogin(e){
       wx.navigateTo({
-        url: 'login?id=' + e.currentTarget.id + '&img=' +e.currentTarget.dataset.banner + '&validatetype=' +e.currentTarget.dataset.validatetype
+        url: 'login?id=' + e.currentTarget.id + '&img=' +e.currentTarget.dataset.poster + '&validatetype=' +e.currentTarget.dataset.validatetype + '&title=' +e.currentTarget.dataset.title 
       })
     },
     scrollLower(){

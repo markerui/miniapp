@@ -212,24 +212,12 @@ export default class info extends wepy.page {
       };
       that.isFavor = !that.isFavor;
       if(that.isFavor){
-        Api.PostMemberAddFavor(reqData,function(res){
-          if(res.result){
-            Toast.success('收藏成功');
-          }else{
-            Toast.fail('收藏失败,请重试');
-          }
-        });
+        that.PostMemberAddFavor(reqData);
       }else{
         reqData = {
           ids: [that.productInfo.id]
         };
-        Api.PostMemberDeleteFavor(reqData,function(res){
-          if(res.result){
-            Toast.success('取消收藏成功');
-          }else{
-            Toast.fail('取消收藏失败,请重试');
-          }
-        });
+        that.PostMemberDeleteFavor(reqData);
       }     
     },
     onClickAddCart(){
@@ -237,14 +225,7 @@ export default class info extends wepy.page {
       var reqData = {
         id: that.productInfo.id
       };
-      Api.PostMemberAddCart(reqData,function(res){
-        if(res.result){
-          Toast.success('加入购物车成功');
-          that.cartCount += 1;
-        }else{
-          Toast.fail('操作失败,请重试'); 
-        }
-      })
+      that.PostMemberAddCart(reqData);
     },
     onClickCart(){
       wx.navigateTo({
@@ -261,27 +242,106 @@ export default class info extends wepy.page {
       var reqData = {
         pid: that.productInfo.id
       };
-      Api.PostOrderConfirmOrder(reqData, function(res) {
-        wx.setStorage({
-          key: 'cartConfirm',
-          data: res.resultData
-        });
-        if (res.result) {
-          wx.navigateTo({
-            url: '../cart/confirm?cart=0'
-          });
-        } else {
-          Dialog.alert({
-            title: '订单确认失败',
-            message: res.message,
-            messageAlign: 'left'
-          });
-        }
-      });
+      that.PostOrderConfirmOrder(reqData);
     }
   };
 
   events = {};
+
+  PostMemberAddFavor(reqData){
+    var that = this;
+    Api.PostMemberAddFavor(reqData,function(res){
+      if(res.errCode >= 1000){
+        Api.wxLogin(function(res) {
+          if (res.resultData.tokenId) {
+            that.PostMemberAddFavor(reqData);
+          } else {
+            Toast.fail(res.message);
+          }
+        });
+      }else{
+        if(res.result){
+          Toast.success('收藏成功');
+        }else{
+          Toast.fail('收藏失败,请重试');
+        }
+      }
+    });
+  };
+
+  PostMemberDeleteFavor(reqData){
+    var that =this;
+    Api.PostMemberDeleteFavor(reqData,function(res){
+      if(res.errCode >= 1000){
+        Api.wxLogin(function(res) {
+          if (res.resultData.tokenId) {
+            that.PostMemberDeleteFavor(reqData);
+          } else {
+            Toast.fail(res.message);
+          }
+        });
+      }else{
+        if(res.result){
+          Toast.success('取消收藏成功');
+        }else{
+          Toast.fail('取消收藏失败,请重试');
+        }
+      }
+    });
+  };
+
+  PostMemberAddCart(reqData){
+    var that = this;
+    Api.PostMemberAddCart(reqData,function(res){
+      if(res.errCode >= 1000){
+        Api.wxLogin(function(res) {
+          if (res.resultData.tokenId) {
+            that.PostMemberAddCart(reqData);
+          } else {
+            Toast.fail(res.message);
+          }
+        });
+      }else{
+        if(res.result){
+          Toast.success('加入购物车成功');
+          that.cartCount += 1;
+        }else{
+          Toast.fail('操作失败,请重试'); 
+        }
+      }
+    });
+  };
+
+  PostOrderConfirmOrder(reqData){
+    var that = this;
+    Api.PostOrderConfirmOrder(reqData, function(res) {
+        wx.setStorage({
+          key: 'cartConfirm',
+          data: res.resultData
+        });
+        if(res.errCode >= 1000){
+          Api.wxLogin(function(res) {
+            if (res.resultData.tokenId) {
+              that.PostOrderConfirmOrder(reqData);
+            } else {
+              Toast.fail(res.message);
+            }
+          });
+        }else{
+          if (res.result) {
+            wx.navigateTo({
+              url: '../cart/confirm?cart=0'
+            });
+          } else {
+            Dialog.alert({
+              title: '订单确认失败',
+              message: res.message,
+              messageAlign: 'left'
+            });
+          }
+        }
+      });
+  };
 
   GetProductDetail(data){
     let that = this;

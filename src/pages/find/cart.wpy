@@ -352,75 +352,96 @@ export default class info extends wepy.page {
   PostOrderCreateCampaignOrder(){
     var that = this;
     Api.PostOrderCreateCampaignOrder(that.confirmData,function(res){
-      if(res.result){
-        wx.removeStorage({
-          key: 'findCartConfirm'
+      if(res.errCode >= 1000){
+        Api.wxLogin(function(res) {
+          if (res.resultData.tokenId) {
+            that.PostOrderCreateCampaignOrder();
+          } else {
+            Toast.fail(res.message);
+          }
         });
-        var orderNum = res.resultData.orderNum;
-        if(that.confirmData.productAmount>0){
-          that.PostOrderWeixinPay(orderNum);
-        }else{
-          Dialog.alert({
-            title: '订单已生成',
-            message: '订单已经生成了,请耐心等待发货'
-          }).then(() => {
-            wx.redirectTo({
-              url: '../order/list'
-            });
-          });
-        }
       }else{
-        Dialog.alert({
-          title: '确认失败',
-          message: res.message
-        });
-      }
-    });
-  }
-
-  PostOrderWeixinPay(orderNum){
-    var data = {
-      orderNum: orderNum
-    };
-    Api.PostOrderWeixinPay(data,function(res){
-      if(res.result){
-        var prepaidOrder = res.resultData.prepaidOrder;
-        wx.requestPayment({
-          timeStamp: prepaidOrder.timestamp,
-          nonceStr: prepaidOrder.nonce,
-          package: prepaidOrder.package,
-          signType: 'MD5',
-          paySign: prepaidOrder.sign,
-          success(res) {
+        if(res.result){
+          wx.removeStorage({
+            key: 'findCartConfirm'
+          });
+          var orderNum = res.resultData.orderNum;
+          if(that.confirmData.productAmount>0){
+            that.PostOrderWeixinPay(orderNum);
+          }else{
             Dialog.alert({
-              title: '支付成功',
-              message: '请耐心等待发货'
-            }).then(() => {
-              wx.redirectTo({
-                url: '../order/list'
-              });
-            });
-          },
-          fail(res){
-            Dialog.alert({
-              title: '支付失败',
-              message: '请在我的订单重新发起支付'
+              title: '订单已生成',
+              message: '订单已经生成了,请耐心等待发货'
             }).then(() => {
               wx.redirectTo({
                 url: '../order/list'
               });
             });
           }
+        }else{
+          Dialog.alert({
+            title: '确认失败',
+            message: res.message
+          });
+        }
+      }
+    });
+  }
+
+  PostOrderWeixinPay(orderNum){
+    var that = this;
+    var data = {
+      orderNum: orderNum
+    };
+    Api.PostOrderWeixinPay(data,function(res){
+      if(res.errCode >= 1000){
+        Api.wxLogin(function(res) {
+          if (res.resultData.tokenId) {
+            that.PostOrderWeixinPay(data);
+          } else {
+            Toast.fail(res.message);
+          }
         });
       }else{
-        Dialog.alert({
-          title: '支付失败',
-          message: res.message
-        }).then(() => {
-          wx.redirectTo({
-            url: '../order/list'
+        if(res.result){
+          var prepaidOrder = res.resultData.prepaidOrder;
+          wx.requestPayment({
+            timeStamp: prepaidOrder.timestamp,
+            nonceStr: prepaidOrder.nonce,
+            package: prepaidOrder.package,
+            signType: 'MD5',
+            paySign: prepaidOrder.sign,
+            success(res) {
+              Dialog.alert({
+                title: '支付成功',
+                message: '请耐心等待发货'
+              }).then(() => {
+                wx.redirectTo({
+                  url: '../order/list'
+                });
+              });
+            },
+            fail(res){
+              Dialog.alert({
+                title: '支付失败',
+                message: '请在我的订单重新发起支付'
+              }).then(() => {
+                wx.redirectTo({
+                  url: '../order/list'
+                });
+              });
+            }
           });
-        });
+        }else{
+          Dialog.alert({
+            title: '支付失败',
+            message: res.message
+          }).then(() => {
+            wx.redirectTo({
+              url: '../order/list'
+            });
+          });
+        }
       }
     });
   }
@@ -431,11 +452,21 @@ export default class info extends wepy.page {
       id : that.confirmData.addressID
     };
     Api.PostMemberGetAddress(reqData,function(res){
-      if(res.result){
-        that.addressInfo = res.resultData.adressInfo;
-        that.$apply();
+      if(res.errCode >= 1000){
+        Api.wxLogin(function(res) {
+          if (res.resultData.tokenId) {
+            that.PostMemberGetAddress();
+          } else {
+            Toast.fail(res.message);
+          }
+        });
       }else{
-        Toast.fail(res.message);
+        if(res.result){
+          that.addressInfo = res.resultData.adressInfo;
+          that.$apply();
+        }else{
+          Toast.fail(res.message);
+        }
       }
     });
   }
@@ -448,7 +479,6 @@ export default class info extends wepy.page {
     wx.getStorage({
       key: 'findCartConfirm',
       success(res) {
-        console.log(res.data)
         var ProDataList = res.data.productList;
         ProDataList.forEach(function(e) {
           e.checked = false;

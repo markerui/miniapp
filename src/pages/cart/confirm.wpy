@@ -360,7 +360,9 @@ export default class info extends wepy.page {
         default:
           break;
       }
-      that.PostOrderGetShippingFee();
+      if(that.confirmData.ShippingModel != 1 && that.confirmData.ShippingModel != 5 || that.confirmData.ShippingModel != 6){
+        that.PostOrderGetShippingFee();
+      }
       that.$apply();
     },
     onChangeCheckType2Result(e){
@@ -384,7 +386,9 @@ export default class info extends wepy.page {
             that.confirmData.ShippingModel = 4;
           }
       }
-      that.PostOrderGetShippingFee();
+      if(that.confirmData.ShippingModel != 1 && that.confirmData.ShippingModel != 5 || that.confirmData.ShippingModel != 6){
+        that.PostOrderGetShippingFee();
+      }
       that.$apply();
     },
     onCheckPay() {
@@ -409,80 +413,101 @@ export default class info extends wepy.page {
   PostOrderCreateOrder(){
     var that = this;
     Api.PostOrderCreateOrder(that.confirmData,function(res){
-      if(res.result){
-        wx.removeStorage({
-          key: 'cartConfirm'
+      if(res.errCode >= 1000){
+        Api.wxLogin(function(res) {
+          if (res.resultData.tokenId) {
+            that.PostOrderCreateOrder();
+          } else {
+            Toast.fail(res.message);
+          }
         });
-        var orderNum = res.resultData.orderNum;
-        if(that.checkPayIndex){
-          Dialog.confirm({
-            title: '订单已生成',
-            message: '订单已经生成了，但是没有支付哦，可以这样也可以这样哦',
-            showCancelButton: true,
-            confirmButtonText: '继续微信支付',
-            cancelButtonText: '订单中心'
-          }).then(() => {
-            that.PostOrderWeixinPay(orderNum);
-          }).catch(() => {
-            wx.redirectTo({
-              url: '../order/list'
-            });
-          });
-        }else{
-          that.PostOrderWeixinPay(orderNum);
-        }
       }else{
-        Dialog.alert({
-          title: '确认失败',
-          message: res.message
-        });
+        if(res.result){
+          wx.removeStorage({
+            key: 'cartConfirm'
+          });
+          var orderNum = res.resultData.orderNum;
+          if(that.checkPayIndex){
+            Dialog.confirm({
+              title: '订单已生成',
+              message: '订单已经生成了，但是没有支付哦，可以这样也可以这样哦',
+              showCancelButton: true,
+              confirmButtonText: '继续微信支付',
+              cancelButtonText: '订单中心'
+            }).then(() => {
+              that.PostOrderWeixinPay(orderNum);
+            }).catch(() => {
+              wx.redirectTo({
+                url: '../order/list'
+              });
+            });
+          }else{
+            that.PostOrderWeixinPay(orderNum);
+          }
+        }else{
+          Dialog.alert({
+            title: '确认失败',
+            message: res.message
+          });
+        }
       }
     });
   }
 
   PostOrderWeixinPay(orderNum){
+    var that = this;
     var data = {
       orderNum: orderNum
     };
     Api.PostOrderWeixinPay(data,function(res){
-      if(res.result){
-        var prepaidOrder = res.resultData.prepaidOrder;
-        wx.requestPayment({
-          timeStamp: prepaidOrder.timestamp,
-          nonceStr: prepaidOrder.nonce,
-          package: prepaidOrder.package,
-          signType: 'MD5',
-          paySign: prepaidOrder.sign,
-          success(res) {
-            Dialog.alert({
-              title: '支付成功',
-              message: '请耐心等待发货'
-            }).then(() => {
-              wx.redirectTo({
-                url: '../order/list'
-              });
-            });
-          },
-          fail(res){
-            Dialog.alert({
-              title: '支付失败',
-              message: '请在我的订单重新发起支付'
-            }).then(() => {
-              wx.redirectTo({
-                url: '../order/list'
-              });
-            });
+      if(res.errCode >= 1000){
+        Api.wxLogin(function(res) {
+          if (res.resultData.tokenId) {
+            that.PostOrderWeixinPay(data);
+          } else {
+            Toast.fail(res.message);
           }
         });
       }else{
-        Dialog.alert({
-          title: '支付失败',
-          message: res.message
-        }).then(() => {
-          wx.redirectTo({
-            url: '../order/list'
+        if(res.result){
+          var prepaidOrder = res.resultData.prepaidOrder;
+          wx.requestPayment({
+            timeStamp: prepaidOrder.timestamp,
+            nonceStr: prepaidOrder.nonce,
+            package: prepaidOrder.package,
+            signType: 'MD5',
+            paySign: prepaidOrder.sign,
+            success(res) {
+              Dialog.alert({
+                title: '支付成功',
+                message: '请耐心等待发货'
+              }).then(() => {
+                wx.redirectTo({
+                  url: '../order/list'
+                });
+              });
+            },
+            fail(res){
+              Dialog.alert({
+                title: '支付失败',
+                message: '请在我的订单重新发起支付'
+              }).then(() => {
+                wx.redirectTo({
+                  url: '../order/list'
+                });
+              });
+            }
           });
-        });
+        }else{
+          Dialog.alert({
+            title: '支付失败',
+            message: res.message
+          }).then(() => {
+            wx.redirectTo({
+              url: '../order/list'
+            });
+          });
+        }
       }
     });
   }
@@ -493,12 +518,22 @@ export default class info extends wepy.page {
       id : that.confirmData.addressID
     };
     Api.PostMemberGetAddress(reqData,function(res){
-      if(res.result){
-        that.addressInfo = res.resultData.adressInfo;
-        that.PostOrderGetShippingFee();
-        that.$apply();
+      if(res.errCode >= 1000){
+          Api.wxLogin(function(res) {
+            if (res.resultData.tokenId) {
+              that.PostMemberGetAddress(reqData);
+            } else {
+              Toast.fail(res.message);
+            }
+          });
       }else{
-        Toast.fail(res.message);
+        if(res.result){
+          that.addressInfo = res.resultData.adressInfo;
+          that.PostOrderGetShippingFee();
+          that.$apply();
+        }else{
+          Toast.fail(res.message);
+        }
       }
     });
   }
@@ -506,10 +541,20 @@ export default class info extends wepy.page {
   PostOrderGetShippingFee(){
     var that = this;
     Api.PostOrderGetShippingFee(that.confirmData,function(res){
-      if(res.result){
-        that.confirmData.shippingFee = res.resultData.shippingFee;
+      if(res.errCode >= 1000){
+          Api.wxLogin(function(res) {
+            if (res.resultData.tokenId) {
+              that.PostOrderGetShippingFee();
+            } else {
+              Toast.fail(res.message);
+            }
+          });
       }else{
-        Toast.fail(res.message);
+        if(res.result){
+          that.confirmData.shippingFee = res.resultData.shippingFee;
+        }else{
+          Toast.fail(res.message);
+        }
       }
     });
   }

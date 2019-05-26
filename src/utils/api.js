@@ -51,8 +51,6 @@ function PostData(url, options, fn) {
   });
 }
 
-
-
 function GetData(url, options, fn) {
   Get({
     url: url,
@@ -447,9 +445,9 @@ function PostOrderGetShippingFee(data, cb) {
 //我的订单列表
 function PostMemberGetOrderList(data, cb) {
   PostData('Member/GetOrderList', data, function (res) {
-    if (cb) {
-      cb(res)
-    }
+      if (cb) {
+        cb(res)
+      }
   });
 }
 

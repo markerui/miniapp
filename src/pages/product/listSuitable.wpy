@@ -149,11 +149,21 @@ export default class info extends wepy.page {
         id: e
       };
       Api.PostMemberAddCart(reqData, function(res) {
-        if (res.result) {
-          Toast.success('加入购物车成功');
-          that.cartCount += 1;
-        } else {
-          Toast.fail('操作失败,请重试');
+        if(res.errCode >= 1000){
+          Api.wxLogin(function(res) {
+            if (res.resultData.tokenId) {
+              that.events.addcart(e);
+            } else {
+              Toast.fail(res.message);
+            }
+          });
+        }else{
+          if (res.result) {
+            Toast.success('加入购物车成功');
+            that.cartCount += 1;
+          } else {
+            Toast.fail('操作失败,请重试');
+          }
         }
       });
     },

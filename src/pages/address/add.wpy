@@ -139,27 +139,9 @@ export default class info extends wepy.page {
     saveAddress(){
       var that = this;
       if(that.AddAddressData.id){
-        Api.PostMemberEditAddress(that.AddAddressData,function(res){
-          if(res.result){
-            Toast.success(res.message);
-            setTimeout(function(){
-              wx.navigateBack();
-            },1000);
-          }else{
-            Toast.fail(res.message);
-          }
-        });
+        that.PostMemberEditAddress(that.AddAddressData);
       }else{
-        Api.PostMemberAddAddress(that.AddAddressData,function(res){
-          if(res.result){
-            Toast.success(res.message);
-            setTimeout(function(){
-              wx.navigateBack();
-            },1000);
-          }else{
-            Toast.fail(res.message);
-          }
-        });
+        that.PostMemberAddAddress(that.AddAddressData);
       }
     },
     delAddress(){
@@ -167,7 +149,24 @@ export default class info extends wepy.page {
       var reqData = {
         id : that.AddAddressData.id
       };
-      Api.PostMemberDeleteAddress(reqData,function(res){
+      that.PostMemberDeleteAddress(reqData);
+    }
+  };
+
+  events = {};
+
+  PostMemberEditAddress(reqData){
+    var that = this;
+    Api.PostMemberEditAddress(reqData,function(res){
+      if(res.errCode >= 1000){
+        Api.wxLogin(function(res) {
+          if (res.resultData.tokenId) {
+            that.PostMemberEditAddress(reqData);
+          } else {
+            Toast.fail(res.message);
+          }
+        });
+      }else{
         if(res.result){
           Toast.success(res.message);
           setTimeout(function(){
@@ -176,11 +175,57 @@ export default class info extends wepy.page {
         }else{
           Toast.fail(res.message);
         }
-      });
-    }
-  };
+      }
+    });
+  }
 
-  events = {};
+  PostMemberAddAddress(reqData){
+    var that = this;
+    Api.PostMemberAddAddress(reqData,function(res){
+      if(res.errCode >= 1000){
+        Api.wxLogin(function(res) {
+          if (res.resultData.tokenId) {
+            that.PostMemberAddAddress(reqData);
+          } else {
+            Toast.fail(res.message);
+          }
+        });
+      }else{
+        if(res.result){
+          Toast.success(res.message);
+          setTimeout(function(){
+            wx.navigateBack();
+          },1000);
+        }else{
+          Toast.fail(res.message);
+        }
+      }
+    });
+  }
+
+  PostMemberDeleteAddress(reqData){
+    var that = this;
+    Api.PostMemberDeleteAddress(reqData,function(res){
+      if(res.errCode >= 1000){
+        Api.wxLogin(function(res) {
+          if (res.resultData.tokenId) {
+            that.PostMemberDeleteAddress(reqData);
+          } else {
+            Toast.fail(res.message);
+          }
+        });
+      }else{
+        if(res.result){
+          Toast.success(res.message);
+          setTimeout(function(){
+            wx.navigateBack();
+          },1000);
+        }else{
+          Toast.fail(res.message);
+        }
+      }
+    });
+  }
 
   PostMemberGetAddress(data){
     var that = this;
@@ -189,14 +234,24 @@ export default class info extends wepy.page {
     });
     Api.PostMemberGetAddress(data,function(res){
       Toast.clear();
-      if(res.result){
-        that.AddAddressData = res.resultData.adressInfo;
-        that.area_province_name = res.resultData.adressInfo.provinceName;
-        that.area_city_name = res.resultData.adressInfo.cityName;
-        that.area_county_name = res.resultData.adressInfo.countyName;
-        that.$apply();
+      if(res.errCode >= 1000){
+        Api.wxLogin(function(res) {
+          if (res.resultData.tokenId) {
+            that.PostMemberGetAddress(data);
+          } else {
+            Toast.fail(res.message);
+          }
+        });
       }else{
-        Toast.fail(res.message);
+        if(res.result){
+          that.AddAddressData = res.resultData.adressInfo;
+          that.area_province_name = res.resultData.adressInfo.provinceName;
+          that.area_city_name = res.resultData.adressInfo.cityName;
+          that.area_county_name = res.resultData.adressInfo.countyName;
+          that.$apply();
+        }else{
+          Toast.fail(res.message);
+        }
       }
     });
   };

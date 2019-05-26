@@ -1,0 +1,156 @@
+<style lang="less">
+@import '../../less/color.less';
+
+
+.order-delivery-info {
+  padding: 15px;
+  font-size: 14px;
+  .order-delivery-info_text {
+    color: #333;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding-bottom: 10px;
+    text {
+      flex: 1;
+    }
+    .text {
+      color: #999;
+      flex: none;
+      width: 70px;
+    }
+  }
+}
+
+
+
+</style>
+
+<template>
+  
+    <van-panel title="配送信息" >
+      <view>
+        <view class="order-delivery-info">
+          <view class="order-delivery-info_text">
+            <text class="text">收货人</text>
+            <text>{{logisticInfo.reveiveName}}</text>
+          </view>
+          <view class="order-delivery-info_text">
+            <text class="text">联系电话</text>
+            <text>{{logisticInfo.reveiveMobile}}</text>
+          </view>
+          <view class="order-delivery-info_text">
+            <text class="text">配送地址</text>
+            <text>{{logisticInfo.reveiveAddress}}</text>
+          </view>
+          <view class="order-delivery-info_text">
+            <text class="text">单位</text>
+            <text>{{logisticInfo.reveiveCompany}}</text>
+          </view>
+          <view class="order-delivery-info_text" style="margin-top:10px;">
+            <text class="text">发货仓库</text>
+            <text>{{logisticInfo.storageName}}</text>
+          </view>
+          <view class="order-delivery-info_text">
+            <text class="text">发货时间</text>
+            <text>{{logisticInfo.deliveryDate}}</text>
+          </view>
+          <view class="order-delivery-info_text" style="margin-top:10px;">
+            <text class="text">承运单位</text>
+            <text>{{logisticInfo.logisticsName}}</text>
+          </view>
+          <view class="order-delivery-info_text">
+            <text class="text">运单号码</text>
+            <text>{{logisticInfo.logisticsNumber}}</text>
+          </view>
+          <view class="order-delivery-info_text"  style="margin-top:10px;">
+            <text class="text">查询方式</text>
+            <text>{{logisticInfo.queryMethod}}</text>
+          </view>
+          <view class="order-delivery-info_text"  style="margin-top:10px;">
+            <text class="text">发出件数</text>
+            <text>{{logisticInfo.packageCount}}</text>
+          </view>
+          <view class="order-delivery-info_text"  style="margin-top:10px;">
+            <text class="text">物流照片</text>
+          </view>
+          <view>
+            <image src="{{logisticInfo.imagePath}}" mode="widthFix" style="width: 100%" />
+          </view>
+        </view>
+    </view>
+  </van-panel>
+
+
+  <van-dialog id="van-dialog"/>
+  <van-toast id="van-toast"/>
+</template>
+
+<script>
+import wepy from 'wepy';
+import Api from '../../utils/api';
+import Dialog from '../../components/vant/dialog/dialog';
+import Toast from '../../components/vant/toast/toast';
+
+export default class info extends wepy.page {
+  config = {
+    navigationBarTitleText: '配送信息',
+    navigationBarBackgroundColor: '#fff',
+    navigationBarTextStyle: 'black',
+    backgroundColor: '#fff',
+    usingComponents: {
+      'van-dialog': '../../components/vant/dialog/index',
+      'van-toast': '../../components/vant/toast/index',
+      "van-panel": "../../components/vant/panel/index"
+    }
+  };
+
+  mixins = [];
+
+  data = {
+    logisticInfo: []
+  };
+
+  computed = {};
+
+  watch = {};
+
+  methods = {};
+
+  events = {};
+
+  PostMemberOrderLogistics(data) {
+    var that = this;
+    Toast.loading({
+      message: '加载中...'
+    });
+    Api.PostMemberOrderLogistics(data, function(res) {
+      Toast.clear();
+      if(res.errCode >= 1000){
+        Api.wxLogin(function(res) {
+          if (res.resultData.tokenId) {
+            that.PostMemberOrderLogistics(data);
+          } else {
+            Toast.fail(res.message);
+          }
+        });
+      }else{
+        if (res.result) {
+          that.logisticInfo = res.resultData.logisticsInfo;
+          that.$apply();
+        } else {
+          Toast.fail(res.message);
+        }
+      }
+    });
+  }
+
+  onLoad(e) {
+    var that = this;
+    var reqData = {
+      orderNum: e.id
+    };
+    that.PostMemberOrderLogistics(reqData);
+  }
+}
+</script>
