@@ -48,7 +48,6 @@
                     <van-stepper
                       id="{{cardProItem.productID}}"
                       data-index="{{index}}"
-                      disable-input
                       integer
                       min="1"
                       max="{{cardProItem.stock}}"
@@ -56,6 +55,7 @@
                       step="1"
                       bind:plus="onChangeAddStepper"
                       bind:minus="onChangeMinusStepper"
+                      bind:blur="onChangeEditStepper"
                     />
                   </view>
                 </van-card>
@@ -232,6 +232,16 @@ export default class info extends wepy.page {
       };
       that.PostMemberModifyCart(reqData, index, 0);
     },
+    onChangeEditStepper(e){
+      var that = this;
+      var index = e.currentTarget.dataset.index;
+      that.cardProList[index].productCount = e.detail.value;
+      var reqData = {
+        id: e.currentTarget.id,
+        productCount: that.cardProList[index].productCount
+      };
+      that.PostMemberModifyCart(reqData, index, 2);
+    },
     onSubmitOrder() {
       var that = this;
       var ids = [];
@@ -292,13 +302,17 @@ export default class info extends wepy.page {
         });
       }else{
         if (res.result) {
-          if (type) {
+          if (type == 1) {
             that.cardProList[index].stock -= 1;
-            Toast.success('增加成功');
-          } else {
+            Toast.success('操作成功');
+          } else if(type == 2){
+            that.cardProList[index].stock = that.cardProList[index].stock2 - data.productCount;
+            Toast.success('操作成功');
+          }else {
             that.cardProList[index].stock += 1;
-            Toast.success('减少成功');
+            Toast.success('操作失败');
           }
+          that.$apply();
         } else {
           Toast.fail('操作失败,请重试');
         }
@@ -326,6 +340,7 @@ export default class info extends wepy.page {
           var DataList = res.resultData.dataList;
           DataList.forEach(function(e) {
             e.checked = false;
+            e.stock2 = e.stock;
           });
           that.cardProList = DataList;
           that.$apply();

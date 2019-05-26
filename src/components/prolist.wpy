@@ -22,7 +22,7 @@
                         <view slot="footer" class="mk-card_item_tocar">
                             <van-icon
                             name="shopping-cart-o"
-                            custom-style="margin-top:3px;"
+                            custom-style="margin-top:8px;"
                             size="20px"
                             color="#fff"
                             catchtap="onClickAddCart"

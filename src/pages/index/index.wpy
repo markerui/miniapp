@@ -19,6 +19,7 @@
     color: #b4b4b4;
     display: flex;
     align-items: center;
+    padding-right: 5px;
   }
   .mk-tab_nav_wapper {
     display: flex;
@@ -26,8 +27,8 @@
     padding: 15px 5px;
   }
   .mk-tab_nav_item {
-    flex: 0 0 17%;
-    padding: 0 10px;
+    flex: 0 0 18%;
+    padding: 0 9px;
     text-align: center;
     .mk-tab_nav_image {
       width: 70px;
@@ -45,10 +46,20 @@
 
 .mk-tab_list {
   margin-top: 10px;
+  .van-tab--active{
+    color: @rootColor;
+  }
+  .van-tab{
+    font-size: 16px;
+  }
+  .van-tabs__line{
+    background-color: @rootColor;
+  }
   .mk_tab_list_arrw {
     color: #b4b4b4;
     display: flex;
     align-items: center;
+    padding: 3px 5px 0 0;
   }
 }
 // mk-tab_list end
@@ -323,6 +334,29 @@ export default class Index extends wepy.page {
     
   };
 
+  getIsLoginData(){
+    var that = this;
+    if(that.$parent.globalData.session){
+      that.HomeGetShopIndex();
+    }else{
+      that.$parent.wxCallback(function(res){
+        that.getIsLoginData();
+      });
+    }
+  }
+
+  getIsLoginData(){
+    var that = this;
+    if(that.$parent.globalData.session){
+      that.isLogin = that.$parent.globalData.isLogin;
+      that.HomeGetShopIndex();
+    }else{
+      that.$parent.wxCallback(function(res){
+        that.getIsLoginData();
+      });
+    }
+  }
+
   onLoad() {
     let that = this;
     let windowHeight = wx.getSystemInfoSync().windowHeight;
@@ -337,9 +371,7 @@ export default class Index extends wepy.page {
     wx.showShareMenu({
       withShareTicket: true
     });
-    
-    that.isLogin = that.$parent.globalData.isLogin;
-    that.HomeGetShopIndex();
+    that.getIsLoginData();
     
   }
 

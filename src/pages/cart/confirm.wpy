@@ -135,7 +135,6 @@
                     id="{{cardProItem.productID}}"
                     data-index="{{index}}"
                     disabled = "{{cartIn}}"
-                    disable-input
                     integer
                     min="1"
                     max="{{cardProItem.stock}}"
@@ -143,7 +142,9 @@
                     step="1"
                     bind:plus="onChangeAddStepper"
                     bind:minus="onChangeMinusStepper"
+                    bind:blur="onChangeEditStepper"
                   />
+                     <!-- disable-input -->
                 </view>
               </van-card>
             </view>
@@ -312,6 +313,7 @@ export default class info extends wepy.page {
       that.cardProList[index].productCount += 1;
       that.cardProList[index].stock -= 1;
       that.confirmData.productInfo.productCount = that.cardProList[index].productCount;
+      that.$apply();
     },
     onChangeMinusStepper(e) {
       var that = this;
@@ -319,6 +321,15 @@ export default class info extends wepy.page {
       that.cardProList[index].productCount -= 1;
       that.cardProList[index].stock += 1;
       that.confirmData.productInfo.productCount = that.cardProList[index].productCount;
+      that.$apply();
+    },
+    onChangeEditStepper(e){
+      var that = this;
+      var index = e.currentTarget.dataset.index;
+      that.confirmData.productInfo.productCount = e.detail.value;
+      that.cardProList[index].productCount = e.detail.value;
+      that.cardProList[index].stock = that.cardProList[index].stock2 - e.detail.value;
+      that.$apply();
     },
     onChangeCheckType1Result(e){
       var that = this;
@@ -360,9 +371,7 @@ export default class info extends wepy.page {
         default:
           break;
       }
-      if(that.confirmData.shippingModel != 1 || that.confirmData.shippingModel != 5 || that.confirmData.shippingModel != 6){
-        that.PostOrderGetShippingFee();
-      }
+      that.PostOrderGetShippingFee();
     },
     onChangeCheckType2Result(e){
       var that = this;
@@ -386,9 +395,7 @@ export default class info extends wepy.page {
             that.confirmData.ShippingModel = 4;
           }
       }
-      if(that.confirmData.ShippingModel != 1 || that.confirmData.ShippingModel != 5 || that.confirmData.ShippingModel != 6){
-        that.PostOrderGetShippingFee();
-      }
+      that.PostOrderGetShippingFee();
     },
     onCheckPay() {
       let that = this;
@@ -550,7 +557,11 @@ export default class info extends wepy.page {
           });
       }else{
         if(res.result){
-          that.confirmData.shippingFee = res.resultData.shippingFee;
+          if(that.confirmData.shippingModel == 1 || that.confirmData.shippingModel == 5 || that.confirmData.shippingModel == 6){
+            that.confirmData.shippingFee = 0;
+          }else{
+            that.confirmData.shippingFee = res.resultData.shippingFee;
+          }
           that.$apply();
         }else{
           Toast.fail(res.message);
@@ -581,7 +592,9 @@ export default class info extends wepy.page {
         if(e.cart==1){
           that.cardProList = res.data.cartList;
         }else{
-          that.cardProList.push(res.data.orderInfo);
+          var orderInfo = res.data.orderInfo;
+          orderInfo.stock2 = orderInfo.stock;
+          that.cardProList.push(orderInfo);
         }
         that.confirmData = res.data.orderData;
         that.productAmount = res.data.productAmount;

@@ -130,7 +130,8 @@ export default class extends wepy.app {
   globalData = {
     userInfo: null,
     weChatInfo: null,
-    isLogin: false
+    isLogin: false,
+    session: 0
   };
 
   constructor() {
@@ -153,16 +154,24 @@ export default class extends wepy.app {
     });
   }
 
-  wxLogin() {
+  wxLogin(cb) {
     var that = this;
     Api.wxLogin(function(res) {
       that.globalData.weChatInfo = res.resultData;
+      that.globalData.session = 1;
       if (res.resultData.tokenId) {
         that.globalData.isLogin = true;
       } else{
         that.globalData.isLogin = false;
       }
+      cb && cb(res);
     });
+  }
+
+  wxCallback(cb){
+    setTimeout(() => {
+      cb && cb();
+    }, 10);
   }
 
   onLaunch() {

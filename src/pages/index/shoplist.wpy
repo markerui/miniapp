@@ -93,7 +93,7 @@ export default class search extends wepy.page {
 
   data = {
 		windowHeight: 0,
-		shopTips: '提示文字哦提示文字哦提示文字哦提示文字哦提示文字哦提示文字哦提示文字哦',
+		shopTips: '实体店会有库存不足的情况,补货时间一般为3-7天。如您急需品鉴,建议在此下单,感谢您的惠顾。',
 		areaPopupShow: false,
 		areaList: [],
 		storeList: [],

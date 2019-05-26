@@ -363,11 +363,20 @@ export default class info extends wepy.page {
     })
   };
 
-  onLoad(e) {
-    wx.showShareMenu({
-      withShareTicket: true
-    });
+  getIsLoginData(reqData){
+    var that = this;
+    if(that.$parent.globalData.session){
+      that.isLogin = that.$parent.globalData.isLogin;
+      that.GetProductDetail(reqData);
+    }else{
+      that.$parent.wxCallback(function(res){
+        that.getIsLoginData();
+      });
+    }
+  }
 
+  onLoad(e) {
+    
     let that = this;
     let windowHeight = wx.getSystemInfoSync().windowHeight;
     let query = wx.createSelectorQuery();
@@ -378,12 +387,13 @@ export default class info extends wepy.page {
         that.windowHeight = windowHeight - res[0].height;
       });
 
-    that.isLogin = that.$parent.globalData.isLogin;
-
     var reqData = {
       id: e.id
     };
-    that.GetProductDetail(reqData);
+    wx.showShareMenu({
+      withShareTicket: true
+    });
+    that.getIsLoginData(reqData);
 
   }
 }
