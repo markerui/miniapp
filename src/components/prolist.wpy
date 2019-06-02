@@ -15,7 +15,7 @@
                         thumb-mode="aspectFill"
                         >
                         <view slot="desc" class="mk-card_desc">
-                            <text>单位:{{cardProItem.unit}}</text>
+                            <!-- <text>单位:{{cardProItem.unit}}</text> -->
                             <text>规格:{{cardProItem.size}}</text>
                         </view>
                    

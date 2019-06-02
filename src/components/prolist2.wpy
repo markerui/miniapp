@@ -15,14 +15,14 @@
                         thumb-mode="aspectFill"
                         >
                         <view slot="desc" class="mk-card_desc">
-                            <text>单位:{{cardProItem.unit}}</text>
+                            <!-- <text>单位:{{cardProItem.unit}}</text> -->
                             <text>规格:{{cardProItem.size}}</text>
                         </view>
                    
                         <view slot="footer" class="mk-card_item_tocar">
                             <van-icon
                             name="shopping-cart-o"
-                            custom-style="margin-top:3px;"
+                            custom-style="margin-top:8px;"
                             size="20px"
                             color="#fff"
                             catchtap="onClickAddCart"

@@ -71,10 +71,10 @@
       <van-search disabled placeholder="输入产品/品牌关键词搜索" background="transparent" shape="round"/>
     </view>
     <view class="mk-view" bind:tap="goShopList">
-      <van-icon name="shop-o" size="26px" color="#fff"/>
+      <van-icon name="location-o" size="26px" color="#fff"/>
     </view>
     <view class="mk-view" bind:tap="goAboutUs">
-      <van-icon name="info-o" size="26px" color="#fff"/>
+      <van-icon name="friends-o" size="26px" color="#fff"/>
     </view>
   </view>
   <!-- mk-search-box end -->

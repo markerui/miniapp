@@ -17,7 +17,7 @@
     </van-row>
   </view>
   <block wx:if="{{cardProList.length>0}}">
-    <scroll-view scroll-y style="height: {{windowHeight}}px;" bindscrolltolower="scrollLower">
+    <scroll-view scroll-y style="height: {{windowHeight}}px; width:98vw;" bindscrolltolower="scrollLower">
       <van-cell-group class="mk-card_item-list">
         <van-row>
           <repeat for="{{cardProList}}" key="index" index="index" item="cardProItem">

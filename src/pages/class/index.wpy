@@ -13,6 +13,9 @@
 }
 
 .class-item {
+  &:after{
+    display: none;
+  }
   .class-item_header {
     text-align: center;
     position: relative;
@@ -43,9 +46,9 @@
       margin-bottom: 15px;
     }
     .class-item_content_img {
-      width: 100%;
+      width: 80px;
       height: 80px;
-      border-radius: 10px;
+      border-radius: 5px;
     }
     .class-item_content_text {
       font-size: 14px;

@@ -152,14 +152,14 @@
               <view class="order-list-items_foot order-list-items_foot_flex">
                 <van-button
                   hairline
-                  type="danger"
+                  type="default"
                   id="{{item.orderNum}}"
                   size="small"
                   bind:click="onCancelOrder"
                 >取消订单</van-button>
                 <van-button
                   hairline
-                  type="primary"
+                  type="danger"
                   id="{{item.orderNum}}"
                   size="small"
                   bind:click="onPayOrder"

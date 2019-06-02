@@ -37,7 +37,7 @@
           <view class="product-head_desc">{{productInfo.subheading}}</view>
           <view class="product-head_price">¥ {{productInfo.realPrice}}</view>
           <view class="product-head_origin_price">
-            <text>会员价:¥ {{productInfo.vipPrice}}</text>
+            <!-- <text>会员价:¥ {{productInfo.vipPrice}}</text> -->
             <text>市场价:¥ {{productInfo.marketPrice}}</text>
           </view>
         </view>
@@ -54,11 +54,11 @@
           </block>
           <view bind:tap="onClickIsFavor">
             <view  wx:if="{{isFavor}}">
-              <van-icon name="star" size="32px" color="#e26431" />
+              <van-icon name="star" size="28px" color="#e26431" />
               <text>已收藏</text>
             </view>
             <view wx:else >
-              <van-icon name="star-o" size="32px"/>
+              <van-icon name="star-o" size="28px"/>
               <text>收藏</text>
             </view>
           </view>
@@ -74,7 +74,7 @@
           <van-col span="12"><text>原产地</text> {{productInfo.categoryName}}</van-col>
           <van-col span="12"><text>品种</text> 暂无</van-col>
           <van-col span="12"><text>生产商</text> 暂无</van-col>
-          <van-col span="12"><text>规格</text> {{productInfo.unit}}</van-col>
+          <!-- <van-col span="12"><text>规格</text> {{productInfo.unit}}</van-col> -->
           <van-col span="12"><text>单位</text> {{productInfo.size}}</van-col>
         </van-row>
 
