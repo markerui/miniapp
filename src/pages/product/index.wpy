@@ -72,10 +72,10 @@
           <van-col span="12"><text>品牌</text> {{productInfo.brandName}}</van-col>
           <van-col span="12"><text>类型</text> {{productInfo.productLocalityName}}</van-col>
           <van-col span="12"><text>原产地</text> {{productInfo.categoryName}}</van-col>
-          <van-col span="12"><text>品种</text> 暂无</van-col>
+          <!-- <van-col span="12"><text>品种</text> 暂无</van-col> -->
           <van-col span="12"><text>生产商</text> 暂无</van-col>
-          <!-- <van-col span="12"><text>规格</text> {{productInfo.unit}}</van-col> -->
-          <van-col span="12"><text>单位</text> {{productInfo.size}}</van-col>
+          <van-col span="12"><text>箱规</text> {{productInfo.unit}}</van-col>
+          <van-col span="12"><text>规格</text> {{productInfo.size}}</van-col>
         </van-row>
 
       </view>
@@ -144,7 +144,7 @@ import noData from '../../components/nodata';
 
 export default class info extends wepy.page {
   config = {
-    navigationBarTitleText: '产品详情',
+    navigationBarTitleText: '商品详情',
     usingComponents: {
       "van-row": "../../components/vant/row/index",
       "van-col": "../../components/vant/col/index",

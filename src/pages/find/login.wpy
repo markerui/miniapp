@@ -144,7 +144,9 @@ export default class info extends wepy.page {
       message: '验证中...',
       zIndex: 2000
     });
-    that.formData.code = that.formData.mobile;
+    if(that.formData.mobile){
+      that.formData.code = that.formData.mobile;
+    }
     Api.PostCampaignVerifyCode(that.formData,function(res){
       Toast.clear();
       if(res.result){

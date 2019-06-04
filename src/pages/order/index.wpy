@@ -90,6 +90,7 @@
   .order-confirm-address_name {
     font-size: 14px;
     padding-bottom: 5px;
+    display: flex;
   }
 }
 
@@ -132,7 +133,7 @@
     </view>
     <view class="order-info_text">
       <text class="text">订单金额</text>
-      <text>{{orderDetailInfo.orderStatus}}</text>
+      <text>{{orderDetailInfo.actualPrice}}</text>
     </view>
     <view class="order-info_foot order-info_foot_flex">
       <block wx:if="{{orderDetailInfo.orderStatus == 1 }}">
@@ -157,34 +158,36 @@
       <van-button plain hairline type="danger" size="small" bind:click="onShowDialog">发货</van-button>-->
     </view>
   </view>
-  <view class="order-confirm-margin_bottom10" wx:if="{{logisticInfo}}">
-    <view class="order-confirm-list_head">
-      <van-cell title="配送信息"/>
-    </view>
-    <van-cell is-link center url="delivery?id={{orderDetailInfo.orderNum}}">
-      <view slot="title">
-        <view class="order-delivery-info">
-          <view class="order-delivery-info_text">
-            <text class="text">发货时间</text>
-            <text>{{logisticInfo.deliveryDate}}</text>
-          </view>
-          <view class="order-delivery-info_text">
-            <text class="text">快递方式</text>
-            <text>{{logisticInfo.logisticsName}}</text>
-          </view>
-          <view class="order-delivery-info_text">
-            <text class="text">快递单号</text>
-            <text>{{logisticInfo.logisticsNumber}}</text>
+  <block wx:if="{{logisticInfoShow}}">
+    <view class="order-confirm-margin_bottom10">
+      <view class="order-confirm-list_head">
+        <van-cell title="配送信息"/>
+      </view>
+      <van-cell is-link center url="delivery?id={{orderDetailInfo.orderNum}}">
+        <view slot="title">
+          <view class="order-delivery-info">
+            <view class="order-delivery-info_text">
+              <text class="text">发货时间</text>
+              <text>{{logisticInfo.deliveryDate}}</text>
+            </view>
+            <view class="order-delivery-info_text">
+              <text class="text">快递方式</text>
+              <text>{{logisticInfo.logisticsName}}</text>
+            </view>
+            <view class="order-delivery-info_text">
+              <text class="text">快递单号</text>
+              <text>{{logisticInfo.logisticsNumber}}</text>
+            </view>
           </view>
         </view>
-      </view>
-    </van-cell>
-  </view>
+      </van-cell>
+    </view>
+  </block>
   <view class="order-confirm-margin_bottom10 order-confirm-address">
-    <text class="order-confirm-address_name">
-      {{orderDetailInfo.reveiveName}}
-      {{orderDetailInfo.reveiveMobile}}
-    </text>
+    <view class="order-confirm-address_name">
+      <text style="padding-right: 5px;">{{orderDetailInfo.reveiveName}}</text>
+      <text>{{orderDetailInfo.reveiveMobile}}</text>
+    </view>
     <text>{{orderDetailInfo.reveiveAddress}}</text>
   </view>
   <view class="order-confirm-margin_bottom10 order-confirm-cll_title order-confirm-list">
@@ -295,7 +298,11 @@ export default class info extends wepy.page {
     logisticInfo: []
   };
 
-  computed = {};
+  computed = {
+    logisticInfoShow() {
+      return this.logisticInfo ? true : false;
+    }
+  };
 
   watch = {};
 
@@ -314,7 +321,7 @@ export default class info extends wepy.page {
     });
     Api.PostMemberOrderDetail(data, function(res) {
       Toast.clear();
-      if(res.errCode >= 1000){
+      if (res.errCode >= 1000) {
         Api.wxLogin(function(res) {
           if (res.resultData.tokenId) {
             that.PostMemberOrderDetail(data);
@@ -322,7 +329,7 @@ export default class info extends wepy.page {
             Toast.fail(res.message);
           }
         });
-      }else{
+      } else {
         if (res.result) {
           that.orderDetailList = res.resultData.orderDetail;
           that.orderDetailInfo = res.resultData.orderInfo;
