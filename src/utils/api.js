@@ -1,6 +1,6 @@
 import wepy from 'wepy';
 
-const HOST_URI = 'https://t1.yxbest.com.cn';
+const HOST_URI = 'https://www.yxbest.com.cn';
 const API_URL = HOST_URI + '/api/';
 var tokenId = '';
 
